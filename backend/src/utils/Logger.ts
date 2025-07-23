@@ -48,7 +48,7 @@ class Logger {
 
     // eslint-disable-next-line no-console
     console.log(
-      color(`[${now}] ${emoji} | ${categoryStr} | ${typeStr} ${msg}`),
+      color(`[${now}] ${emoji} | ${categoryStr} | ${typeStr} | ${msg}`),
       optional.length > 0 ? "\n\n" : "",
       ...optional,
       optional.length > 0 ? "\n\n" : ""

@@ -1,14 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpError } from "../utils/HTTPError";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { HttpError } from "../utils/HttpError";
 
-const errorHandlingMiddleware = (
-  err: unknown,
-  _req: Request,
-  res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction
-) => {
+const errorHandlingMiddleware = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof HttpError) {
     return res.fail(null, { message: err.message, code: err.code });
   }

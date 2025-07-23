@@ -7,9 +7,6 @@ export const loginWithEmail = async (req: Request, res: Response, next: NextFunc
   try {
     const { email, password } = req.body;
 
-    console.log("email", email);
-    console.log("password", password);
-
     if (!email || !password) {
       return res.fail(null, {
         message: "Email and password are required.",
@@ -18,8 +15,6 @@ export const loginWithEmail = async (req: Request, res: Response, next: NextFunc
     }
 
     const result = await authService.loginWithEmail(email, password);
-
-    console.log("result", result);
 
     return res.succeed(result, {
       message: "Sent OTP successfully.",

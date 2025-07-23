@@ -1,13 +1,13 @@
+// utils/RouteLoader.util.ts
+
 import fs from "fs";
 import path from "path";
-import { Router } from "express";
 import log from "./Logger";
-
-const router = Router();
+import { Router } from "express";
 
 const routesDir = path.join(__dirname, "..", "routes");
 
-const walkRoutes = async (dir: string): Promise<void> => {
+const walkRoutes = async (dir: string, router: Router): Promise<void> => {
   const files = fs.readdirSync(dir);
 
   for (const file of files) {
@@ -15,7 +15,7 @@ const walkRoutes = async (dir: string): Promise<void> => {
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
-      await walkRoutes(fullPath);
+      await walkRoutes(fullPath, router);
     } else if (stat.isFile() && file.endsWith(".route.ts")) {
       const routePath = getRoutePath(routesDir, fullPath);
 
@@ -38,8 +38,8 @@ const getRoutePath = (routesDir: string, fullPath: string): string => {
   return "/" + normalized;
 };
 
-(async () => {
-  await walkRoutes(routesDir);
-})();
-
-export default router;
+export const buildRouter = async (): Promise<Router> => {
+  const router = Router();
+  await walkRoutes(routesDir, router);
+  return router;
+};
