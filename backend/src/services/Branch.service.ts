@@ -1,5 +1,5 @@
 import { FilterQuery } from "mongoose";
-import Branch, { IBranch } from "../models/Branch.model";
+import { IBranch } from "../models/Branch.model";
 import * as branchRepository from "../repositories/Branch.repository";
 
 export const getAllBranches = async () => {
@@ -15,6 +15,16 @@ export const getBranchByFields = async (params: FilterQuery<IBranch>) => {
 };
 
 export const insertBranch = async (branchData: Partial<IBranch>): Promise<IBranch> => {
-  const branch = new Branch(branchData);
-  return await branch.save();
+  return await branchRepository.insertBranch(branchData);
+};
+
+export const updateBranch = async (
+  id: string,
+  updateData: Partial<IBranch>
+): Promise<IBranch | null> => {
+  return branchRepository.updateBranchById(id, updateData);
+};
+
+export const softDeleteBranch = async (id: string) => {
+  return await branchRepository.softDeleteBranchById(id);
 };

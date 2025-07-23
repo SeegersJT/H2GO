@@ -6,17 +6,17 @@ declare global {
   namespace Express {
     interface Response {
       succeed: (
-        data: any,
+        data: unknown,
         options?: {
           message?: string;
           code?: StatusCodeType;
-          meta?: Record<string, any>;
+          meta?: Record<string, unknown>;
           requestId?: string;
         }
       ) => Response;
 
       fail: (
-        error: any,
+        error: unknown,
         options?: {
           message?: string;
           code?: StatusCodeType;

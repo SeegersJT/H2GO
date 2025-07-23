@@ -15,3 +15,7 @@ export const findUserByEmailAddress = async (email_address: string): Promise<IUs
 export const findUserByIDNumber = async (id_number: string): Promise<IUser | null> => {
   return await User.findOne({ id_number });
 };
+
+export const insertUser = async (userData: Partial<IUser>): Promise<IUser> => {
+  return await User.create(userData);
+};

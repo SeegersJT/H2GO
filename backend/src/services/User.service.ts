@@ -1,4 +1,4 @@
-import User, { IUser } from "../models/User.model";
+import { IUser } from "../models/User.model";
 import * as userRepository from "../repositories/User.repository";
 
 export const getAllUsers = async () => {
@@ -18,26 +18,17 @@ export const getUserByIDNumber = async (id_number: string) => {
 };
 
 export const insertUser = async (userData: Partial<IUser>): Promise<IUser> => {
-  const user = new User(userData);
-  return await user.save();
+  return await userRepository.insertUser(userData);
 };
 
 export const isDuplicateUserEmailAddress = async (email_address: string) => {
   const user = await getUserByEmailAddress(email_address);
 
-  if (user !== null) {
-    return true;
-  }
-
-  return false;
+  return user !== null;
 };
 
 export const isDuplicateUserIDNumber = async (id_number: string) => {
-  const user = await getUserByEmailAddress(id_number);
+  const user = await getUserByIDNumber(id_number);
 
-  if (user !== null) {
-    return true;
-  }
-
-  return false;
+  return user !== null;
 };

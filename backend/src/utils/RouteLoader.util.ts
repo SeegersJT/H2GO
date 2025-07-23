@@ -7,16 +7,19 @@ const router = Router();
 
 const routesDir = path.join(__dirname, "..", "routes");
 
-const walkRoutes = (dir: string) => {
-  fs.readdirSync(dir).forEach((file) => {
+const walkRoutes = async (dir: string): Promise<void> => {
+  const files = fs.readdirSync(dir);
+
+  for (const file of files) {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
-      walkRoutes(fullPath);
+      await walkRoutes(fullPath);
     } else if (stat.isFile() && file.endsWith(".route.ts")) {
       const routePath = getRoutePath(routesDir, fullPath);
-      const routeModule = require(fullPath);
+
+      const routeModule = await import(fullPath);
       const nestedRouter: Router = routeModule.default;
 
       if (nestedRouter && typeof nestedRouter === "function") {
@@ -26,7 +29,7 @@ const walkRoutes = (dir: string) => {
         log.warn().route(`Invalid router export in ${fullPath}`);
       }
     }
-  });
+  }
 };
 
 const getRoutePath = (routesDir: string, fullPath: string): string => {
@@ -35,6 +38,8 @@ const getRoutePath = (routesDir: string, fullPath: string): string => {
   return "/" + normalized;
 };
 
-walkRoutes(routesDir);
+(async () => {
+  await walkRoutes(routesDir);
+})();
 
 export default router;

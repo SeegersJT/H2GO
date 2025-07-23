@@ -8,4 +8,8 @@ router.get("/:id", branchController.getBranchById);
 
 router.post("/", branchController.insertBranch);
 
+router.put("/:id", branchController.updateBranch);
+
+router.delete("/:id", branchController.deleteBranch);
+
 export default router;
