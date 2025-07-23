@@ -9,11 +9,11 @@ const connectDB = async () => {
     process.exit(1);
   }
 
-  log.info().database(`Attempting to connect to MongoDB`);
+  log.info().database(`Initializing MongoDB connection...`);
 
   try {
     const conn = await mongoose.connect(uri);
-    log.success().database(`MongoDB Connected: ${conn.connection.host}`);
+    log.success().database(`MongoDB connection established: ${conn.connection.host}`);
   } catch (err) {
     log.fatal().database("MongoDB connection failed", err);
     process.exit(1);

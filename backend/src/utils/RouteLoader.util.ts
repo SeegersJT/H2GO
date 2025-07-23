@@ -39,7 +39,15 @@ const getRoutePath = (routesDir: string, fullPath: string): string => {
 };
 
 export const buildRouter = async (): Promise<Router> => {
-  const router = Router();
-  await walkRoutes(routesDir, router);
-  return router;
+  try {
+    log.info().route("Initializing route mounting...");
+    const router = Router();
+    await walkRoutes(routesDir, router);
+
+    log.success().route("Route mounting completed.");
+    return router;
+  } catch (error) {
+    log.fatal().route("Route mounting failed:", error);
+    process.exit(1);
+  }
 };

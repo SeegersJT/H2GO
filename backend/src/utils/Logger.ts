@@ -7,7 +7,7 @@ type Category = "database" | "server" | "auth" | "api" | "general" | "route";
 const emojis: Record<LogType, string> = {
   success: "✅",
   info: "📰",
-  warn: "⚠️",
+  warn: "🔕",
   error: "❌",
   fatal: "💀",
   debug: "🐛",
@@ -26,7 +26,7 @@ const colors: Record<LogType, (text: string) => string> = {
 
 const CATEGORY_WIDTH = 11;
 const TYPE_WIDTH = 9;
-const EMOJI_WIDTH = 3; // visual width in terminal columns you want to allocate
+const EMOJI_WIDTH = 3;
 
 function padEmoji(emoji: string, width: number) {
   const len = stringWidth(emoji);
