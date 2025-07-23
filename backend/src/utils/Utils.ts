@@ -1,8 +1,5 @@
 import crypto from "crypto";
-import {
-  ConfirmationTokenExpiryMap,
-  ConfirmationTokenType,
-} from "./constants/ConfirmationToken.constant";
+import { ConfirmationTokenExpiryMap, ConfirmationTokenType } from "./constants/ConfirmationToken.constant";
 import dayjs from "dayjs";
 import { IUser } from "../models/User.model";
 

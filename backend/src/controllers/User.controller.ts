@@ -37,32 +37,9 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 export const insertUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let {
-      branch_id,
-      name,
-      surname,
-      id_number,
-      email_address,
-      mobile_number,
-      gender,
-      password,
-      user_type,
-      createdBy,
-      updatedBy,
-    } = req.body;
+    let { branch_id, name, surname, id_number, email_address, mobile_number, gender, password, user_type, createdBy, updatedBy } = req.body;
 
-    if (
-      !branch_id ||
-      !name ||
-      !surname ||
-      !id_number ||
-      !email_address ||
-      !mobile_number ||
-      !password ||
-      !user_type ||
-      !createdBy ||
-      !updatedBy
-    ) {
+    if (!branch_id || !name || !surname || !id_number || !email_address || !mobile_number || !password || !user_type || !createdBy || !updatedBy) {
       return res.fail(null, { message: "Missing required fields" });
     }
 
@@ -135,8 +112,7 @@ export const insertUser = async (req: Request, res: Response, next: NextFunction
       return res.fail(null, { message: "Duplicate ID number", code: StatusCode.BAD_REQUEST });
     }
 
-    const isDuplicateUserEmailAddress =
-      await userService.isDuplicateUserEmailAddress(email_address);
+    const isDuplicateUserEmailAddress = await userService.isDuplicateUserEmailAddress(email_address);
     if (isDuplicateUserEmailAddress) {
       return res.fail(null, { message: "Duplicate Email Address", code: StatusCode.BAD_REQUEST });
     }

@@ -27,8 +27,5 @@ const confirmationTokenSchema = new Schema<IConfirmationToken>(
   }
 );
 
-const ConfirmationToken: Model<IConfirmationToken> = mongoose.model<IConfirmationToken>(
-  "ConfirmationToken",
-  confirmationTokenSchema
-);
+const ConfirmationToken: Model<IConfirmationToken> = mongoose.model<IConfirmationToken>("ConfirmationToken", confirmationTokenSchema);
 export default ConfirmationToken;

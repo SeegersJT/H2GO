@@ -4,11 +4,7 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 import * as confirmationTokenService from "../services/ConfirmationToken.service";
 
-export const getConfirmationTokenByToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getConfirmationTokenByToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.body;
 
@@ -32,11 +28,7 @@ export const getConfirmationTokenByToken = async (
   }
 };
 
-export const validateConfirmationToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const validateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.body;
 
@@ -95,11 +87,7 @@ export const insertConfirmationToken = async (req: Request, res: Response, next:
   }
 };
 
-export const invalidateConfirmationToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const invalidateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.body;
 
@@ -125,10 +113,7 @@ export const invalidateConfirmationToken = async (
       return res.fail(null, { message: "Token already invalidated.", code: StatusCode.CONFLICT });
     }
 
-    const updatedConfirmationToken = await confirmationTokenService.updateConfirmationToken(
-      existingConfirmationToken.id,
-      { confirmed: true }
-    );
+    const updatedConfirmationToken = await confirmationTokenService.updateConfirmationToken(existingConfirmationToken.id, { confirmed: true });
 
     return res.succeed(updatedConfirmationToken, { message: "Token Invalidated successfully." });
   } catch (err) {

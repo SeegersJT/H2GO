@@ -30,14 +30,7 @@ export const getBranchById = async (req: Request, res: Response, next: NextFunct
 
 export const insertBranch = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      branch_name,
-      branch_abbreviation,
-      country_id,
-      headoffice_id = null,
-      createdBy,
-      updatedBy,
-    } = req.body;
+    const { branch_name, branch_abbreviation, country_id, headoffice_id = null, createdBy, updatedBy } = req.body;
 
     if (!branch_name || !branch_abbreviation || !country_id || !createdBy || !updatedBy) {
       return res.fail(null, { message: "Missing required fields" });
@@ -60,9 +53,7 @@ export const insertBranch = async (req: Request, res: Response, next: NextFuncti
       });
     }
 
-    let headOfficeObjectId: Types.ObjectId | null = headoffice_id
-      ? new Types.ObjectId(headoffice_id)
-      : null;
+    let headOfficeObjectId: Types.ObjectId | null = headoffice_id ? new Types.ObjectId(headoffice_id) : null;
 
     if (headOfficeObjectId) {
       const headOfficeBranch = await branchService.getBranchByFields({

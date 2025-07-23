@@ -16,9 +16,6 @@ export const insertCountry = async (countryData: Partial<ICountry>): Promise<ICo
   return await Country.create(countryData);
 };
 
-export const updateCountry = async (
-  id: string,
-  updateData: Partial<ICountry>
-): Promise<ICountry | null> => {
+export const updateCountry = async (id: string, updateData: Partial<ICountry>): Promise<ICountry | null> => {
   return await Country.findByIdAndUpdate(id, updateData, { new: true });
 };

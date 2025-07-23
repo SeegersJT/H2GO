@@ -1,10 +1,6 @@
 import { IConfirmationToken } from "../models/ConfirmationToken.model";
 import { FilterQuery, Types } from "mongoose";
-import {
-  ConfirmationTokenExpiryMap,
-  ConfirmationTokenType,
-} from "../utils/constants/ConfirmationToken.constant";
-import dayjs from "dayjs";
+import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
 import { Utils } from "../utils/Utils";
 
 import * as confirmationTokenRepository from "../repositories/ConfirmationToken.repository";
@@ -13,10 +9,7 @@ export const getConfirmationTokenByFields = async (params: FilterQuery<IConfirma
   return await confirmationTokenRepository.findConfirmationTokenByFields(params);
 };
 
-export const updateConfirmationToken = async (
-  id: string,
-  updateData: Partial<IConfirmationToken>
-): Promise<IConfirmationToken | null> => {
+export const updateConfirmationToken = async (id: string, updateData: Partial<IConfirmationToken>): Promise<IConfirmationToken | null> => {
   return confirmationTokenRepository.updateConfirmationTokenById(id, updateData);
 };
 

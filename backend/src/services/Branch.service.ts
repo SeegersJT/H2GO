@@ -18,10 +18,7 @@ export const insertBranch = async (branchData: Partial<IBranch>): Promise<IBranc
   return await branchRepository.insertBranch(branchData);
 };
 
-export const updateBranch = async (
-  id: string,
-  updateData: Partial<IBranch>
-): Promise<IBranch | null> => {
+export const updateBranch = async (id: string, updateData: Partial<IBranch>): Promise<IBranch | null> => {
   return branchRepository.updateBranchById(id, updateData);
 };
 

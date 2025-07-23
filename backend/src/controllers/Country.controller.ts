@@ -32,23 +32,9 @@ export const getCountryById = async (req: Request, res: Response, next: NextFunc
 
 export const insertCountry = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      country_name,
-      country_code,
-      country_dial_code,
-      max_phone_number_length,
-      createdBy,
-      updatedBy,
-    } = req.body;
+    const { country_name, country_code, country_dial_code, max_phone_number_length, createdBy, updatedBy } = req.body;
 
-    if (
-      !country_name ||
-      !country_code ||
-      !country_dial_code ||
-      !max_phone_number_length ||
-      !createdBy ||
-      !updatedBy
-    ) {
+    if (!country_name || !country_code || !country_dial_code || !max_phone_number_length || !createdBy || !updatedBy) {
       return res.fail(null, { message: "Missing required fields" });
     }
 

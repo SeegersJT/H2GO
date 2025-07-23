@@ -4,7 +4,6 @@ import connectDB from "./config/Database.config";
 import errorHandlingMiddleware from "./middleware/ErrorHandling.middleware";
 import { responsesMiddleware } from "./middleware/Response.middleware";
 import router from "./utils/RouteLoader.util";
-import log from "./utils/Logger";
 
 dotenv.config();
 
