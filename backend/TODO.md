@@ -4,6 +4,7 @@ _Last updated: 2025-07-23_
 
 ## ✅ Completed
 
+_2025-07-05_
 - [x] Project backbone: `tsconfig`, `.gitignore`, scripts, `.vscode`, etc.
 - [x] MongoDB connection and env config
 - [x] Dynamic recursive routing setup
@@ -16,15 +17,16 @@ _Last updated: 2025-07-23_
 - [x] Global error-handling middleware
 - [x] `ConfirmationToken` route/controller/service/repository
 - [x] Auth login with ConfirmationToken OTP
+_2025-07-24_
+- [x] AccessToken & RefreshToken generation after login
+- [x] Auth middleware to protect non-whitelisted routes
+- [x] Auto-accessToken regeneration using refresh token
+- [x] Password reset token via confirmation token (when expired)
 
 ---
 
 ## 🔄 In Progress
 
-- [ ] ⏳ AccessToken & RefreshToken generation after login
-- [ ] ⏳ Auth middleware to protect non-whitelisted routes
-- [ ] ⏳ Auto-accessToken regeneration using refresh token
-- [ ] ⏳ Password reset token via confirmation token (when expired)
 - [ ] ⏳ Forgot password token + flow
 
 ---

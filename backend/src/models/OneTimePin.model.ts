@@ -9,7 +9,7 @@ export interface IOneTimePin extends Document {
   updatedAt?: Date;
 }
 
-const oineTimePinSchema = new Schema<IOneTimePin>(
+const oneTimePinSchema = new Schema<IOneTimePin>(
   {
     confirmation_token_id: { type: Schema.Types.ObjectId, ref: "ConfirmationToken", required: true },
     one_time_pin: { type: String, required: true },
@@ -21,5 +21,5 @@ const oineTimePinSchema = new Schema<IOneTimePin>(
   }
 );
 
-const OneTimePin: Model<IOneTimePin> = mongoose.model<IOneTimePin>("OneTimePin", oineTimePinSchema);
+const OneTimePin: Model<IOneTimePin> = mongoose.model<IOneTimePin>("OneTimePin", oneTimePinSchema);
 export default OneTimePin;

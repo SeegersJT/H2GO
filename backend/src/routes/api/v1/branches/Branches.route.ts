@@ -1,15 +1,17 @@
 import { Router } from "express";
-import * as branchController from "../../../../controllers/Branch.controller";
+import { UserType } from "../../../../utils/constants/UserType.constant";
+import roleAuthorizationMiddleware from "../../../../middleware/RoleAuthorization.middleware";
+
+import { BranchController } from "../../../../controllers/Branch.controller";
 
 const router = Router();
 
-router.get("/all", branchController.getAllBranches);
-router.get("/:id", branchController.getBranchById);
+const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
-router.post("/", branchController.insertBranch);
-
-router.put("/:id", branchController.updateBranch);
-
-router.delete("/:id", branchController.deleteBranch);
+router.get("/all", restricted, BranchController.getAllBranches);
+router.get("/:id", restricted, BranchController.getBranchById);
+router.post("/", restricted, BranchController.insertBranch);
+router.put("/:id", restricted, BranchController.updateBranch);
+router.delete("/:id", restricted, BranchController.deleteBranch);
 
 export default router;

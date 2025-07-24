@@ -4,5 +4,6 @@ export const RegexPatterns = {
   VALIDATE_EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   VALIDATE_MOBILE_SOUTH_AFRICA: /^(?:\+27|27|0)[6-8][0-9]{8}$/,
   VALIDATE_GENDER: /^(Male|Female)$/,
-  VALIDATE_ID_SOUTH_AFRICA: /^\d{13}$/, // RSA 13-digit ID
+  VALIDATE_ID_SOUTH_AFRICA: /^\d{13}$/,
+  VALIDATE_PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/,
 };

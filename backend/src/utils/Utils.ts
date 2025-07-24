@@ -1,7 +1,10 @@
 import crypto from "crypto";
-import { ConfirmationTokenExpiryMap, ConfirmationTokenType } from "./constants/ConfirmationToken.constant";
+import bcrypt from "bcrypt";
 import dayjs from "dayjs";
+import { ConfirmationTokenExpiryMap, ConfirmationTokenType } from "./constants/ConfirmationToken.constant";
 import { IUser } from "../models/User.model";
+
+const SALT_ROUNDS = 10;
 
 export class Utils {
   /**
@@ -48,8 +51,8 @@ export class Utils {
     const blocksArray: string[] = [];
 
     for (let i = 0; i < blocks; i++) {
-      const buffer = crypto.randomBytes(2);
-      const number = buffer.readUInt16BE() % Math.pow(10, digitsPerBlock);
+      const buffer = crypto.randomBytes(3); // 3 bytes = up to ~16 million
+      const number = buffer.readUIntBE(0, 3) % Math.pow(10, digitsPerBlock);
       const padded = number.toString().padStart(digitsPerBlock, "0");
       blocksArray.push(padded);
     }
@@ -77,5 +80,46 @@ export class Utils {
     const obj = user.toObject();
     delete obj.password;
     return obj;
+  };
+
+  /**
+   * Masks a string by replacing characters with '#' except for a specified number of visible characters.
+   * @param input The string to mask
+   * @param visibleCount Number of characters to leave unmasked
+   * @param showFromEnd If true, keep characters at the end; otherwise, at the start
+   * @returns Masked string (e.g., "#########9087" or "1234#########")
+   */
+  static maskString(input: string, visibleCount: number = 4, showFromEnd: boolean = true): string {
+    if (!input || typeof input !== "string" || visibleCount <= 0) {
+      return "#".repeat(input.length);
+    }
+
+    if (visibleCount >= input.length) {
+      return input;
+    }
+
+    const maskedLength = input.length - visibleCount;
+    const mask = "#".repeat(maskedLength);
+
+    return showFromEnd ? mask + input.slice(-visibleCount) : input.slice(0, visibleCount) + mask;
+  }
+
+  /**
+   * Hash a plain text password using bcrypt.
+   * @param plainPassword The password to hash.
+   * @returns The hashed password.
+   */
+  static hashPassword = async (plainPassword: string): Promise<string> => {
+    return await bcrypt.hash(plainPassword, SALT_ROUNDS);
+  };
+
+  /**
+   * Compare a plain text password with a hashed password.
+   * @param plainPassword The user input password.
+   * @param hashedPassword The stored hashed password.
+   * @returns True if they match, false otherwise.
+   */
+  static comparePasswords = async (plainPassword: string, hashedPassword: string): Promise<boolean> => {
+    return await bcrypt.compare(plainPassword, hashedPassword);
   };
 }

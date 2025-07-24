@@ -3,22 +3,22 @@ import log from "./Logger";
 import { StatusCode, StatusCodeType } from "./constants/StatusCode.constant";
 
 interface MetaData {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
-function isError(err: unknown): err is { message?: string; stack?: string } {
+function isError(err: any): err is { message?: string; stack?: string } {
   return typeof err === "object" && err !== null && ("message" in err || "stack" in err);
 }
 
 export const handleSuccessResponse = (
   res: Response,
-  data: unknown = null,
+  data: any = null,
   message = "Success",
   statusCode: StatusCodeType = StatusCode.OK,
   meta: MetaData | null = null,
   requestId: string | null = null
 ): Response => {
-  const response: Record<string, unknown> = {
+  const response: Record<string, any> = {
     status: "Success",
     code: statusCode,
     message,
@@ -33,14 +33,14 @@ export const handleSuccessResponse = (
 
 export const handleErrorResponse = (
   res: Response,
-  error: unknown = null,
+  error: any = null,
   message = "Internal Server Error",
   statusCode: StatusCodeType = StatusCode.INTERNAL_SERVER_ERROR,
   requestId: string | null = null
 ): Response => {
   const isDev = process.env.NODE_ENV === "development";
 
-  const response: Record<string, unknown> = {
+  const response: Record<string, any> = {
     status: "Error",
     code: statusCode,
     message,

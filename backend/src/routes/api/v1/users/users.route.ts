@@ -1,11 +1,15 @@
 import { Router } from "express";
-import * as userController from "../../../../controllers/User.controller";
+import { UserType } from "../../../../utils/constants/UserType.constant";
+import roleAuthorizationMiddleware from "../../../../middleware/RoleAuthorization.middleware";
+
+import { UserController } from "../../../../controllers/User.controller";
 
 const router = Router();
 
-router.get("/all", userController.getAllUsers);
-router.get("/:id", userController.getUserById);
+const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
-router.post("/", userController.insertUser);
+router.get("/all", restricted, UserController.getAllUsers);
+router.get("/:id", restricted, UserController.getUserById);
+router.post("/", restricted, UserController.insertUser);
 
 export default router;

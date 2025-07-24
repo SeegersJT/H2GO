@@ -1,34 +1,36 @@
 import { IUser } from "../models/User.model";
-import * as userRepository from "../repositories/User.repository";
 
-export const getAllUsers = async () => {
-  return await userRepository.findAllUsers();
-};
+import { UserRepository } from "../repositories/User.repository";
+export class UserService {
+  static getAllUsers = async () => {
+    return await UserRepository.findAllUsers();
+  };
 
-export const getUserById = async (id: string) => {
-  return await userRepository.findUserById(id);
-};
+  static getUserById = async (id: string) => {
+    return await UserRepository.findUserById(id);
+  };
 
-export const getUserByEmailAddress = async (email_address: string) => {
-  return await userRepository.findUserByEmailAddress(email_address);
-};
+  static getUserByEmailAddress = async (email_address: string) => {
+    return await UserRepository.findUserByEmailAddress(email_address);
+  };
 
-export const getUserByIDNumber = async (id_number: string) => {
-  return await userRepository.findUserByIDNumber(id_number);
-};
+  static getUserByIDNumber = async (id_number: string) => {
+    return await UserRepository.findUserByIDNumber(id_number);
+  };
 
-export const insertUser = async (userData: Partial<IUser>): Promise<IUser> => {
-  return await userRepository.insertUser(userData);
-};
+  static insertUser = async (userData: Partial<IUser>): Promise<IUser> => {
+    return await UserRepository.insertUser(userData);
+  };
 
-export const isDuplicateUserEmailAddress = async (email_address: string) => {
-  const user = await getUserByEmailAddress(email_address);
+  static isDuplicateUserEmailAddress = async (email_address: string) => {
+    const user = await this.getUserByEmailAddress(email_address);
 
-  return user !== null;
-};
+    return user !== null;
+  };
 
-export const isDuplicateUserIDNumber = async (id_number: string) => {
-  const user = await getUserByIDNumber(id_number);
+  static isDuplicateUserIDNumber = async (id_number: string) => {
+    const user = await this.getUserByIDNumber(id_number);
 
-  return user !== null;
-};
+    return user !== null;
+  };
+}

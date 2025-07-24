@@ -1,22 +1,25 @@
-import * as countryRepository from "../repositories/Country.repository";
 import { ICountry } from "../models/Country.model";
 
-export const getAllCountries = async (): Promise<ICountry[]> => {
-  return await countryRepository.findAllCountries();
-};
+import { CountryRepository } from "../repositories/Country.repository";
 
-export const getCountryById = async (id: string): Promise<ICountry | null> => {
-  return await countryRepository.findCountryById(id);
-};
+export class CountryService {
+  static getAllCountries = async (): Promise<ICountry[]> => {
+    return await CountryRepository.findAllCountries();
+  };
 
-export const getCountryByCode = async (country_code: string): Promise<ICountry | null> => {
-  return await countryRepository.findCountryByCode(country_code);
-};
+  static getCountryById = async (id: string): Promise<ICountry | null> => {
+    return await CountryRepository.findCountryById(id);
+  };
 
-export const insertCountry = async (countryData: Partial<ICountry>): Promise<ICountry> => {
-  return await countryRepository.insertCountry(countryData);
-};
+  static getCountryByCode = async (country_code: string): Promise<ICountry | null> => {
+    return await CountryRepository.findCountryByCode(country_code);
+  };
 
-export const updateCountry = async (id: string, updateData: Partial<ICountry>): Promise<ICountry | null> => {
-  return await countryRepository.updateCountry(id, updateData);
-};
+  static insertCountry = async (countryData: Partial<ICountry>): Promise<ICountry> => {
+    return await CountryRepository.insertCountry(countryData);
+  };
+
+  static updateCountry = async (id: string, updateData: Partial<ICountry>, updatedBy: string): Promise<ICountry | null> => {
+    return await CountryRepository.updateCountry(id, updateData, updatedBy);
+  };
+}

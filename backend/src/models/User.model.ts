@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import { UserType } from "../utils/constants/UserType.constant";
 
 export interface IUser extends Document {
   user_no: string;
@@ -8,9 +9,10 @@ export interface IUser extends Document {
   id_number: string;
   email_address: string;
   mobile_number: string;
-  gender: string;
+  gender: "Male" | "Female";
   password: string;
-  user_type: string;
+  password_expiry: Date;
+  user_type: UserType;
   confirmed: boolean;
   active: boolean;
   createdBy: Types.ObjectId;
@@ -30,6 +32,7 @@ const userSchema = new Schema<IUser>(
     mobile_number: { type: String, required: true },
     gender: { type: String, required: false },
     password: { type: String, required: true },
+    password_expiry: { type: Date, required: true },
     user_type: { type: String, required: true },
     confirmed: { type: Boolean, required: true },
     active: { type: Boolean, required: true },

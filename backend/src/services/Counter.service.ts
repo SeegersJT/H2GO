@@ -1,6 +1,7 @@
-import Counter from "../models/Counter.model";
+import { CounterRepository } from "../repositories/Counter.repository";
 
-export async function getNextSequence(sequenceName: string): Promise<number> {
-  const counter = await Counter.findOneAndUpdate({ _id: sequenceName }, { $inc: { seq: 1 } }, { new: true, upsert: true });
-  return counter.seq;
+export class CounterService {
+  static getNextSequence = async (sequenceName: string): Promise<number> => {
+    return await CounterRepository.getNextSequence(sequenceName);
+  };
 }

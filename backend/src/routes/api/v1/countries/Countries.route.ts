@@ -1,13 +1,16 @@
 import { Router } from "express";
-import * as countryController from "../../../../controllers/Country.controller";
+import { UserType } from "../../../../utils/constants/UserType.constant";
+import roleAuthorizationMiddleware from "../../../../middleware/RoleAuthorization.middleware";
+
+import { CountryController } from "../../../../controllers/Country.controller";
 
 const router = Router();
 
-router.get("/all", countryController.getAllCountries);
-router.get("/:id", countryController.getCountryById);
+const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
-router.post("/", countryController.insertCountry);
-
-router.put("/:id", countryController.updateCountry);
+router.get("/all", restricted, CountryController.getAllCountries);
+router.get("/:id", restricted, CountryController.getCountryById);
+router.post("/", restricted, CountryController.insertCountry);
+router.put("/:id", restricted, CountryController.updateCountry);
 
 export default router;

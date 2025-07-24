@@ -37,7 +37,7 @@ function padEmoji(emoji: string, width: number) {
 class Logger {
   private _type: LogType = "info";
 
-  private log(category: Category, message: string | Error, ...optional: unknown[]) {
+  private log(category: Category, message: string | Error, ...optional: any[]) {
     const now = new Date().toISOString();
     const emoji = padEmoji(emojis[this._type], EMOJI_WIDTH);
     const color = colors[this._type];
@@ -92,7 +92,7 @@ class Logger {
     return this.categoryMethods();
   }
 
-  custom(type: LogType, category: Category, message: string | Error, ...optional: unknown[]) {
+  custom(type: LogType, category: Category, message: string | Error, ...optional: any[]) {
     this._type = type;
     this.log(category, message, ...optional);
   }
