@@ -5,11 +5,9 @@ import { AuthService } from "../services/Auth.service";
 import { UserService } from "../services/User.service";
 import { BranchService } from "../services/Branch.service";
 import { generateJwtToken } from "../utils/Jwt.util";
-import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
-import { ConfirmationTokenService } from "../services/ConfirmationToken.service";
 
 export class AuthController {
-  static loginWithEmail = async (req: Request, res: Response, next: NextFunction) => {
+  static login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, password } = req.body;
 
@@ -20,32 +18,50 @@ export class AuthController {
         });
       }
 
-      const result = await AuthService.loginWithEmail(email, password);
+      const result = await AuthService.login(email, password);
+
+      return res.succeed(result, { message: "Sent OTP successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static validateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { confirmationToken } = req.body;
+
+      if (!confirmationToken) {
+        return res.fail(null, {
+          message: "Confirmation Token is required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const result = await AuthService.validateConfirmationToken(confirmationToken);
 
       return res.succeed(result, {
-        message:
-          result.confirmation_token_type === ConfirmationTokenType.PASSWORD_RESET ? "Password expired. Reset token sent." : "Sent OTP successfully.",
+        message: "Confirmation Token Validated Successfully.",
       });
     } catch (err) {
       next(err);
     }
   };
 
-  static oneTimePinLogin = async (req: Request, res: Response, next: NextFunction) => {
+  static oneTimePin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token, otp } = req.body;
+      const { confirmationToken, oneTimePin } = req.body;
 
-      if (!token || !otp) {
+      if (!confirmationToken || !oneTimePin) {
         return res.fail(null, {
-          message: "Token and OTP are required.",
+          message: "Confirmation Token and One-Time-Pin are required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const result = await AuthService.oneTimePinLogin(token, otp);
+      const [result, message] = await AuthService.oneTimePin(confirmationToken, oneTimePin);
 
       return res.succeed(result, {
-        message: "Login successful.",
+        message: message,
       });
     } catch (err) {
       next(err);

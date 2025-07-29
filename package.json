@@ -1,0 +1,10 @@
+{
+  "name": "h2go",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend start\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

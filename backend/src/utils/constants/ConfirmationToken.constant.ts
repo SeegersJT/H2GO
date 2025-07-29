@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
 
 export enum ConfirmationTokenType {
-  ONE_TIME_PIN = "ONE_TIME_PIN",
-  PASSWORD_RESET = "PASSWORD_RESET",
-  PASSWORD_FORGOT = "PASSWORD_FORGOT",
+  OTP_LOGIN_TOKEN = "OTP_LOGIN_TOKEN",
+  OTP_PASSWORD_EXPIRED_TOKEN = "OTP_PASSWORD_EXPIRED_TOKEN",
+  OTP_PASSWORD_FORGOT_TOKEN = "OTP_PASSWORD_FORGOT_TOKEN",
+  PASSWORD_RESET_TOKEN = "PASSWORD_RESET_TOKEN",
 }
 
 export const ConfirmationTokenExpiryMap: Record<ConfirmationTokenType, { amount: number; unit: dayjs.ManipulateType }> = {
-  [ConfirmationTokenType.ONE_TIME_PIN]: { amount: 5, unit: "minute" },
-  [ConfirmationTokenType.PASSWORD_RESET]: { amount: 1, unit: "hour" },
-  [ConfirmationTokenType.PASSWORD_FORGOT]: { amount: 1, unit: "day" },
+  [ConfirmationTokenType.OTP_LOGIN_TOKEN]: { amount: 5, unit: "minute" },
+  [ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN]: { amount: 5, unit: "minute" },
+  [ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN]: { amount: 2, unit: "hour" },
+  [ConfirmationTokenType.PASSWORD_RESET_TOKEN]: { amount: 5, unit: "minute" },
 };

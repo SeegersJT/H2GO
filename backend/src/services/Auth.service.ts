@@ -6,48 +6,41 @@ import { Utils } from "../utils/Utils";
 import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { BranchService } from "./Branch.service";
-
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
 import { OneTimePinService } from "./OneTimePin.service";
 import { UserService } from "./User.service";
 import { RegexPatterns } from "../utils/constants/Regex.constant";
+
 export class AuthService {
-  static loginWithEmail = async (email: string, password: string) => {
+  static login = async (email: string, password: string) => {
     const user = await UserService.getUserByEmailAddress(email);
 
     if (!user || !(await Utils.comparePasswords(password, user.password))) {
-      log.warn().auth(`Login failed for email: ${email}`);
+      log.warn().auth(`Invalid email or password for user: ${email}`);
       throw new HttpError("Invalid email or password", StatusCode.UNAUTHORIZED);
     }
 
     const passwordExpired = user.password_expiry && dayjs().isAfter(dayjs(user.password_expiry));
 
-    if (passwordExpired) {
-      const confirmationToken = await ConfirmationTokenService.insertConfirmationToken(user.id, ConfirmationTokenType.PASSWORD_RESET, user.id);
+    const confirmationTokenType: ConfirmationTokenType = passwordExpired
+      ? ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN
+      : ConfirmationTokenType.OTP_LOGIN_TOKEN;
 
-      log.info().auth(`Password expired for user [${user.email_address}] (ID: ${user.id})`);
+    const confirmationToken = await ConfirmationTokenService.insertConfirmationToken({
+      confirmation_token_type: confirmationTokenType,
+      user_id: user.id,
+      createdBy: user.id,
+    });
 
-      return {
-        confirmation_token: confirmationToken.confirmation_token,
-        confirmation_token_type: confirmationToken.confirmation_token_type,
-        confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
-      };
-    }
+    log.info().auth(`Generated ${confirmationTokenType} for user [${user.email_address}]`);
 
-    const confirmationToken = await ConfirmationTokenService.insertConfirmationToken(
-      user?.id.toString(),
-      ConfirmationTokenType.ONE_TIME_PIN,
-      user?.createdBy.toString()
-    );
-
-    // TODO: SEND COMMUNICATION (COMMUNICATION SERVICE)
-    const otp = await OneTimePinService.insertOneTimePin({
+    const oneTimePin = await OneTimePinService.insertOneTimePin({
       confirmation_token_id: confirmationToken.id,
       createdBy: user.id,
       updatedBy: user.id,
     });
 
-    log.info().auth(`OTP for ${email}: ${otp.one_time_pin}`);
+    log.info().auth(`OTP for ${email}: ${oneTimePin.one_time_pin}`);
 
     return {
       confirmation_token: confirmationToken.confirmation_token,
@@ -56,64 +49,101 @@ export class AuthService {
     };
   };
 
-  static oneTimePinLogin = async (token: string, otp: string) => {
-    const confirmationToken = await ConfirmationTokenService.getConfirmationTokenByFields({
-      confirmation_token: token,
+  static validateConfirmationToken = async (confirmationToken: string) => {
+    const confirmationTokenEntity = await ConfirmationTokenService.getConfirmationTokenByFields({
+      confirmation_token: confirmationToken,
     });
 
-    if (!confirmationToken) {
-      log.warn().auth(`Invalid token used: ${token}`);
+    if (!confirmationTokenEntity) {
+      log.warn().auth(`Invalid token used: ${confirmationToken}`);
       throw new HttpError("Invalid token", StatusCode.UNAUTHORIZED);
     }
 
-    if (confirmationToken.confirmed) {
-      log.warn().auth(`Token already confirmed: ${token}`);
+    if (confirmationTokenEntity.confirmed) {
+      log.warn().auth(`Token already confirmed: ${confirmationToken}`);
       throw new HttpError("Token already used", StatusCode.BAD_REQUEST);
     }
 
-    if (new Date() > confirmationToken.confirmation_token_expiry_date) {
-      log.warn().auth(`Token expired: ${token}`);
+    if (new Date() > confirmationTokenEntity.confirmation_token_expiry_date) {
+      log.warn().auth(`Token expired: ${confirmationToken}`);
       throw new HttpError("Token expired", StatusCode.UNAUTHORIZED);
     }
 
-    const oneTimePin = await OneTimePinService.getOneTimePinByConfirmationTokenId(confirmationToken.id);
+    return confirmationTokenEntity;
+  };
 
-    if (!oneTimePin) {
-      log.warn().auth(`OTP not found for token: ${token}`);
+  static oneTimePin = async (confirmationToken: string, oneTimePin: string): Promise<[any, string]> => {
+    const confirmationTokenEntity = await this.validateConfirmationToken(confirmationToken);
+
+    const oneTimePinEntity = await OneTimePinService.getOneTimePinByConfirmationTokenId(confirmationTokenEntity.id);
+
+    if (!oneTimePinEntity) {
+      log.warn().auth(`OTP not found for token: ${confirmationToken}`);
       throw new HttpError("Invalid OTP", StatusCode.UNAUTHORIZED);
     }
 
-    if (otp !== oneTimePin.one_time_pin) {
-      log.warn().auth(`Incorrect OTP for token: ${token}`);
+    if (oneTimePin !== oneTimePinEntity.one_time_pin) {
+      log.warn().auth(`Incorrect OTP for token: ${confirmationToken}`);
       throw new HttpError("Incorrect OTP", StatusCode.UNAUTHORIZED);
     }
 
-    const user = await UserService.getUserById(confirmationToken.user_id.toString());
-    if (!user) {
-      log.error().auth(`User not found for confirmationToken: ${token}`);
-      throw new HttpError("User does not exist", StatusCode.NOT_FOUND);
+    if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_LOGIN_TOKEN) {
+      const user = await UserService.getUserById(confirmationTokenEntity.user_id.toString());
+
+      if (!user) {
+        log.error().auth(`User not found for confirmationToken: ${confirmationToken}`);
+        throw new HttpError("User does not exist", StatusCode.NOT_FOUND);
+      }
+
+      const branch = await BranchService.getBranchById(user.branch_id.toString());
+
+      if (!branch) {
+        log.error().auth(`Branch not found for user: ${user._id}`);
+        throw new HttpError("Branch does not exist", StatusCode.NOT_FOUND);
+      }
+
+      const accessToken = generateJwtToken(user, branch);
+      const refreshToken = generateRefreshToken(user);
+
+      confirmationTokenEntity.confirmed = true;
+      await confirmationTokenEntity.save(); // TODO: Create repository .save()
+
+      log.success().auth(`Login success for user: ${user.email_address}`);
+
+      return [
+        {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          access_token_expires_in: getAccessTokenExpiry(),
+          refresh_token_expires_in: getRefreshTokenExpiry(),
+        },
+        "Login successful",
+      ];
     }
 
-    const branch = await BranchService.getBranchById(user.branch_id.toString());
-    if (!branch) {
-      log.error().auth(`Branch not found for user: ${user._id}`);
-      throw new HttpError("Branch does not exist", StatusCode.NOT_FOUND);
+    if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN) {
+      return [
+        {
+          // confirmation_token: confirmationToken.confirmation_token,
+          // confirmation_token_type: confirmationToken.confirmation_token_type,
+          // confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
+        },
+        "Password has Expired",
+      ];
     }
 
-    const accessToken = generateJwtToken(user, branch);
-    const refreshToken = generateRefreshToken(user);
+    if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN) {
+      return [
+        {
+          // confirmation_token: confirmationToken.confirmation_token,
+          // confirmation_token_type: confirmationToken.confirmation_token_type,
+          // confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
+        },
+        "Password Reset",
+      ];
+    }
 
-    confirmationToken.confirmed = true;
-    await confirmationToken.save();
-
-    log.success().auth(`Login success for user: ${user.email_address}`);
-
-    return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      access_token_expires_in: getAccessTokenExpiry(),
-      refresh_token_expires_in: getRefreshTokenExpiry(),
-    };
+    throw new HttpError("Unsupported confirmation token type", StatusCode.BAD_REQUEST);
   };
 
   static passwordResetLogin = async (token: string, password: string) => {

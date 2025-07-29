@@ -1,11 +1,10 @@
 import { IConfirmationToken } from "../models/ConfirmationToken.model";
 import { FilterQuery, Types } from "mongoose";
-import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
 import { Utils } from "../utils/Utils";
 import { ConfirmationTokenRepository } from "../repositories/ConfirmationToken.repository";
 
 export class ConfirmationTokenService {
-  static getConfirmationTokenByFields = async (params: FilterQuery<IConfirmationToken>) => {
+  static getConfirmationTokenByFields = async (params: FilterQuery<IConfirmationToken>): Promise<IConfirmationToken | null> => {
     return await ConfirmationTokenRepository.findConfirmationTokenByFields(params);
   };
 
@@ -13,22 +12,18 @@ export class ConfirmationTokenService {
     return ConfirmationTokenRepository.updateConfirmationTokenById(id, updateData);
   };
 
-  static insertConfirmationToken = async (
-    userId: string,
-    confirmationTokenType: ConfirmationTokenType,
-    createdBy: string
-  ): Promise<IConfirmationToken> => {
+  static insertConfirmationToken = async (confirmationTokenData: FilterQuery<IConfirmationToken>): Promise<IConfirmationToken> => {
     const confirmationToken = Utils.generateSecureConfirmationToken();
-    const expiryDate = Utils.getConfirmationTokenExpiry(confirmationTokenType);
+    const expiryDate = Utils.getConfirmationTokenExpiry(confirmationTokenData.confirmation_token_type);
 
     return ConfirmationTokenRepository.insertConfirmationToken({
       confirmation_token: confirmationToken,
-      confirmation_token_type: confirmationTokenType,
+      confirmation_token_type: confirmationTokenData.confirmation_token_type,
       confirmation_token_expiry_date: expiryDate,
-      user_id: new Types.ObjectId(userId),
+      user_id: new Types.ObjectId(confirmationTokenData.user_id),
       confirmed: false,
-      createdBy: new Types.ObjectId(createdBy),
-      updatedBy: new Types.ObjectId(createdBy),
+      createdBy: new Types.ObjectId(confirmationTokenData.createdBy),
+      updatedBy: new Types.ObjectId(confirmationTokenData.createdBy),
     });
   };
 }

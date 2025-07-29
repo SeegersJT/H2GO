@@ -82,11 +82,11 @@ export class ConfirmationTokenController {
         });
       }
 
-      const confirmationToken = await ConfirmationTokenService.insertConfirmationToken(
-        user_id,
-        confirmation_token_type as ConfirmationTokenType,
-        authenticatedUser.id
-      );
+      const confirmationToken = await ConfirmationTokenService.insertConfirmationToken({
+        confirmation_token_type: confirmation_token_type,
+        user_id: user_id,
+        createdBy: authenticatedUser.id,
+      });
 
       return res.succeed(confirmationToken, {
         message: "Token created successfully",
