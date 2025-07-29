@@ -26,7 +26,7 @@ export class AuthService {
       ? ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN
       : ConfirmationTokenType.OTP_LOGIN_TOKEN;
 
-    const confirmationToken = await ConfirmationTokenService.insertConfirmationToken({
+    const confirmationTokenEntity = await ConfirmationTokenService.insertConfirmationToken({
       confirmation_token_type: confirmationTokenType,
       user_id: user.id,
       createdBy: user.id,
@@ -35,7 +35,7 @@ export class AuthService {
     log.info().auth(`Generated ${confirmationTokenType} for user [${user.email_address}]`);
 
     const oneTimePin = await OneTimePinService.insertOneTimePin({
-      confirmation_token_id: confirmationToken.id,
+      confirmation_token_id: confirmationTokenEntity.id,
       createdBy: user.id,
       updatedBy: user.id,
     });
@@ -43,9 +43,9 @@ export class AuthService {
     log.info().auth(`OTP for ${email}: ${oneTimePin.one_time_pin}`);
 
     return {
-      confirmation_token: confirmationToken.confirmation_token,
-      confirmation_token_type: confirmationToken.confirmation_token_type,
-      confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
+      confirmation_token: confirmationTokenEntity.confirmation_token,
+      confirmation_token_type: confirmationTokenEntity.confirmation_token_type,
+      confirmation_token_expiry_date: confirmationTokenEntity.confirmation_token_expiry_date,
     };
   };
 
@@ -87,14 +87,14 @@ export class AuthService {
       throw new HttpError("Incorrect OTP", StatusCode.UNAUTHORIZED);
     }
 
+    const user = await UserService.getUserById(confirmationTokenEntity.user_id.toString());
+
+    if (!user) {
+      log.error().auth(`User not found for confirmationToken: ${confirmationToken}`);
+      throw new HttpError("User does not exist", StatusCode.NOT_FOUND);
+    }
+
     if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_LOGIN_TOKEN) {
-      const user = await UserService.getUserById(confirmationTokenEntity.user_id.toString());
-
-      if (!user) {
-        log.error().auth(`User not found for confirmationToken: ${confirmationToken}`);
-        throw new HttpError("User does not exist", StatusCode.NOT_FOUND);
-      }
-
       const branch = await BranchService.getBranchById(user.branch_id.toString());
 
       if (!branch) {
@@ -121,25 +121,28 @@ export class AuthService {
       ];
     }
 
-    if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN) {
-      return [
-        {
-          // confirmation_token: confirmationToken.confirmation_token,
-          // confirmation_token_type: confirmationToken.confirmation_token_type,
-          // confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
-        },
-        "Password has Expired",
-      ];
-    }
+    if (
+      confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN ||
+      confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN
+    ) {
+      const passwordResetConfirmationTokenEntity = await ConfirmationTokenService.insertConfirmationToken({
+        confirmation_token_type: ConfirmationTokenType.PASSWORD_RESET_TOKEN,
+        user_id: user.id,
+        createdBy: user.id,
+      });
 
-    if (confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN) {
+      const customMessage =
+        confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN
+          ? "OTP verified. Your password has expired, reset is required."
+          : "OTP verified. Reset your password.";
+
       return [
         {
-          // confirmation_token: confirmationToken.confirmation_token,
-          // confirmation_token_type: confirmationToken.confirmation_token_type,
-          // confirmation_token_expiry_date: confirmationToken.confirmation_token_expiry_date,
+          confirmation_token: passwordResetConfirmationTokenEntity.confirmation_token,
+          confirmation_token_type: passwordResetConfirmationTokenEntity.confirmation_token_type,
+          confirmation_token_expiry_date: passwordResetConfirmationTokenEntity.confirmation_token_expiry_date,
         },
-        "Password Reset",
+        customMessage,
       ];
     }
 
