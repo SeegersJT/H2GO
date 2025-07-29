@@ -68,18 +68,39 @@ export class AuthController {
     }
   };
 
-  static passwordResetLogin = async (req: Request, res: Response, next: NextFunction) => {
+  static passwordForgot = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token, password } = req.body;
+      const { email } = req.body;
 
-      if (!token || !password) {
+      if (!email) {
         return res.fail(null, {
-          message: "Token and Password are required.",
+          message: "Email is required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const result = await AuthService.passwordResetLogin(token, password);
+      const result = await AuthService.passwordForgot(email);
+
+      return res.succeed(result, {
+        message: "Email Verified. Sent OTP Successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static passwordReset = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { confirmationToken, password, confirmPassword } = req.body;
+
+      if (!confirmationToken || !password) {
+        return res.fail(null, {
+          message: "Confirmation Token, Password and Confirm Password are required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const result = await AuthService.passwordReset(confirmationToken, password, confirmPassword);
 
       return res.succeed(result, {
         message: "Password Reset and Login successful.",

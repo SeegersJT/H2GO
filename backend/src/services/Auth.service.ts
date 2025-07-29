@@ -149,24 +149,43 @@ export class AuthService {
     throw new HttpError("Unsupported confirmation token type", StatusCode.BAD_REQUEST);
   };
 
-  static passwordResetLogin = async (token: string, password: string) => {
-    const confirmationToken = await ConfirmationTokenService.getConfirmationTokenByFields({
-      confirmation_token: token,
+  static passwordForgot = async (email: string) => {
+    const user = await UserService.getUserByEmailAddress(email);
+
+    if (!user) {
+      log.warn().auth(`Invalid email: ${email}`);
+      throw new HttpError("Invalid email", StatusCode.UNAUTHORIZED);
+    }
+
+    const confirmationTokenEntity = await ConfirmationTokenService.insertConfirmationToken({
+      confirmation_token_type: ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN,
+      user_id: user.id,
+      createdBy: user.id,
     });
 
-    if (!confirmationToken) {
-      log.warn().auth(`Invalid token used: ${token}`);
-      throw new HttpError("Invalid token", StatusCode.UNAUTHORIZED);
-    }
+    log.info().auth(`Generated ${ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN} for user [${user.email_address}]`);
 
-    if (confirmationToken.confirmed) {
-      log.warn().auth(`Token already confirmed: ${token}`);
-      throw new HttpError("Token already used", StatusCode.BAD_REQUEST);
-    }
+    const oneTimePin = await OneTimePinService.insertOneTimePin({
+      confirmation_token_id: confirmationTokenEntity.id,
+      createdBy: user.id,
+      updatedBy: user.id,
+    });
 
-    if (new Date() > confirmationToken.confirmation_token_expiry_date) {
-      log.warn().auth(`Token expired: ${token}`);
-      throw new HttpError("Token expired", StatusCode.UNAUTHORIZED);
+    log.info().auth(`OTP for ${email}: ${oneTimePin.one_time_pin}`);
+
+    return {
+      confirmation_token: confirmationTokenEntity.confirmation_token,
+      confirmation_token_type: confirmationTokenEntity.confirmation_token_type,
+      confirmation_token_expiry_date: confirmationTokenEntity.confirmation_token_expiry_date,
+    };
+  };
+
+  static passwordReset = async (confirmationToken: string, password: string, confirmPassword: string) => {
+    const confirmationTokenEntity = await this.validateConfirmationToken(confirmationToken);
+
+    if (password !== confirmPassword) {
+      log.warn().auth("Passwords do not match", StatusCode.BAD_REQUEST);
+      throw new HttpError("Passwords do not match", StatusCode.BAD_REQUEST);
     }
 
     if (!RegexPatterns.VALIDATE_PASSWORD.test(password)) {
@@ -174,9 +193,9 @@ export class AuthService {
       throw new HttpError("Password must contain 1 upper, 1 lower, 1 digit, 1 special, 8+ chars", StatusCode.BAD_REQUEST);
     }
 
-    let user = await UserService.getUserById(confirmationToken.user_id.toString());
+    let user = await UserService.getUserById(confirmationTokenEntity.user_id.toString());
     if (!user) {
-      log.error().auth(`User not found for confirmationToken: ${token}`);
+      log.error().auth(`User not found for confirmationToken: ${confirmationToken}`);
       throw new HttpError("User does not exist", StatusCode.NOT_FOUND);
     }
 
@@ -194,8 +213,8 @@ export class AuthService {
     const accessToken = generateJwtToken(user, branch);
     const refreshToken = generateRefreshToken(user);
 
-    confirmationToken.confirmed = true;
-    await confirmationToken.save();
+    confirmationTokenEntity.confirmed = true;
+    await confirmationTokenEntity.save();
 
     log.success().auth(`Password reset and login successful for user: ${user.email_address}`);
 
