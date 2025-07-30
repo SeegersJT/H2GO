@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { AuthService } from "../services/Auth.service";
-import { UserService } from "../services/User.service";
-import { BranchService } from "../services/Branch.service";
-import { generateJwtToken } from "../utils/Jwt.util";
 
 export class AuthController {
   static login = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +9,7 @@ export class AuthController {
 
       if (!email || !password) {
         return res.fail(null, {
-          message: "Email and password are required.",
+          message: "[email] | [password] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -28,19 +24,19 @@ export class AuthController {
 
   static validateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { confirmationToken } = req.body;
+      const { confirmation_token } = req.body;
 
-      if (!confirmationToken) {
+      if (!confirmation_token) {
         return res.fail(null, {
-          message: "Confirmation Token is required.",
+          message: "[confirmation_token] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const result = await AuthService.validateConfirmationToken(confirmationToken);
+      const result = await AuthService.validateConfirmationToken(confirmation_token);
 
       return res.succeed(result, {
-        message: "Confirmation Token Validated Successfully.",
+        message: "Confirmation token validated successfully.",
       });
     } catch (err) {
       next(err);
@@ -49,16 +45,16 @@ export class AuthController {
 
   static oneTimePin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { confirmationToken, oneTimePin } = req.body;
+      const { confirmation_token, one_time_pin } = req.body;
 
-      if (!confirmationToken || !oneTimePin) {
+      if (!confirmation_token || !one_time_pin) {
         return res.fail(null, {
-          message: "Confirmation Token and One-Time-Pin are required.",
+          message: "[confirmation_token] | [one_time_pin] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const [result, message] = await AuthService.oneTimePin(confirmationToken, oneTimePin);
+      const [result, message] = await AuthService.oneTimePin(confirmation_token, one_time_pin);
 
       return res.succeed(result, {
         message: message,
@@ -74,7 +70,7 @@ export class AuthController {
 
       if (!email) {
         return res.fail(null, {
-          message: "Email is required.",
+          message: "[email] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -82,7 +78,7 @@ export class AuthController {
       const result = await AuthService.passwordForgot(email);
 
       return res.succeed(result, {
-        message: "Email Verified. Sent OTP Successfully",
+        message: "Email verified. Sent OTP successfully",
       });
     } catch (err) {
       next(err);
@@ -91,19 +87,19 @@ export class AuthController {
 
   static passwordReset = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { confirmationToken, password, confirmPassword } = req.body;
+      const { confirmation_token, password, confirm_password } = req.body;
 
-      if (!confirmationToken || !password) {
+      if (!confirmation_token || !password || !confirm_password) {
         return res.fail(null, {
-          message: "Confirmation Token, Password and Confirm Password are required.",
+          message: "[confirmation_token] | [password] | [confirmation_password] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const result = await AuthService.passwordReset(confirmationToken, password, confirmPassword);
+      const result = await AuthService.passwordReset(confirmation_token, password, confirm_password);
 
       return res.succeed(result, {
-        message: "Password Reset and Login successful.",
+        message: "Password reset and login successful.",
       });
     } catch (err) {
       next(err);
@@ -112,45 +108,20 @@ export class AuthController {
 
   static refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { refreshToken } = req.body;
+      const { refresh_token } = req.body;
 
-      if (!refreshToken) {
+      if (!refresh_token) {
         return res.fail(null, {
-          message: "Refresh token required.",
+          message: "[refresh_token] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const payload = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN!) as { id: string };
+      const result = await AuthService.refreshToken(refresh_token);
 
-      const user = await UserService.getUserById(payload.id);
-
-      if (!user) {
-        return res.fail(null, {
-          message: "User not found.",
-          code: StatusCode.UNAUTHORIZED,
-        });
-      }
-
-      const branch = await BranchService.getBranchById(user.branch_id.toString());
-
-      if (!branch) {
-        return res.fail(null, {
-          message: "Branch not found.",
-          code: StatusCode.UNAUTHORIZED,
-        });
-      }
-
-      const newAccessToken = generateJwtToken(user, branch);
-
-      return res.succeed(
-        {
-          accessToken: newAccessToken,
-        },
-        {
-          message: "Access token refreshed.",
-        }
-      );
+      return res.succeed(result, {
+        message: "Access token refreshed Successfully.",
+      });
     } catch (err) {
       next(err);
     }

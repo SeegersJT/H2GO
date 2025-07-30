@@ -2,6 +2,7 @@ import { FilterQuery } from "mongoose";
 import { IBranch } from "../models/Branch.model";
 
 import { BranchRepositry } from "../repositories/Branch.repository";
+
 export class BranchService {
   static getAllBranches = async () => {
     return await BranchRepositry.findAllBranches();

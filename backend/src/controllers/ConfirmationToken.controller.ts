@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { ConfirmationTokenService } from "../services/ConfirmationToken.service";
 import { Types } from "mongoose";
@@ -7,22 +6,16 @@ import { Types } from "mongoose";
 export class ConfirmationTokenController {
   static getConfirmationTokenByToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = req.body;
+      const { confirmation_token } = req.body;
 
-      if (!token) {
+      if (!confirmation_token) {
         return res.fail(null, { message: "Missing confirmation token." });
       }
 
-      const existingConfirmationToken = await ConfirmationTokenService.getConfirmationTokenByFields({
-        confirmation_token: token,
-      });
+      const result = await ConfirmationTokenService.getConfirmationTokenByToken(confirmation_token);
 
-      if (!existingConfirmationToken) {
-        return res.fail(null, { message: "Token not found or invalid." });
-      }
-
-      return res.succeed(existingConfirmationToken, {
-        message: "Retrieved Confirmation Token successfully.",
+      return res.succeed(result, {
+        message: "Retrieved confirmation token successfully.",
       });
     } catch (err) {
       next(err);
@@ -31,35 +24,18 @@ export class ConfirmationTokenController {
 
   static validateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = req.body;
+      const { confirmation_token } = req.body;
 
-      if (!token) {
+      if (!confirmation_token) {
         return res.fail(null, {
           message: "Missing confirmation token.",
           code: StatusCode.BAD_REQUEST,
         });
       }
 
-      const existingConfirmationToken = await ConfirmationTokenService.getConfirmationTokenByFields({
-        confirmation_token: token,
-      });
+      const result = await ConfirmationTokenService.validateConfirmationToken(confirmation_token);
 
-      if (!existingConfirmationToken) {
-        return res.fail(null, {
-          message: "Token not found or invalid.",
-          code: StatusCode.NOT_FOUND,
-        });
-      }
-
-      if (existingConfirmationToken.confirmed) {
-        return res.fail(null, { message: "Token already confirmed.", code: StatusCode.CONFLICT });
-      }
-
-      if (new Date() > existingConfirmationToken.confirmation_token_expiry_date) {
-        return res.fail(null, { message: "Token has expired.", code: StatusCode.INVALID_TOKEN });
-      }
-
-      return res.succeed(true, { message: "Token Validated successfully." });
+      return res.succeed(result, { message: "Token validated successfully." });
     } catch (err) {
       next(err);
     }
@@ -82,13 +58,13 @@ export class ConfirmationTokenController {
         });
       }
 
-      const confirmationToken = await ConfirmationTokenService.insertConfirmationToken({
+      const result = await ConfirmationTokenService.insertConfirmationToken({
         confirmation_token_type: confirmation_token_type,
         user_id: user_id,
         createdBy: authenticatedUser.id,
       });
 
-      return res.succeed(confirmationToken, {
+      return res.succeed(result, {
         message: "Token created successfully",
       });
     } catch (err) {
@@ -98,9 +74,9 @@ export class ConfirmationTokenController {
 
   static invalidateConfirmationToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = req.body;
+      const { confirmation_token } = req.body;
 
-      if (!token) {
+      if (!confirmation_token) {
         return res.fail(false, {
           message: "Missing confirmation token.",
           code: StatusCode.BAD_REQUEST,
@@ -117,7 +93,7 @@ export class ConfirmationTokenController {
       }
 
       const existingConfirmationToken = await ConfirmationTokenService.getConfirmationTokenByFields({
-        confirmation_token: token,
+        confirmation_token: confirmation_token,
       });
 
       if (!existingConfirmationToken) {

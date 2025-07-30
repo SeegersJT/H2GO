@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
-import { HttpError } from "../utils/HttpError";
-import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
+import jwt from "jsonwebtoken";
 import log from "../utils/Logger";
 import { Utils } from "../utils/Utils";
-import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
+import { HttpError } from "../utils/HttpError";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
+import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
 import { BranchService } from "./Branch.service";
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
 import { OneTimePinService } from "./OneTimePin.service";
@@ -21,10 +22,20 @@ export class AuthService {
     }
 
     const passwordExpired = user.password_expiry && dayjs().isAfter(dayjs(user.password_expiry));
+    const unconfirmedUser = !user.confirmed;
 
-    const confirmationTokenType: ConfirmationTokenType = passwordExpired
-      ? ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN
-      : ConfirmationTokenType.OTP_LOGIN_TOKEN;
+    let confirmationTokenType: ConfirmationTokenType;
+
+    switch (true) {
+      case passwordExpired:
+        confirmationTokenType = ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN;
+        break;
+      case unconfirmedUser:
+        confirmationTokenType = ConfirmationTokenType.OTP_CONFIRM_LOGIN_TOKEN;
+        break;
+      default:
+        confirmationTokenType = ConfirmationTokenType.OTP_LOGIN_TOKEN;
+    }
 
     const confirmationTokenEntity = await ConfirmationTokenService.insertConfirmationToken({
       confirmation_token_type: confirmationTokenType,
@@ -50,30 +61,11 @@ export class AuthService {
   };
 
   static validateConfirmationToken = async (confirmationToken: string) => {
-    const confirmationTokenEntity = await ConfirmationTokenService.getConfirmationTokenByFields({
-      confirmation_token: confirmationToken,
-    });
-
-    if (!confirmationTokenEntity) {
-      log.warn().auth(`Invalid token used: ${confirmationToken}`);
-      throw new HttpError("Invalid token", StatusCode.UNAUTHORIZED);
-    }
-
-    if (confirmationTokenEntity.confirmed) {
-      log.warn().auth(`Token already confirmed: ${confirmationToken}`);
-      throw new HttpError("Token already used", StatusCode.BAD_REQUEST);
-    }
-
-    if (new Date() > confirmationTokenEntity.confirmation_token_expiry_date) {
-      log.warn().auth(`Token expired: ${confirmationToken}`);
-      throw new HttpError("Token expired", StatusCode.UNAUTHORIZED);
-    }
-
-    return confirmationTokenEntity;
+    return await ConfirmationTokenService.validateConfirmationToken(confirmationToken);
   };
 
   static oneTimePin = async (confirmationToken: string, oneTimePin: string): Promise<[any, string]> => {
-    const confirmationTokenEntity = await this.validateConfirmationToken(confirmationToken);
+    const confirmationTokenEntity = await ConfirmationTokenService.validateConfirmationToken(confirmationToken);
 
     const oneTimePinEntity = await OneTimePinService.getOneTimePinByConfirmationTokenId(confirmationTokenEntity.id);
 
@@ -123,7 +115,8 @@ export class AuthService {
 
     if (
       confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN ||
-      confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN
+      confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN ||
+      confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_CONFIRM_LOGIN_TOKEN
     ) {
       const passwordResetConfirmationTokenEntity = await ConfirmationTokenService.insertConfirmationToken({
         confirmation_token_type: ConfirmationTokenType.PASSWORD_RESET_TOKEN,
@@ -131,10 +124,24 @@ export class AuthService {
         createdBy: user.id,
       });
 
-      const customMessage =
-        confirmationTokenEntity.confirmation_token_type === ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN
-          ? "OTP verified. Your password has expired, reset is required."
-          : "OTP verified. Reset your password.";
+      let customMessage: string;
+
+      switch (confirmationTokenEntity.confirmation_token_type) {
+        case ConfirmationTokenType.OTP_PASSWORD_EXPIRED_TOKEN:
+          customMessage = "OTP verified. Your password has expired, reset is required.";
+          break;
+
+        case ConfirmationTokenType.OTP_CONFIRM_LOGIN_TOKEN:
+          customMessage = "OTP verified. Your account is not confirmed. Reset your password.";
+          break;
+
+        default:
+          customMessage = "OTP verified. Reset your password.";
+          break;
+      }
+
+      confirmationTokenEntity.confirmed = true;
+      await confirmationTokenEntity.save();
 
       return [
         {
@@ -181,7 +188,7 @@ export class AuthService {
   };
 
   static passwordReset = async (confirmationToken: string, password: string, confirmPassword: string) => {
-    const confirmationTokenEntity = await this.validateConfirmationToken(confirmationToken);
+    const confirmationTokenEntity = await ConfirmationTokenService.validateConfirmationToken(confirmationToken);
 
     if (password !== confirmPassword) {
       log.warn().auth("Passwords do not match", StatusCode.BAD_REQUEST);
@@ -200,8 +207,11 @@ export class AuthService {
     }
 
     const hashedPassword = await Utils.hashPassword(password);
+
     user.password = hashedPassword;
     user.password_expiry = dayjs().add(3, "months").toDate();
+    user.confirmed = true;
+
     await user.save();
 
     const branch = await BranchService.getBranchById(user.branch_id.toString());
@@ -223,6 +233,30 @@ export class AuthService {
       refresh_token: refreshToken,
       access_token_expires_in: getAccessTokenExpiry(),
       refresh_token_expires_in: getRefreshTokenExpiry(),
+    };
+  };
+
+  static refreshToken = async (refreshToken: string) => {
+    const payload = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN!) as { id: string };
+
+    const user = await UserService.getUserById(payload.id);
+
+    if (!user) {
+      log.warn().auth("User not found");
+      throw new HttpError("User not found", StatusCode.UNAUTHORIZED);
+    }
+
+    const branch = await BranchService.getBranchById(user.branch_id.toString());
+
+    if (!branch) {
+      log.warn().auth("Branch not found");
+      throw new HttpError("Branch not found", StatusCode.UNAUTHORIZED);
+    }
+
+    const newAccessToken = generateJwtToken(user, branch);
+
+    return {
+      accessToken: newAccessToken,
     };
   };
 }

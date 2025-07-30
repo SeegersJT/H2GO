@@ -2,6 +2,28 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { OneTimePinService } from "../services/OneTimePin.service";
 export class OneTimePinController {
+  static getOneTimePinByConfirmationTokenId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const confirmationTokenId = req.query.confirmation_token_id as string;
+
+      if (!confirmationTokenId) {
+        return res.fail(null, { message: "Confirmation token ID is required", code: StatusCode.NOT_FOUND });
+      }
+
+      const oneTimePin = await OneTimePinService.getOneTimePinByConfirmationTokenId(confirmationTokenId);
+
+      if (!oneTimePin) {
+        return res.fail(null, { message: "OTP not found", code: StatusCode.NOT_FOUND });
+      }
+
+      return res.succeed(oneTimePin, {
+        message: "OTP retrieved successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   static insertOneTimePin = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const confirmationTokenId = req.query.confirmation_token_id as string;
@@ -33,24 +55,6 @@ export class OneTimePinController {
 
       return res.succeed(oneTimePin, {
         message: "OTP created successfully",
-      });
-    } catch (err) {
-      next(err);
-    }
-  };
-
-  static getOneTimePinByConfirmationTokenId = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const confirmationTokenId = req.query.confirmation_token_id as string;
-
-      const oneTimePin = await OneTimePinService.getOneTimePinByConfirmationTokenId(confirmationTokenId);
-
-      if (!oneTimePin) {
-        return res.fail(null, { message: "OTP not found", code: StatusCode.NOT_FOUND });
-      }
-
-      return res.succeed(oneTimePin, {
-        message: "OTP retrieved successfully",
       });
     } catch (err) {
       next(err);
