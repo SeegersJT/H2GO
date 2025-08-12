@@ -1,29 +1,15 @@
-import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { ICountry } from "../types/location";
 
-export interface ICountry extends Document {
-  country_name: string;
-  country_code: string;
-  country_dial_code: number;
-  max_phone_number_length: number;
-  createdBy: Types.ObjectId;
-  updatedBy: Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const countrySchema = new Schema<ICountry>(
+const CountrySchema = new Schema<ICountry>(
   {
-    country_name: { type: String, required: true },
-    country_code: { type: String, required: true },
-    country_dial_code: { type: Number, required: true },
-    max_phone_number_length: { type: Number, required: false },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    name: { type: String, required: true, index: true },
+    iso2: { type: String, required: true, minlength: 2, maxlength: 2, uppercase: true, unique: true },
+    iso3: { type: String, required: true, minlength: 3, maxlength: 3, uppercase: true, unique: true },
+    phoneCode: String,
+    currency: String,
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Country: Model<ICountry> = mongoose.model<ICountry>("Country", countrySchema);
-export default Country;
+export default mongoose.model<ICountry>("Country", CountrySchema);
