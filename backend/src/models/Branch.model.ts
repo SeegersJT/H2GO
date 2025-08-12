@@ -1,31 +1,17 @@
-import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
+import { IBranch } from "../types/location";
 
-export interface IBranch extends Document {
-  branch_name: string;
-  branch_abbreviation: string;
-  country_id: Types.ObjectId;
-  headoffice_id: Types.ObjectId | null;
-  active: boolean;
-  createdBy: Types.ObjectId;
-  updatedBy: Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const branchSchema = new Schema<IBranch>(
+const BranchSchema = new Schema<IBranch>(
   {
-    branch_name: { type: String, required: true },
-    branch_abbreviation: { type: String, required: true },
-    country_id: { type: Schema.Types.ObjectId, ref: "Country", required: true },
-    headoffice_id: { type: Schema.Types.ObjectId, ref: "Branch", required: false },
-    active: { type: Boolean, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    name: { type: String, required: true },
+    code: { type: String, required: true, unique: true, uppercase: true },
+    country: { type: Schema.Types.ObjectId, ref: "Country", required: true },
+    address: { type: Schema.Types.ObjectId, ref: "Address" },
+    isActive: { type: Boolean, default: true },
+    metadata: { type: Schema.Types.Mixed },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Branch: Model<IBranch> = mongoose.model<IBranch>("Branch", branchSchema);
+const Branch: Model<IBranch> = mongoose.model<IBranch>("Branch", BranchSchema);
 export default Branch;

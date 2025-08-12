@@ -1,20 +1,18 @@
-import { FilterQuery } from "mongoose";
-import ConfirmationToken, { IConfirmationToken } from "../models/ConfirmationToken.model";
+import BaseRepository from "./Base.repository";
+import ConfirmationToken from "../models/ConfirmationToken.model";
+import { IConfirmationToken, ConfirmationTokenType } from "../types/auth";
 
-export class ConfirmationTokenRepository {
-  static findConfirmationTokenByFields = async (params: FilterQuery<IConfirmationToken>): Promise<IConfirmationToken | null> => {
-    return await ConfirmationToken.findOne(params);
-  };
-
-  static updateConfirmationTokenById = async (id: string, updateData: Partial<IConfirmationToken>): Promise<IConfirmationToken | null> => {
-    return ConfirmationToken.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-      upsert: false,
-    });
-  };
-
-  static insertConfirmationToken = async (confirmationTokenData: Partial<IConfirmationToken>): Promise<IConfirmationToken> => {
-    return await ConfirmationToken.create(confirmationTokenData);
-  };
+class ConfirmationTokenRepository extends BaseRepository<IConfirmationToken> {
+  findActiveByToken(token: string) {
+    return this.findOne({ token, usedAt: { $exists: false }, expiresAt: { $gt: new Date() } } as any);
+  }
+  async invalidateActiveOfType(userId: string, type: ConfirmationTokenType) {
+    const res = await ConfirmationToken.updateMany(
+      { user: userId as any, type, usedAt: { $exists: false } },
+      { $set: { expiresAt: new Date() } }
+    ).exec();
+    return { modifiedCount: res.modifiedCount ?? 0 };
+  }
 }
+
+export default new ConfirmationTokenRepository(ConfirmationToken);

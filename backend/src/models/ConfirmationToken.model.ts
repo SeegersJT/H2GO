@@ -1,31 +1,21 @@
-import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
+import { IConfirmationToken, ConfirmationTokenType } from "../types/auth";
 
-export interface IConfirmationToken extends Document {
-  confirmation_token: string;
-  user_id: Types.ObjectId;
-  confirmation_token_expiry_date: Date;
-  confirmation_token_type: string;
-  confirmed: boolean;
-  createdBy: Types.ObjectId;
-  updatedBy: Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const confirmationTokenSchema = new Schema<IConfirmationToken>(
+const ConfirmationTokenSchema = new Schema<IConfirmationToken>(
   {
-    confirmation_token: { type: String, required: true },
-    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    confirmation_token_expiry_date: { type: Date, required: true },
-    confirmation_token_type: { type: String, required: true },
-    confirmed: { type: Boolean, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    token: { type: String, required: true, unique: true },
+    type: { type: String, enum: Object.values(ConfirmationTokenType), required: true, index: true },
+    otpCode: { type: String },
+    otpAttempts: { type: Number, default: 0, min: 0 },
+    expiresAt: { type: Date, required: true, index: true },
+    usedAt: { type: Date },
+    context: { type: Schema.Types.Mixed },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const ConfirmationToken: Model<IConfirmationToken> = mongoose.model<IConfirmationToken>("ConfirmationToken", confirmationTokenSchema);
+ConfirmationTokenSchema.index({ user: 1, type: 1, expiresAt: 1 });
+
+const ConfirmationToken: Model<IConfirmationToken> = mongoose.model<IConfirmationToken>("ConfirmationToken", ConfirmationTokenSchema);
 export default ConfirmationToken;

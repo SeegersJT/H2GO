@@ -1,39 +1,11 @@
-import { FilterQuery } from "mongoose";
-import Address, { IAddress } from "../models/Address.model";
+import BaseRepository from "./Base.repository";
+import Address from "../models/Address.model";
+import { IAddress } from "../types/location";
 
-export class AddressRepository {
-  static findAllAddresses = async (): Promise<IAddress[]> => {
-    return await Address.find({ active: true });
-  };
-
-  static findAddressById = async (id: string): Promise<IAddress | null> => {
-    return await Address.findById({ _id: id, active: true });
-  };
-
-  static findAddressByFields = async (params: FilterQuery<IAddress>): Promise<IAddress | null> => {
-    return await Address.findOne(params);
-  };
-
-  static insertAddress = async (addressData: Partial<IAddress>): Promise<IAddress> => {
-    return await Address.create(addressData);
-  };
-
-  static updateAddressById = async (id: string, updateData: Partial<IAddress>): Promise<IAddress | null> => {
-    return Address.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-      upsert: false,
-    });
-  };
-
-  static softDeleteAddressById = async (id: string, updatedBy: string) => {
-    return Address.findByIdAndUpdate(
-      id,
-      { active: false, updatedBy: updatedBy },
-      {
-        new: true,
-        runValidators: true,
-      }
-    ).exec();
-  };
+class AddressRepository extends BaseRepository<IAddress> {
+  listForUser(userId: string) {
+    return this.find({ user: userId } as any, { sort: { createdAt: -1 } });
+  }
 }
+
+export default new AddressRepository(Address);

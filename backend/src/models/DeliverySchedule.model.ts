@@ -1,39 +1,29 @@
-import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
+import { IDeliverySchedule } from "../types/delivery";
 
-export interface IDeliverySchedule extends Document {
-  user_id: Types.ObjectId;
-  address_id: Types.ObjectId;
-  product_id: Types.ObjectId;
-  schedule_type_id: Types.ObjectId;
-  expression: string | Date | Date[];
-  start_date?: Date;
-  end_date?: Date;
-  preferredTime: string;
-  active: boolean;
-  createdBy: Types.ObjectId;
-  updatedBy: Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const deliveryScheduleSchema = new Schema<IDeliverySchedule>(
+const DefaultLineSchema = new Schema(
   {
-    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    address_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    product_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    schedule_type_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    expression: { type: String, required: true },
-    start_date: { type: String, required: true },
-    end_date: { type: String, required: true },
-    preferredTime: { type: String, required: true },
-    active: { type: Boolean, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    qty: { type: Number, required: true, min: 0 },
   },
-  {
-    timestamps: true,
-  }
+  { _id: false }
 );
 
-const DeliverySchedule: Model<IDeliverySchedule> = mongoose.model<IDeliverySchedule>("DeliverySchedule", deliveryScheduleSchema);
+const DeliveryScheduleSchema = new Schema<IDeliverySchedule>(
+  {
+    customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    address: { type: Schema.Types.ObjectId, ref: "Address", required: true },
+    branch: { type: Schema.Types.ObjectId, ref: "Branch", required: true },
+    type: { type: String, enum: ["ONCE", "WEEKLY", "BIWEEKLY", "MONTHLY", "CRON"], required: true },
+    params: { type: Schema.Types.Mixed },
+    defaultLines: { type: [DefaultLineSchema], default: [] },
+    nextRunAt: { type: Date, required: true, index: true },
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+
+DeliveryScheduleSchema.index({ isActive: 1, nextRunAt: 1 });
+
+const DeliverySchedule: Model<IDeliverySchedule> = mongoose.model<IDeliverySchedule>("DeliverySchedule", DeliveryScheduleSchema);
 export default DeliverySchedule;
