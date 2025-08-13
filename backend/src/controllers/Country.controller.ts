@@ -52,7 +52,7 @@ export class CountryController {
         country_name,
         country_code,
         country_dial_code,
-        max_phone_number_length,
+        nsn_max_length: max_phone_number_length,
         createdBy: new Types.ObjectId(authenticatedUser.id),
         updatedBy: new Types.ObjectId(authenticatedUser.id),
       });

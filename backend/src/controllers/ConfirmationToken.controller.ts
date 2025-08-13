@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
-import { ConfirmationTokenService } from "../services/ConfirmationToken.service";
 import { Types } from "mongoose";
+import { ConfirmationTokenService } from "../services/ConfirmationToken.service";
 
 export class ConfirmationTokenController {
   static getConfirmationTokenByToken = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,7 +61,7 @@ export class ConfirmationTokenController {
       const result = await ConfirmationTokenService.insertConfirmationToken({
         confirmation_token_type: confirmation_token_type,
         user_id: user_id,
-        createdBy: authenticatedUser.id,
+        createdBy: new Types.ObjectId(authenticatedUser.id),
       });
 
       return res.succeed(result, {

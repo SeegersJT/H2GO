@@ -25,7 +25,7 @@ export const generateJwtToken = (user: IUser, branch: IBranch): string => {
     id_number: Utils.maskString(user.id_number),
     email_address: user.email_address,
     mobile_number: user.mobile_number,
-    gender: user.gender,
+    gender: user.gender === "FEMALE" ? "Female" : "Male",
     password_expiry: user.password_expiry,
     user_type: user.user_type,
   };

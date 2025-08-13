@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
+import dayjs from "dayjs";
 import { Utils } from "../utils/Utils";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { RegexPatterns } from "../utils/constants/Regex.constant";
-import { UserService } from "../services/User.service";
 import { BranchService } from "../services/Branch.service";
 import { CountryService } from "../services/Country.service";
+import { UserService } from "../services/User.service";
 import { CounterService } from "../services/Counter.service";
-import dayjs from "dayjs";
 
 export class UserController {
   static getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -108,7 +108,7 @@ export class UserController {
           return res.fail(null, { message: "Invalid South African mobile number." });
         }
 
-        mobile_number = Utils.normalizeMobileNumber(mobile_number, country.country_dial_code);
+        mobile_number = Utils.normalizeMobileNumber(mobile_number, Number(country.country_dial_code));
 
         // ID NUMBER VALIDATION
         if (!RegexPatterns.VALIDATE_ID_SOUTH_AFRICA.test(id_number)) {

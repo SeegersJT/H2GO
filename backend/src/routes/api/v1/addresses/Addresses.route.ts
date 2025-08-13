@@ -9,6 +9,5 @@ const restricted = roleAuthorizationMiddleware(UserType.ADMIN);
 
 router.get("/all", restricted, AddressController.getAllAddresses);
 router.get("/", restricted, AddressController.getAddressbyId);
-router.get("/by-user", restricted, AddressController.getAddressbyUserId);
 
 export default router;
