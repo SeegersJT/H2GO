@@ -4,26 +4,37 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import log from "../utils/Logger";
 import { AuthenticatedUserPayload } from "../types/AuthenticatedUserPayload";
 
-const WHITELISTED_PATHS = ["/api/v1/auth"];
+const WHITELIST: RegExp[] = [/^\/health\/?$/i, /^\/api\/v1\/auth(\/.*)?$/i];
 
-const isWhitelisted = (path: string): boolean => {
-  return WHITELISTED_PATHS.some((prefix) => path.startsWith(prefix));
-};
+if (process.env.AUTH_WHITELIST) {
+  for (const raw of process.env.AUTH_WHITELIST.split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)) {
+    try {
+      const esc = raw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      WHITELIST.push(new RegExp(`^${esc}(\\/.*)?$`, "i"));
+    } catch {}
+  }
+}
+
+const isWhitelisted = (urlPath: string): boolean => WHITELIST.some((rx) => rx.test(urlPath));
 
 const authenticateMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  if (isWhitelisted(req.path)) {
-    return next();
-  }
+  if (req.method === "OPTIONS") return next();
 
-  const JWT_SECRET = process.env.JWT_SECRET as string;
+  const urlPath = req.originalUrl || req.url || req.path;
+  if (isWhitelisted(urlPath)) return next();
 
+  const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
-    log.fatal().database("JWT_SECRET must be defined in environment variables.");
-    process.exit(1);
+    log.fatal().server("JWT_SECRET must be defined in environment variables.");
+    return res.fail(null, {
+      message: "Server misconfiguration: missing JWT secret.",
+      code: StatusCode.INTERNAL_SERVER_ERROR,
+    });
   }
 
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.fail(null, {
       message: "Access token missing or malformed.",
@@ -31,13 +42,11 @@ const authenticateMiddleware = (req: Request, res: Response, next: NextFunction)
     });
   }
 
-  const token = authHeader.split(" ")[1];
-
+  const token = authHeader.slice("Bearer ".length);
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as AuthenticatedUserPayload;
     req.authenticatedUser = decoded;
-
-    next();
+    return next();
   } catch {
     return res.fail(null, {
       message: "Invalid or expired access token.",

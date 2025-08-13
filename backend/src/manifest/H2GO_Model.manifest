@@ -1,0 +1,152 @@
+# H2GO Model Manifest (v1)
+
+> One‑page reference for current data models, numbering, and key constraints. All models use `{ timestamps: true }` and optional `createdBy/updatedBy: ObjectId | null` unless stated.
+
+---
+
+## Naming & Numbering
+
+* **Human codes** via `Counter` + `sequence.utils`: `formatHumanCode(<CAT>, <BRANCH_ABBREV>, <SEQ>, 4)`.
+* **Categories**: `ADDR`, `PROD`, `ASSET`, `MOVE`, `CUST`, `VEH`, `DRVR`, `ORDER`, `SUB`, `ROUTE`, `DLV`, `PL`, `INV`, `PMT`.
+* **Branch‑scoped counters** derive scope from `branch_id` (or via related entity when needed).
+
+## Shared Enums
+
+* **HolderType**: `BRANCH | VEHICLE | CUSTOMER | USER | SUPPLIER | OTHER`
+* **MovementReason**: `DELIVERY | PICKUP | TRANSFER | SWAP | ADJUSTMENT | RETURN | RECONCILIATION`
+
+---
+
+## Core
+
+**Country** (`Country.model.ts`)
+
+* Fields: `country_name`, `country_code` (ISO 3166‑1), `country_dial_code` (digits), `nsn_min_length`, `nsn_max_length`, `currency_code`.
+* Hooks: validation & normalizers.
+* Indexes: `country_code` unique; `country_name` collated.
+
+**Branch** (`Branch.model.ts`)
+
+* Fields: `branch_name`, `branch_abbreviation` (UPPER), `country_id`, `headoffice_id?`, `active`, `timezone?`, `lat/lng?`.
+* Hooks: abbreviation format; HO self‑ref guard.
+* Indexes: unique `(country_id, branch_name)` and `(country_id, branch_abbreviation)`; `(country_id, active)`.
+
+**User** (`User.model.ts`)
+
+* Fields: `user_no`, `branch_id`, `name/surname`, `id_number`, `email_address` (lower), `mobile_number` (digits), `gender?`, `password` (select\:false), `password_expiry`, `user_type`, `confirmed`, `active`, `failedLoginAttempts`, `lastLoginAt?`.
+* Hooks: bcrypt hash on save & findOneAndUpdate; `comparePassword`.
+* Indexes: `(branch_id, active)`, `(user_type, branch_id)`.
+
+**ConfirmationToken** (`ConfirmationToken.model.ts`)
+
+* Fields: `confirmation_token` (e.g., `1234-...`), `confirmation_token_hash` (sha256 of digits‑only), `user_id`, `confirmation_token_expiry_date`, `confirmation_token_type`, `confirmed/confirmed_at`, `revoked/revoked_at`, `otp_hash?`, `otp_attempts/max_otp_attempts`, `ip_address?`, `user_agent?`.
+* Hooks: format/validate token; derive hash; OTP methods.
+* Indexes: TTL on expiry; partial unique `(user_id, type)` where not confirmed/revoked.
+
+**Address** (`Address.model.ts`)
+
+* Fields: `address_no`, `user_id`, `country_id?`, `label?`, `address_line_01/02?`, `suburb?`, `city`, `region?`, `postal_code`, `lat/lng?`, `location{Point}`, `delivery_instructions?`, `contact_person?`, `contact_phone?`, `is_default?`, `active`.
+* Hooks: derive GeoJSON from lat/lng; generate `address_no` via user→branch→counter.
+* Indexes: loose dupe guard `(user_id, address_line_01, city, postal_code)`; partial unique `(user_id, is_default:true)`; `location` 2dsphere.
+
+---
+
+## Catalog & Inventory
+
+**Product** (`Product.model.ts`)
+
+* Fields: `product_code`, `branch_id`, `sku` (UPPER), `name/description?`, `product_type: GOOD|SERVICE|RETURNABLE_ASSET`, `unit`, `capacity_value?`, `capacity_unit?`, `track_serialized`, `returnable`, `default_price?`, `currency_code?`, `active`.
+* Hooks: auto‑set serialized/returnable for RETURNABLE\_ASSET; infer capacity\_unit; generate code.
+* Indexes: unique `(branch_id, sku)`; collated `(branch_id, name)`.
+
+**Asset** (`Asset.model.ts`)
+
+* Fields: `asset_no`, `product_id` (RETURNABLE\_ASSET), `serial_no?`, `status: ACTIVE|LOST|DAMAGED|RETIRED`, `asset_state: FULL|EMPTY|CLEANING|UNKNOWN`, `current_holder_type/id`, `last_movement_at?`.
+* Hooks: validate product type; generate `asset_no`.
+* Indexes: unique sparse `(product_id, serial_no)`; `(current_holder_type, current_holder_id)`.
+
+**InventoryMovement** (`InventoryMovement.model.ts`)
+
+* Fields: `movement_no`, `product_id?`, `asset_id?`, `quantity` (if `asset_id` → 1), `from_holder_type/id?`, `to_holder_type/id`, `reason`, `reference_type/id?`, `moved_at`, `notes?`.
+* Hooks: require product or asset; derive `product_id` from asset; prevent same from/to; generate `movement_no` via branch scope.
+* Indexes: by asset recent, to‑holder product, from‑holder recent, by reference.
+
+**StockBalance** (`StockBalance.model.ts`)
+
+* Cache: `product_id`, `holder_type/id`, `quantity`, `branch_id?`, `last_movement_at`.
+* Indexes: unique per `(product_id, holder_type, holder_id)`; `(branch_id, product_id)`.
+
+---
+
+## Operations
+
+**Customer** (`Customer.model.ts`)
+
+* Fields: `customer_no`, `branch_id`, `name`, `email?`, `phone?`, `default_address_id?`, `active`, `tags?`.
+* Hooks: generate `customer_no`.
+* Indexes: collated `(branch_id, name)`.
+
+**Vehicle** (`Vehicle.model.ts`)
+
+* Fields: `vehicle_no`, `branch_id`, `reg_number` (unique), `type`, `capacity_value?`, `capacity_unit?`, `active`.
+* Hooks: generate `vehicle_no`.
+
+**Driver** (`Driver.model.ts`)
+
+* Fields: `driver_no`, `user_id`, `branch_id`, `license_class?`, `phone?`, `active`.
+* Hooks: generate `driver_no`.
+
+**Route** (`Route.model.ts`)
+
+* Fields: `route_no`, `branch_id`, `date`, `vehicle_id?`, `driver_id?`, `status`, `notes?`.
+* Hooks: generate `route_no`.
+
+**Delivery** (`Delivery.model.ts`)
+
+* Fields: `delivery_no`, `route_id`, `branch_id`, `order_id?`, `customer_id`, `address_id`, `sequence`, `window_start/end?`, `status`, `events[]`, `proof{...}?`.
+* Hooks: derive branch from route if absent; generate `delivery_no`.
+* Indexes: `(route_id, sequence)`.
+
+**Order** (`Order.model.ts`)
+
+* Fields: `order_no`, `branch_id`, `customer_id`, `address_id`, `items[{ product_id, name?, quantity, unit_price }]`, `desired_date`, `window_start/end?`, `source`, `status`, `totals{...}?`, `notes?`.
+* Hooks: generate `order_no`.
+* Indexes: `(branch_id, desired_date)`.
+
+**Subscription** (`Subscription.model.ts`)
+
+* Fields: `subscription_no`, `branch_id`, `customer_id`, `address_id`, `items[...]`, `rrule`, `anchor_date`, `desired_window?`, `next_run_at?`, `status`.
+* Hooks: generate `subscription_no`.
+* Indexes: `next_run_at`.
+
+---
+
+## Pricing & Billing
+
+**PriceList** (`PriceList.model.ts`)
+
+* Fields: `price_list_no`, `branch_id`, `name`, `currency_code`, `valid_from/to?`, `active`, `is_default?`, `customer_id?`, `items[{ product_id, unit_price, min_qty?, currency_code? }]`, `priority`.
+* Hooks: generate `price_list_no`.
+* Indexes: collated `(branch_id, name)`.
+
+**Invoice** (`Invoice.model.ts`)
+
+* Fields: `invoice_no`, `branch_id`, `customer_id`, `order_id?`, `currency_code`, `status`, `issue_date`, `due_date?`, `lines[...]`, `totals{...}?`, `notes?`, `reference_type/id?`.
+* Hooks: generate `invoice_no`.
+* Indexes: `(branch_id, issue_date)`.
+
+**Payment** (`Payment.model.ts`)
+
+* Fields: `payment_no`, `branch_id`, `customer_id`, `invoice_id?`, `method`, `status`, `currency_code`, `amount`, `fee?`, `reference?`, `received_at`, `notes?`.
+* Hooks: generate `payment_no`.
+* Indexes: `payments_by_customer_recent`.
+
+---
+
+## Operational Notes
+
+* **Ledger truth**: `InventoryMovement` is immutable history; `StockBalance` is a materialized cache; `Asset` holds current location/state per unit.
+* **Pricing**: Resolve price via Customer list → Branch default list → `Product.default_price`. Snapshot values to orders/invoices.
+* **Addresses**: Currently owned by `user_id`; (future) can add `customer_id` with XOR guard.
+
+> Last updated: *commit this manifest whenever you add/rename fields or models.*

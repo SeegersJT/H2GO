@@ -1,77 +1,87 @@
+// src/models/Delivery.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
+import { nextSeq, formatHumanCode } from "../utils/sequence.utils";
+import Route from "./Route.model";
+import Branch from "./Branch.model";
+
+export type DeliveryStatus = "scheduled" | "en_route" | "arrived" | "delivered" | "failed" | "cancelled";
 
 export interface IDelivery extends Document {
-  user_id: Types.ObjectId;
-  address_id: Types.ObjectId;
-  product_id: Types.ObjectId;
-  delivery_schedule_id: Types.ObjectId;
-  delivery_date: Date;
-  status: string;
-  state: string;
-  priority: string;
-  empty_inventory_id: Types.ObjectId;
-  empty_inventory_note: string;
-  full_inventory_id: Types.ObjectId;
-  full_inventory_note: string;
-  fail_reason?: string;
-  completed_by?: Types.ObjectId;
-  completed_at?: Date;
-  completed_reason?: string;
-  createdBy: Types.ObjectId;
-  updatedBy: Types.ObjectId;
+  delivery_no: string; // "DLV-H2GO-0001"
+  route_id: Types.ObjectId; // -> Route
+  branch_id: Types.ObjectId; // redundant but helps scope numbering/queries
+  order_id?: Types.ObjectId; // -> Order (optional if ad-hoc)
+  customer_id: Types.ObjectId; // -> Customer
+  address_id: Types.ObjectId; // -> Address
+
+  sequence: number; // stop order on the route
+  window_start?: string;
+  window_end?: string;
+
+  status: DeliveryStatus;
+  events?: { type: string; at: Date; data?: any }[];
+
+  proof?: {
+    recipient_name?: string;
+    signature_url?: string;
+    photo_urls?: string[];
+    notes?: string;
+    timestamp?: Date;
+  };
+
+  createdBy: Types.ObjectId | null;
+  updatedBy: Types.ObjectId | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 const deliverySchema = new Schema<IDelivery>(
   {
-    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    delivery_no: { type: String, required: true, unique: true, trim: true },
+    route_id: { type: Schema.Types.ObjectId, ref: "Route", required: true, index: true },
+    branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
+    order_id: { type: Schema.Types.ObjectId, ref: "Order" },
+    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
     address_id: { type: Schema.Types.ObjectId, ref: "Address", required: true },
-    product_id: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    delivery_schedule_id: { type: Schema.Types.ObjectId, ref: "DeliverySchedule", required: true },
-    delivery_date: { type: Date, required: true },
-    status: { type: String, required: true },
-    state: { type: String, required: true },
-    priority: { type: String, required: true },
-    empty_inventory_id: { type: Schema.Types.ObjectId, ref: "Inventory", required: true },
-    empty_inventory_note: { type: String, required: true },
-    full_inventory_id: { type: Schema.Types.ObjectId, ref: "Inventory", required: true },
-    full_inventory_note: { type: String, required: true },
-    completed_by: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    completed_at: { type: Date, required: true },
-    completed_reason: { type: String, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    sequence: { type: Number, required: true, default: 0, index: true },
+    window_start: { type: String },
+    window_end: { type: String },
+    status: { type: String, enum: ["scheduled", "en_route", "arrived", "delivered", "failed", "cancelled"], default: "scheduled", index: true },
+    events: [{ type: { type: String }, at: { type: Date, default: () => new Date() }, data: Schema.Types.Mixed }],
+    proof: {
+      recipient_name: String,
+      signature_url: String,
+      photo_urls: [String],
+      notes: String,
+      timestamp: Date,
+    },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    updatedBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
+deliverySchema.pre("validate", async function (next) {
+  try {
+    if (this.isNew && !this.delivery_no) {
+      // derive branch scope from route if not set
+      if (!this.branch_id && this.route_id) {
+        const route = await Route.findById(this.route_id).select("branch_id").lean();
+        if (route?.branch_id) this.branch_id = route.branch_id as any;
+      }
+      const branch = await Branch.findById(this.branch_id).select("branch_abbreviation").lean();
+      if (!branch?.branch_abbreviation) return next(new Error("Invalid branch_id for delivery_no"));
+      const scope = String(branch.branch_abbreviation).toUpperCase();
+      const seq = await nextSeq("DLV", scope);
+      this.delivery_no = formatHumanCode("DLV", scope, seq, 4);
+    }
+    next();
+  } catch (e) {
+    next(e as any);
+  }
+});
+
+deliverySchema.index({ route_id: 1, sequence: 1 });
+deliverySchema.set("toJSON", { versionKey: false, transform: (_d, r) => r });
 const Delivery: Model<IDelivery> = mongoose.model<IDelivery>("Delivery", deliverySchema);
 export default Delivery;
-
-// priority: "normal" | "high";
-//   status:
-//     | "pending"
-//     | "in_transit"
-//     | "arrived"
-//     | "contacting_customer"
-//     | "failed_to_contact"
-//     | "got_in_touch"
-//     | "swapped"
-//     | "completed"
-//     | "failed";
-
-//   state:
-//     | "system_created"
-//     | "driver_action"
-//     | "admin_action"
-//     | "reschedule_pending";
-
-//   swap_details: {
-//     product_type_id: Types.ObjectId;
-//     empty_container_id?: Types.ObjectId;
-//     full_container_id?: Types.ObjectId;
-//     note?: string;
-//   }[];
