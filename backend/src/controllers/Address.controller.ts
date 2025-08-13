@@ -7,7 +7,7 @@ export class AddressController {
     try {
       const result = await AddressService.getAllAddresses();
 
-      return res.succeed(result, { message: "Retrived all addresses successfully." });
+      return res.succeed(result, { message: "Retrieved all addresses successfully." });
     } catch (err) {
       next(err);
     }
@@ -26,7 +26,7 @@ export class AddressController {
 
       const result = await AddressService.getAddressbyId(addressId);
 
-      return res.succeed(result, { message: "Retrived addresses by ID successfully." });
+      return res.succeed(result, { message: "Retrieved addresses by ID successfully." });
     } catch (err) {
       next(err);
     }
