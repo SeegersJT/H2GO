@@ -6,6 +6,7 @@ import { confirmationTokenRepository } from "../repositories/ConfirmationToken.r
 import ConfirmationToken from "../models/ConfirmationToken.model";
 import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
+import { Types } from "mongoose";
 
 export class AuthService {
   static async login(email: string, password: string) {
@@ -26,6 +27,8 @@ export class AuthService {
       confirmation_token: token,
       confirmation_token_type: ConfirmationTokenType.OTP_LOGIN_TOKEN,
       confirmation_token_expiry_date: (ConfirmationToken as any).getExpiryDate(ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN),
+      createdBy: new Types.ObjectId(user.id),
+      updatedBy: new Types.ObjectId(user.id),
     });
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();
@@ -47,6 +50,7 @@ export class AuthService {
     }
 
     const ok = await tokenDoc.verifyOtp(oneTimePin);
+
     await tokenDoc.save();
     if (!ok) {
       if (tokenDoc.otp_attempts >= tokenDoc.max_otp_attempts) {
@@ -87,6 +91,8 @@ export class AuthService {
       confirmation_token: token,
       confirmation_token_type: ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN,
       confirmation_token_expiry_date: (ConfirmationToken as any).getExpiryDate(ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN),
+      createdBy: new Types.ObjectId(user.id),
+      updatedBy: new Types.ObjectId(user.id),
     });
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();

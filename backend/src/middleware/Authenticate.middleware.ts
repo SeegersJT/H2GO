@@ -21,9 +21,6 @@ function getPathOnly(urlPath: string): string {
 const STATIC_WHITELIST: WhitelistRule[] = [
   { path: "/api/v1/health", kind: "exact" },
   { path: "/api/v1/auth", kind: "prefix" },
-  { path: "/api/v1/users", kind: "prefix" },
-  { path: "/api/v1/branches", kind: "prefix" },
-  { path: "/api/v1/countries", kind: "prefix" },
 ];
 
 function loadEnvWhitelist(): WhitelistRule[] {

@@ -42,18 +42,18 @@ export class UserController {
         return res.error(null, { message: "Missing required fields" });
       }
 
-      // const authenticatedUser = req.authenticatedUser;
+      const authenticatedUser = req.authenticatedUser;
 
-      // if (!authenticatedUser) {
-      //   return res.error(null, {
-      //     message: "Unauthorized",
-      //     code: StatusCode.UNAUTHORIZED,
-      //   });
-      // }
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
 
       const branchObjectId = new Types.ObjectId(branch_id);
-      const createdObjectId = null;
-      const updatedByObjectId = null;
+      const createdObjectId = new Types.ObjectId(authenticatedUser.id);
+      const updatedByObjectId = new Types.ObjectId(authenticatedUser.id);
 
       if (!RegexPatterns.VALIDATE_NAME.test(name)) {
         return res.error(null, {

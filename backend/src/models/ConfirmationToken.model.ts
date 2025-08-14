@@ -86,7 +86,7 @@ const confirmationTokenSchema = new Schema<IConfirmationToken, IConfirmationToke
     revoked: { type: Boolean, required: false, default: false, index: true },
     revoked_at: { type: Date, required: false },
 
-    otp_hash: { type: String, required: false, select: false },
+    otp_hash: { type: String, required: false },
     otp_attempts: { type: Number, required: true, default: 0, min: 0 },
     max_otp_attempts: { type: Number, required: true, default: 5, min: 1 },
 

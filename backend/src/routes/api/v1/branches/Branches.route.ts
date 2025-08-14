@@ -6,12 +6,12 @@ import { BranchController } from "../../../../controllers/Branch.controller";
 
 const router = Router();
 
-// const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
+const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
-router.get("/all", BranchController.getAllBranches);
-router.get("/:id", BranchController.getBranchById);
-router.post("/", BranchController.insertBranch);
-router.put("/:id", BranchController.updateBranch);
-router.delete("/:id", BranchController.deleteBranch);
+router.get("/all", restricted, BranchController.getAllBranches);
+router.get("/:id", restricted, BranchController.getBranchById);
+router.post("/", restricted, BranchController.insertBranch);
+router.put("/:id", restricted, BranchController.updateBranch);
+router.delete("/:id", restricted, BranchController.deleteBranch);
 
 export default router;
