@@ -5,6 +5,7 @@ export enum UserType {
   FINANCE = "FINANCE",
   BRANCH_ADMIN = "BRANCH_ADMIN",
   BRANCH_FINANCE = "BRANCH_FINANCE",
+  WAREHOUSE_MANAGER = "WAREHOUSE_MANAGER",
   DRIVER = "DRIVER",
   CUSTOMER = "CUSTOMER",
 }
@@ -16,6 +17,7 @@ export const UserTypeHierarchy: UserType[] = [
   UserType.FINANCE,
   UserType.BRANCH_ADMIN,
   UserType.BRANCH_FINANCE,
+  UserType.WAREHOUSE_MANAGER,
   UserType.DRIVER,
   UserType.CUSTOMER,
 ];
