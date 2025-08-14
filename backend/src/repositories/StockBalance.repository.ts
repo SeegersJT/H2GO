@@ -1,4 +1,3 @@
-// src/repositories/StockBalance.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import StockBalanceModel from "../models/StockBalance.model";

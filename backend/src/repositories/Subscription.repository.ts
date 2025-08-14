@@ -1,4 +1,3 @@
-// src/repositories/Subscription.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import SubscriptionModel from "../models/Subscription.model";

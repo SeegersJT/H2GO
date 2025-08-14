@@ -1,4 +1,3 @@
-// src/repositories/Address.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import AddressModel from "../models/Address.model";

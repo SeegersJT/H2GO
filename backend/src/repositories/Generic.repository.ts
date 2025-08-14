@@ -1,4 +1,3 @@
-// src/repositories/GenericRepository.ts
 import type { Model, AnyKeys, ClientSession, HydratedDocument, PipelineStage } from "mongoose";
 
 export type WriteOptions = {

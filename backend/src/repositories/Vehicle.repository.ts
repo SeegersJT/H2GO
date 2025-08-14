@@ -1,8 +1,7 @@
-// src/repositories/Vehicle.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import VehicleModel from "../models/Vehicle.model";
-import type { IVehicle, VehicleType } from "../models/Vehicle.model";
+import type { IVehicle } from "../models/Vehicle.model";
 import { GenericRepository, ReadOptions, WriteOptions, PaginateResult } from "./Generic.repository";
 
 export type VehicleDoc = HydratedDocument<IVehicle>;

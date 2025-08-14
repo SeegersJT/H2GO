@@ -1,4 +1,3 @@
-// src/repositories/PriceList.repository.ts
 import type { Model, HydratedDocument, AnyKeys } from "mongoose";
 import { Types } from "mongoose";
 import PriceListModel from "../models/PriceList.model";

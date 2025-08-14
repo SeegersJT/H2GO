@@ -1,4 +1,3 @@
-// src/repositories/ConfirmationToken.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import ConfirmationTokenModel from "../models/ConfirmationToken.model";

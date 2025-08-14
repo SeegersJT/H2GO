@@ -1,4 +1,3 @@
-// src/repositories/Asset.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import AssetModel from "../models/Asset.model";

@@ -1,4 +1,3 @@
-// src/repositories/Delivery.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import DeliveryModel from "../models/Delivery.model";

@@ -55,35 +55,28 @@ export class UserController {
       const createdObjectId = new Types.ObjectId(authenticatedUser.id);
       const updatedByObjectId = new Types.ObjectId(authenticatedUser.id);
 
-      // Guard Clausing!
-
-      // NAME VALIDATION
       if (!RegexPatterns.VALIDATE_NAME.test(name)) {
         return res.error(null, {
           message: "Invalid name. Must start with a capital letter and contain only letters.",
         });
       }
 
-      // SURNAME VALIDATION
       if (!RegexPatterns.VALIDATE_SURNAME.test(surname)) {
         return res.error(null, {
           message: "Invalid surname. Must start with a capital letter and contain only letters.",
         });
       }
 
-      // GENDER VALIDATION
       if (!RegexPatterns.VALIDATE_GENDER.test(gender)) {
         return res.error(null, { message: 'Gender must be either "Male" or "Female"' });
       }
 
-      //EMAIL VALIDATION
       if (!RegexPatterns.VALIDATE_EMAIL.test(email_address)) {
         return res.error(null, {
           message: "Invalid email address.",
         });
       }
 
-      // BRANCH VALIDATION
       const branch = await BranchService.getBranchById(branch_id);
       if (!branch) {
         return res.error(null, {
@@ -92,7 +85,6 @@ export class UserController {
         });
       }
 
-      // COUNTRY VALIDATION
       const country = await CountryService.getCountryById(branch.country_id.toString());
       if (!country) {
         return res.error(null, {
@@ -102,14 +94,12 @@ export class UserController {
       }
 
       if (country?.country_code === "ZA") {
-        // MOBILE NUMBER VALIDATION
         if (!RegexPatterns.VALIDATE_MOBILE_SOUTH_AFRICA.test(mobile_number)) {
           return res.error(null, { message: "Invalid South African mobile number." });
         }
 
         mobile_number = (User as any).normalizeMobileNumber(mobile_number, Number(country.country_dial_code));
 
-        // ID NUMBER VALIDATION
         if (!RegexPatterns.VALIDATE_ID_SOUTH_AFRICA.test(id_number)) {
           return res.error(null, { message: "Invalid South African ID number." });
         }

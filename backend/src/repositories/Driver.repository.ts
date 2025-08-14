@@ -1,4 +1,3 @@
-// src/repositories/Driver.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import DriverModel from "../models/Driver.model";

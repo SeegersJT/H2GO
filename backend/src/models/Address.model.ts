@@ -1,4 +1,3 @@
-// src/models/Address.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import User from "./User.model";
 import Branch from "./Branch.model";

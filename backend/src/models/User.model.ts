@@ -1,4 +1,3 @@
-// src/models/User.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import { UserType } from "../utils/constants/UserType.constant";

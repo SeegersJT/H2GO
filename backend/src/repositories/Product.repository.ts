@@ -1,4 +1,3 @@
-// src/repositories/Product.repository.ts
 import type { Model, HydratedDocument, AnyKeys } from "mongoose";
 import { Types } from "mongoose";
 import ProductModel from "../models/Product.model";

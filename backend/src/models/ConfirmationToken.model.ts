@@ -1,4 +1,3 @@
-// src/models/ConfirmationToken.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcrypt";

@@ -1,4 +1,3 @@
-// src/models/Asset.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import Product from "./Product.model";
 import Branch from "./Branch.model";

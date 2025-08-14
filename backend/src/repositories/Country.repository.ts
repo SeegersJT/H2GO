@@ -1,4 +1,3 @@
-// src/repositories/Country.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import CountryModel from "../models/Country.model";
 import type { ICountry } from "../models/Country.model";

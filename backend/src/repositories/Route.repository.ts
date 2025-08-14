@@ -1,4 +1,3 @@
-// src/repositories/Route.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import RouteModel from "../models/Route.model";

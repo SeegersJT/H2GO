@@ -1,4 +1,3 @@
-// src/repositories/InventoryMovement.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import { Types } from "mongoose";
 import InventoryMovementModel from "../models/InventoryMovement.nodel";

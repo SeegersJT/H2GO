@@ -1,4 +1,3 @@
-// src/models/InventoryMovement.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import Asset from "./Asset.model";
 import Product from "./Product.model";

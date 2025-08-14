@@ -1,4 +1,3 @@
-// src/models/Vehicle.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import Branch from "./Branch.model";
 import { nextSeq, formatHumanCode } from "../utils/sequence.utils";

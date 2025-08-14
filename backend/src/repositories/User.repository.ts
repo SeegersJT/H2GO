@@ -1,4 +1,3 @@
-// src/repositories/User.repository.ts
 import type { Model, HydratedDocument, AnyKeys } from "mongoose";
 import { Types } from "mongoose";
 import UserModel from "../models/User.model"; // adjust if your export is named

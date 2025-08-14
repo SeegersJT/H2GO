@@ -1,4 +1,3 @@
-// src/models/Branch.model.ts
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 
 export interface IBranch extends Document {

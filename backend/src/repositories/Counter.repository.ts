@@ -1,4 +1,3 @@
-// src/repositories/Counter.repository.ts
 import type { Model, HydratedDocument } from "mongoose";
 import CounterModel from "../models/Counter.model";
 import type { ICounter } from "../models/Counter.model";

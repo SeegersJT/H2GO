@@ -28,6 +28,16 @@ const CATEGORY_WIDTH = 11;
 const TYPE_WIDTH = 9;
 const EMOJI_WIDTH = 3;
 
+const levelPriority: Record<LogType, number> = {
+  debug: 10,
+  info: 20,
+  success: 20,
+  mount: 20,
+  warn: 30,
+  error: 40,
+  fatal: 50,
+};
+
 function padEmoji(emoji: string, width: number) {
   const len = stringWidth(emoji);
   if (len >= width) return emoji;
@@ -37,10 +47,23 @@ function padEmoji(emoji: string, width: number) {
 class Logger {
   private _type: LogType = "info";
 
-  private log(category: Category, message: string | Error, ...optional: any[]) {
+  private level: LogType;
+
+  constructor() {
+    const envLevel = process.env.LOG_LEVEL as LogType;
+    this.level = levelPriority[envLevel] ? envLevel : "info";
+  }
+
+  private shouldLog(type: LogType) {
+    return levelPriority[type] >= levelPriority[this.level];
+  }
+
+  private log(type: LogType, category: Category, message: string | Error, ...optional: any[]) {
+    if (!this.shouldLog(type)) return;
+
     const now = new Date().toISOString();
-    const emoji = padEmoji(emojis[this._type], EMOJI_WIDTH);
-    const color = colors[this._type];
+    const emoji = padEmoji(emojis[type], EMOJI_WIDTH);
+    const color = colors[type];
 
     const msg = message instanceof Error ? message.message : message;
     const categoryStr = `${category.toUpperCase()}`.padEnd(CATEGORY_WIDTH);
@@ -53,59 +76,49 @@ class Logger {
       ...optional,
       optional.length > 0 ? "\n\n" : ""
     );
+  }
 
-    this._type = "info";
+  private categoryMethods(type: LogType) {
+    return {
+      database: this.log.bind(this, type, "database"),
+      server: this.log.bind(this, type, "server"),
+      auth: this.log.bind(this, type, "auth"),
+      api: this.log.bind(this, type, "api"),
+      general: this.log.bind(this, type, "general"),
+      route: this.log.bind(this, type, "route"),
+    };
   }
 
   success() {
-    this._type = "success";
-    return this.categoryMethods();
+    return this.categoryMethods("success");
   }
 
   info() {
-    this._type = "info";
-    return this.categoryMethods();
+    return this.categoryMethods("info");
   }
 
   warn() {
-    this._type = "warn";
-    return this.categoryMethods();
+    return this.categoryMethods("warn");
   }
 
   error() {
-    this._type = "error";
-    return this.categoryMethods();
+    return this.categoryMethods("error");
   }
 
   fatal() {
-    this._type = "fatal";
-    return this.categoryMethods();
+    return this.categoryMethods("fatal");
   }
 
   debug() {
-    this._type = "debug";
-    return this.categoryMethods();
+    return this.categoryMethods("debug");
   }
 
   mount() {
-    this._type = "mount";
-    return this.categoryMethods();
+    return this.categoryMethods("mount");
   }
 
   custom(type: LogType, category: Category, message: string | Error, ...optional: any[]) {
-    this._type = type;
-    this.log(category, message, ...optional);
-  }
-
-  private categoryMethods() {
-    return {
-      database: this.log.bind(this, "database"),
-      server: this.log.bind(this, "server"),
-      auth: this.log.bind(this, "auth"),
-      api: this.log.bind(this, "api"),
-      general: this.log.bind(this, "general"),
-      route: this.log.bind(this, "route"),
-    };
+    this.log(type, category, message, ...optional);
   }
 }
 
