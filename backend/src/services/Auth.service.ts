@@ -70,7 +70,7 @@ export class AuthService {
         refresh_token,
         access_token_expires_at: getAccessTokenExpiry(),
         refresh_token_expires_at: getRefreshTokenExpiry(),
-        user: Utils.sanitizeUser(user),
+        user: user.toJSON(),
       },
       "OTP validated",
     ] as const;
@@ -121,7 +121,7 @@ export class AuthService {
       refresh_token,
       access_token_expires_at: getAccessTokenExpiry(),
       refresh_token_expires_at: getRefreshTokenExpiry(),
-      user: Utils.sanitizeUser(user),
+      user: user.toJSON(),
     };
   }
 
@@ -139,7 +139,7 @@ export class AuthService {
       refresh_token: new_refresh_token,
       access_token_expires_at: getAccessTokenExpiry(),
       refresh_token_expires_at: getRefreshTokenExpiry(),
-      user: Utils.sanitizeUser(user),
+      user: user.toJSON(),
     };
   }
 }

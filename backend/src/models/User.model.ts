@@ -29,12 +29,17 @@ export interface IUser extends Document {
   updatedAt?: Date;
 
   comparePassword(candidate: string): Promise<boolean>;
+  maskIdNumber(visibleCount?: number, showFromEnd?: boolean): string;
+}
+
+interface IUserModel extends Model<IUser> {
+  normalizeMobileNumber(mobile: string, countryDialCode: number): string;
 }
 
 const SALT_ROUNDS = 10;
 const PASSWORD_EXPIRY_DAYS = 90;
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, IUserModel>(
   {
     user_no: { type: String, required: true, unique: true, trim: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
@@ -143,6 +148,31 @@ userSchema.methods.comparePassword = function (candidate: string) {
   // Ensure password is selected when you call this: e.g., User.findOne(...).select("+password")
   return bcrypt.compare(candidate, this.password);
 };
+userSchema.methods.maskIdNumber = function (visibleCount = 4, showFromEnd = true) {
+  const input = this.id_number || "";
+  if (!input || visibleCount <= 0) {
+    return "#".repeat(input.length);
+  }
+  if (visibleCount >= input.length) {
+    return input;
+  }
+  const maskedLength = input.length - visibleCount;
+  const mask = "#".repeat(maskedLength);
+  return showFromEnd ? mask + input.slice(-visibleCount) : input.slice(0, visibleCount) + mask;
+};
+
+// --- Statics ---
+userSchema.statics.normalizeMobileNumber = function (mobile: string, countryDialCode: number): string {
+  let normalized = String(mobile).replace(/\D/g, "");
+  if (normalized.startsWith("0")) {
+    normalized = normalized.substring(1);
+  }
+  const dialCodeStr = String(countryDialCode);
+  if (!normalized.startsWith(dialCodeStr)) {
+    normalized = dialCodeStr + normalized;
+  }
+  return normalized;
+};
 
 // --- Output hygiene ---
 userSchema.set("toJSON", {
@@ -153,5 +183,5 @@ userSchema.set("toJSON", {
   },
 });
 
-const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUser, IUserModel>("User", userSchema);
 export default User;

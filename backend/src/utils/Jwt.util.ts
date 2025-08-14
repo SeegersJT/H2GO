@@ -1,7 +1,6 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import { IUser } from "../models/User.model";
 import { IBranch } from "../models/Branch.model";
-import { Utils } from "./Utils";
 import { AuthenticatedUserPayload } from "../types/AuthenticatedUserPayload";
 import dayjs from "dayjs";
 
@@ -22,7 +21,7 @@ export const generateJwtToken = (user: IUser, branch: IBranch): string => {
     branch_abbreviation: branch.branch_abbreviation,
     name: user.name,
     surname: user.surname,
-    id_number: Utils.maskString(user.id_number),
+    id_number: user.maskIdNumber(),
     email_address: user.email_address,
     mobile_number: user.mobile_number,
     gender: user.gender === "FEMALE" ? "Female" : "Male",

@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 import dayjs from "dayjs";
-import { Utils } from "../utils/Utils";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { RegexPatterns } from "../utils/constants/Regex.constant";
 import { BranchService } from "../services/Branch.service";
 import { CountryService } from "../services/Country.service";
 import { UserService } from "../services/User.service";
-import { CounterService } from "../services/Counter.service";
+import User from "../models/User.model";
 
 export class UserController {
   static getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -108,7 +107,7 @@ export class UserController {
           return res.fail(null, { message: "Invalid South African mobile number." });
         }
 
-        mobile_number = Utils.normalizeMobileNumber(mobile_number, Number(country.country_dial_code));
+        mobile_number = (User as any).normalizeMobileNumber(mobile_number, Number(country.country_dial_code));
 
         // ID NUMBER VALIDATION
         if (!RegexPatterns.VALIDATE_ID_SOUTH_AFRICA.test(id_number)) {
@@ -126,14 +125,9 @@ export class UserController {
         return res.fail(null, { message: "Duplicate Email Address", code: StatusCode.BAD_REQUEST });
       }
 
-      const nextUserNoSeq = await CounterService.getNextSequence("user_no");
-      const userNo = Utils.generateID("USER", branch.branch_abbreviation, nextUserNoSeq);
-
-      const hashedPassword = await Utils.hashPassword(password);
       const passwordExpiry = dayjs().add(3, "month").toDate();
 
       const newUser = await UserService.insertUser({
-        user_no: userNo,
         branch_id: branchObjectId,
         name,
         surname,
@@ -141,7 +135,6 @@ export class UserController {
         email_address,
         mobile_number,
         gender,
-        password: hashedPassword,
         password_expiry: passwordExpiry,
         user_type,
         confirmed: false,
@@ -150,7 +143,7 @@ export class UserController {
         updatedBy: updatedByObjectId,
       });
 
-      return res.succeed(Utils.sanitizeUser(newUser), {
+      return res.succeed(newUser.toJSON(), {
         message: "Inserted user successfully",
       });
     } catch (err) {

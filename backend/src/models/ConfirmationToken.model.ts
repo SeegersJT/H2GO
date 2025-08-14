@@ -2,7 +2,8 @@
 import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
+import { ConfirmationTokenExpiryMap, ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
+import dayjs from "dayjs";
 
 export interface IConfirmationToken extends Document {
   confirmation_token: string; // e.g. "1234-5678-9012-3456-7890"
@@ -36,6 +37,7 @@ export interface IConfirmationToken extends Document {
 interface IConfirmationTokenModel extends Model<IConfirmationToken> {
   generateToken(blocks?: number, digitsPerBlock?: number): string;
   generateOtp(digits?: number): string;
+  getExpiryDate(type: ConfirmationTokenType): Date;
 }
 
 const SALT_ROUNDS = 10;
@@ -137,6 +139,10 @@ confirmationTokenSchema.methods.verifyOtp = async function verifyOtp(this: IConf
   const ok = await bcrypt.compare(String(otp), this.otp_hash);
   if (!ok) this.otp_attempts += 1;
   return ok;
+};
+confirmationTokenSchema.statics.getExpiryDate = function (type: ConfirmationTokenType) {
+  const { amount, unit } = ConfirmationTokenExpiryMap[type];
+  return dayjs().add(amount, unit).toDate();
 };
 
 // Output hygiene
