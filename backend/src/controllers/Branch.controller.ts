@@ -37,18 +37,18 @@ export class BranchController {
         return res.error(null, { message: "Missing required fields" });
       }
 
-      const authenticatedUser = req.authenticatedUser;
+      // const authenticatedUser = req.authenticatedUser;
 
-      if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
-      }
+      // if (!authenticatedUser) {
+      //   return res.error(null, {
+      //     message: "Unauthorized",
+      //     code: StatusCode.UNAUTHORIZED,
+      //   });
+      // }
 
       const countryObjectId = new Types.ObjectId(country_id);
-      const createdByObjectId = new Types.ObjectId(authenticatedUser.id);
-      const updatedByObjectId = new Types.ObjectId(authenticatedUser.id);
+      const createdByObjectId = null;
+      const updatedByObjectId = null;
 
       const existingBranch = await BranchService.getBranchByFields({
         branch_name,
@@ -87,11 +87,6 @@ export class BranchController {
         createdBy: createdByObjectId,
         updatedBy: updatedByObjectId,
       });
-
-      if (!headOfficeObjectId) {
-        newBranch.headoffice_id = newBranch._id as Types.ObjectId;
-        await newBranch.save();
-      }
 
       return res.success(newBranch, {
         message: "Inserted branch successfully",

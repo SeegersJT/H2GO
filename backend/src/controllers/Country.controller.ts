@@ -33,9 +33,9 @@ export class CountryController {
 
   static insertCountry = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { country_name, country_code, country_dial_code, max_phone_number_length, createdBy, updatedBy } = req.body;
+      const { country_name, country_code, country_dial_code, max_phone_number_length } = req.body;
 
-      if (!country_name || !country_code || !country_dial_code || !max_phone_number_length || !createdBy || !updatedBy) {
+      if (!country_name || !country_code || !country_dial_code || !max_phone_number_length) {
         return res.error(null, { message: "Missing required fields" });
       }
 
