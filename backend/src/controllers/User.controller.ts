@@ -140,4 +140,48 @@ export class UserController {
       next(err);
     }
   };
+
+  static updateUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.params.id;
+      const updateData = req.body;
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      if (updateData.branch_id) {
+        updateData.branch_id = new Types.ObjectId(updateData.branch_id);
+      }
+      updateData.updatedBy = new Types.ObjectId(authenticatedUser.id);
+
+      const updatedUser = await UserService.updateUser(userId, updateData);
+
+      return res.success(updatedUser, {
+        message: "Updated user successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.params.id;
+
+      const deleted = await UserService.deleteUser(userId);
+
+      if (!deleted) {
+        return res.error(null, { message: "User not found", code: StatusCode.NOT_FOUND });
+      }
+
+      return res.success(null, { message: "Deleted user successfully" });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

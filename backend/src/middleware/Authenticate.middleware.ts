@@ -4,7 +4,7 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import log from "../utils/Logger";
 import { AuthenticatedUserPayload } from "../types/AuthenticatedUserPayload";
 
-const WHITELIST: RegExp[] = [/^\/health\/?$/i, /^\/api\/v1\/auth(\/.*)?$/i];
+const WHITELIST: RegExp[] = [/^\/health\/?$/i, /^\/api\/v1\/auth(\/.*)?$/i, /^\/api\/v1\/users(\/.*)?$/i];
 
 if (process.env.AUTH_WHITELIST) {
   for (const raw of process.env.AUTH_WHITELIST.split(",")

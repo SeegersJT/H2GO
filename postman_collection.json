@@ -734,89 +734,89 @@
       "name": "InventoryMovements",
       "item": [
         {
-          "name": "GET /api/v1/InventoryMovements/all",
+          "name": "GET /api/v1/inventoryMovements/all",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/all",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/all",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 "all"
               ]
             }
           }
         },
         {
-          "name": "GET /api/v1/InventoryMovements/:id",
+          "name": "GET /api/v1/inventoryMovements/:id",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/:id",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/:id",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 ":id"
               ]
             }
           }
         },
         {
-          "name": "POST /api/v1/InventoryMovements/",
+          "name": "POST /api/v1/inventoryMovements/",
           "request": {
             "method": "POST",
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "PUT /api/v1/InventoryMovements/:id",
+          "name": "PUT /api/v1/inventoryMovements/:id",
           "request": {
             "method": "PUT",
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/:id",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/:id",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 ":id"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/InventoryMovements/:id",
+          "name": "DELETE /api/v1/inventoryMovements/:id",
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/:id",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/:id",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 ":id"
               ]
             }
@@ -1628,6 +1628,42 @@
                 "api",
                 "v1",
                 "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/v1/users/:id",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/v1/users/:id",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                ":id"
               ]
             }
           }

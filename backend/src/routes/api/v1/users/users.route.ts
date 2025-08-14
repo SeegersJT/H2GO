@@ -11,5 +11,7 @@ const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 router.get("/all", restricted, UserController.getAllUsers);
 router.get("/:id", restricted, UserController.getUserById);
 router.post("/", restricted, UserController.insertUser);
+router.put("/:id", restricted, UserController.updateUser);
+router.delete("/:id", restricted, UserController.deleteUser);
 
 export default router;

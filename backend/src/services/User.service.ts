@@ -15,6 +15,14 @@ export class UserService {
     return userRepository.create(data);
   }
 
+  static async updateUser(id: string, data: Partial<IUser>) {
+    return userRepository.updateById(new Types.ObjectId(id), data);
+  }
+
+  static async deleteUser(id: string) {
+    return userRepository.deleteById(new Types.ObjectId(id));
+  }
+
   static async isDuplicateUserIDNumber(idNumber: string) {
     const user = await userRepository.findByIdNumber(idNumber);
     return !!user;
