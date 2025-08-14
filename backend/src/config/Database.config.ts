@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 import log from "../utils/Logger";
 
 const connectDB = async () => {
-  const uri = process.env.MONGO_URI as string;
+  const uri = process.env.MONGODB_URI as string;
 
   if (!uri) {
-    log.fatal().database("MONGO_URI is not defined in environment variables");
+    log.fatal().database("MONGODB_URI is not defined in environment variables");
     process.exit(1);
   }
 

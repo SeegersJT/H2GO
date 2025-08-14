@@ -1,32 +1,31 @@
+import jwt from "jsonwebtoken";
+import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
 import { userRepository } from "../repositories/User.repository";
 import { branchRepository } from "../repositories/Branch.repository";
 import { confirmationTokenRepository } from "../repositories/ConfirmationToken.repository";
 import ConfirmationToken from "../models/ConfirmationToken.model";
-import { Utils } from "../utils/Utils";
 import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
-import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
-import jwt from "jsonwebtoken";
 
 export class AuthService {
   static async login(email: string, password: string) {
-    const user = await userRepository.findByEmail(email);
+    const user = await userRepository.findByEmail(email, { projection: "+password" });
     if (!user) {
       throw new Error("Invalid credentials");
     }
 
-    const match = await Utils.comparePasswords(password, user.password);
+    const match = await user.comparePassword(password);
     if (!match) {
       throw new Error("Invalid credentials");
     }
 
-    const token = Utils.generateSecureConfirmationToken();
+    const token = (ConfirmationToken as any).generateToken();
     const otp = (ConfirmationToken as any).generateOtp();
     const tokenDoc = await confirmationTokenRepository.create({
       user_id: user._id as any,
       confirmation_token: token,
       confirmation_token_type: ConfirmationTokenType.OTP_LOGIN_TOKEN,
-      confirmation_token_expiry_date: Utils.getConfirmationTokenExpiry(ConfirmationTokenType.OTP_LOGIN_TOKEN),
+      confirmation_token_expiry_date: (ConfirmationToken as any).getExpiryDate(ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN),
     });
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();
@@ -81,13 +80,13 @@ export class AuthService {
     if (!user) {
       throw new Error("User not found");
     }
-    const token = Utils.generateSecureConfirmationToken();
+    const token = (ConfirmationToken as any).generateToken();
     const otp = (ConfirmationToken as any).generateOtp();
     const tokenDoc = await confirmationTokenRepository.create({
       user_id: user._id as any,
       confirmation_token: token,
       confirmation_token_type: ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN,
-      confirmation_token_expiry_date: Utils.getConfirmationTokenExpiry(ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN),
+      confirmation_token_expiry_date: (ConfirmationToken as any).getExpiryDate(ConfirmationTokenType.OTP_PASSWORD_FORGOT_TOKEN),
     });
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();

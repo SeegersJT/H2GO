@@ -13,7 +13,5 @@ const counterSchema = new Schema<ICounter>(
   { versionKey: false }
 );
 
-counterSchema.index({ _id: 1 }, { unique: true });
-
 const Counter: Model<ICounter> = mongoose.model<ICounter>("Counter", counterSchema);
 export default Counter;
