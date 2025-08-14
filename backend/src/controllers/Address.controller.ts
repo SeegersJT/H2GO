@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AddressService } from "../services/Address.service";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { Types } from "mongoose";
 
 export class AddressController {
   static getAllAddresses = async (req: Request, res: Response, next: NextFunction) => {
@@ -27,6 +28,119 @@ export class AddressController {
       const result = await AddressService.getAddressbyId(addressId);
 
       return res.success(result, { message: "Retrieved addresses by ID successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static insertAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const {
+        user_id,
+        country_id,
+        label,
+        address_line_01,
+        address_line_02,
+        suburb,
+        city,
+        region,
+        postal_code,
+        lat,
+        lng,
+        delivery_instructions,
+        contact_person,
+        contact_phone,
+        is_default,
+      } = req.body;
+
+      if (!user_id || !address_line_01 || !city || !postal_code) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const payload: any = {
+        user_id: new Types.ObjectId(user_id),
+        address_line_01,
+        city,
+        postal_code,
+        createdBy: new Types.ObjectId(authenticatedUser.id),
+        updatedBy: new Types.ObjectId(authenticatedUser.id),
+      };
+
+      if (country_id) payload.country_id = new Types.ObjectId(country_id);
+
+      const optional = {
+        label,
+        address_line_02,
+        suburb,
+        region,
+        lat,
+        lng,
+        delivery_instructions,
+        contact_person,
+        contact_phone,
+        is_default,
+      };
+
+      for (const [key, value] of Object.entries(optional)) {
+        if (value !== undefined) payload[key] = value;
+      }
+
+      const newAddress = await AddressService.insertAddress(payload);
+
+      return res.success(newAddress, { message: "Address created successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static updateAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = req.params.id;
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const updateData: any = { ...req.body, updatedBy: new Types.ObjectId(authenticatedUser.id) };
+
+      if (updateData.user_id) updateData.user_id = new Types.ObjectId(updateData.user_id);
+      if (updateData.country_id) updateData.country_id = new Types.ObjectId(updateData.country_id);
+
+      const updated = await AddressService.updateAddress(addressId, updateData, authenticatedUser.id);
+
+      if (!updated) {
+        return res.error(null, { message: "Address not found", code: StatusCode.NOT_FOUND });
+      }
+
+      return res.success(updated, { message: "Address updated successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = req.params.id;
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const deleted = await AddressService.deleteAddress(addressId, authenticatedUser.id);
+
+      if (!deleted) {
+        return res.error(null, { message: "Address not found", code: StatusCode.NOT_FOUND });
+      }
+
+      return res.success(deleted, { message: "Address deleted successfully." });
     } catch (err) {
       next(err);
     }
