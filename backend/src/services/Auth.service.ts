@@ -81,9 +81,11 @@ export class AuthService {
 
   static async passwordForgot(email: string) {
     const user = await userRepository.findByEmail(email);
+
     if (!user) {
       throw new Error("User not found");
     }
+
     const token = (ConfirmationToken as any).generateToken();
     const otp = (ConfirmationToken as any).generateOtp();
     const tokenDoc = await confirmationTokenRepository.create({
@@ -103,7 +105,9 @@ export class AuthService {
     if (password !== confirmPassword) {
       throw new Error("Passwords do not match");
     }
+
     const tokenDoc = await ConfirmationTokenService.getConfirmationTokenByToken(token);
+
     if (
       !tokenDoc ||
       tokenDoc.revoked ||
@@ -113,14 +117,18 @@ export class AuthService {
     ) {
       throw new Error("Invalid token");
     }
+
     const user = await userRepository.findById(tokenDoc.user_id);
+
     if (!user) {
       throw new Error("User not found");
     }
+
     await userRepository.updateById(user._id, { password });
     const branch = await branchRepository.findById(user.branch_id);
     const access_token = generateJwtToken(user, branch!);
     const refresh_token = generateRefreshToken(user);
+
     return {
       access_token,
       refresh_token,
@@ -132,13 +140,17 @@ export class AuthService {
 
   static async refreshToken(refreshToken: string) {
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN as string) as any;
+
     const user = await userRepository.findById(decoded.id);
+
     if (!user) {
       throw new Error("Invalid refresh token");
     }
+
     const branch = await branchRepository.findById(user.branch_id);
     const access_token = generateJwtToken(user, branch!);
     const new_refresh_token = generateRefreshToken(user);
+
     return {
       access_token,
       refresh_token: new_refresh_token,
