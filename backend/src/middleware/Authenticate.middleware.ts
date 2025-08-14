@@ -4,51 +4,93 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import log from "../utils/Logger";
 import { AuthenticatedUserPayload } from "../types/AuthenticatedUserPayload";
 
-const WHITELIST: RegExp[] = [/^\/health\/?$/i, /^\/api\/v1\/auth(\/.*)?$/i, /^\/api\/v1\/users(\/.*)?$/i];
+type MatchKind = "exact" | "prefix";
 
-if (process.env.AUTH_WHITELIST) {
-  for (const raw of process.env.AUTH_WHITELIST.split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)) {
-    try {
-      const esc = raw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      WHITELIST.push(new RegExp(`^${esc}(\\/.*)?$`, "i"));
-    } catch {}
-  }
+interface WhitelistRule {
+  path: string;
+  kind: MatchKind;
 }
 
-const isWhitelisted = (urlPath: string): boolean => WHITELIST.some((rx) => rx.test(urlPath));
+function getPathOnly(urlPath: string): string {
+  const base = urlPath.split("?")[0].split("#")[0].toLowerCase();
+
+  if (base.length > 1 && base.endsWith("/")) return base.slice(0, -1);
+  return base;
+}
+
+const STATIC_WHITELIST: WhitelistRule[] = [
+  { path: "/api/v1/health", kind: "exact" },
+  { path: "/api/v1/auth", kind: "prefix" },
+  { path: "/api/v1/users/", kind: "prefix" },
+];
+
+function loadEnvWhitelist(): WhitelistRule[] {
+  const raw = process.env.AUTH_WHITELIST;
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map<WhitelistRule>((p) => ({
+      path: getPathOnly(p),
+      kind: "prefix", // match the path itself and any subpaths
+    }));
+}
+
+const WHITELIST: WhitelistRule[] = [...STATIC_WHITELIST, ...loadEnvWhitelist()];
+
+function isWhitelisted(urlPath: string): boolean {
+  const p = getPathOnly(urlPath);
+
+  for (const rule of WHITELIST) {
+    if (rule.kind === "exact") {
+      if (p === getPathOnly(rule.path)) return true;
+    } else {
+      const base = getPathOnly(rule.path);
+      if (p === base || p.startsWith(base + "/")) return true;
+    }
+  }
+  return false;
+}
 
 const authenticateMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  if (req.method === "OPTIONS") return next();
+  if (req.method === "OPTIONS") {
+    next();
+    return;
+  }
 
   const urlPath = req.originalUrl || req.url || req.path;
-  if (isWhitelisted(urlPath)) return next();
+  if (isWhitelisted(urlPath)) {
+    next();
+    return;
+  }
 
   const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
     log.fatal().server("JWT_SECRET must be defined in environment variables.");
-    return res.error(null, {
+    res.error(null, {
       message: "Server misconfiguration: missing JWT secret.",
       code: StatusCode.INTERNAL_SERVER_ERROR,
     });
+    return;
   }
 
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.error(null, {
+    res.error(null, {
       message: "Access token missing or malformed.",
       code: StatusCode.UNAUTHORIZED,
     });
+    return;
   }
 
   const token = authHeader.slice("Bearer ".length);
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as AuthenticatedUserPayload;
     req.authenticatedUser = decoded;
-    return next();
+    next();
   } catch {
-    return res.error(null, {
+    res.error(null, {
       message: "Invalid or expired access token.",
       code: StatusCode.UNAUTHORIZED,
     });
