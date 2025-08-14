@@ -2,7 +2,8 @@
   "name": "h2go",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend start\""
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend start\"",
+    "generate:postman": "node scripts/generate-postman.js"
   },
   "devDependencies": {
     "concurrently": "^8.0.0"

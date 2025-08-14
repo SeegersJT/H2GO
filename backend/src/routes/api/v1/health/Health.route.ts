@@ -3,6 +3,6 @@ import { HealthController } from "../../../../controllers/Health.controller";
 
 const router = Router();
 
-router.get("/health", HealthController.healthCheck);
+router.get("/", HealthController.healthCheck);
 
 export default router;
