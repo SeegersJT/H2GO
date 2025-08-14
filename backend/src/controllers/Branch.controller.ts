@@ -8,7 +8,7 @@ export class BranchController {
     try {
       const branches = await BranchService.getAllBranches();
 
-      return res.succeed(branches, {
+      return res.success(branches, {
         message: "Retrieved branches successfully",
       });
     } catch (err) {
@@ -21,7 +21,7 @@ export class BranchController {
       const branchId = req.params.id;
       const branch = await BranchService.getBranchById(branchId);
 
-      return res.succeed(branch, {
+      return res.success(branch, {
         message: "Retrieved branch successfully",
       });
     } catch (err) {
@@ -34,13 +34,13 @@ export class BranchController {
       const { branch_name, branch_abbreviation, country_id, headoffice_id = null } = req.body;
 
       if (!branch_name || !branch_abbreviation || !country_id) {
-        return res.fail(null, { message: "Missing required fields" });
+        return res.error(null, { message: "Missing required fields" });
       }
 
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -57,7 +57,7 @@ export class BranchController {
       });
 
       if (existingBranch) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Branch with the same name or abbreviation already exists",
           code: StatusCode.CONFLICT,
         });
@@ -72,7 +72,7 @@ export class BranchController {
         });
 
         if (!headOfficeBranch) {
-          return res.fail(null, {
+          return res.error(null, {
             message: "The specified head office branch does not exist or is inactive.",
           });
         }
@@ -93,7 +93,7 @@ export class BranchController {
         await newBranch.save();
       }
 
-      return res.succeed(newBranch, {
+      return res.success(newBranch, {
         message: "Inserted branch successfully",
       });
     } catch (err) {
@@ -108,13 +108,13 @@ export class BranchController {
       const { branch_name, branch_abbreviation, country_id, headoffice_id } = req.body;
 
       if (!branch_name || !branch_abbreviation || !country_id || !headoffice_id) {
-        return res.fail(null, { message: "Missing required fields" });
+        return res.error(null, { message: "Missing required fields" });
       }
 
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -128,7 +128,7 @@ export class BranchController {
       const branchToUpdate = await BranchService.getBranchById(branchId);
 
       if (!branchToUpdate) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Branch not found",
           code: StatusCode.NOT_FOUND,
         });
@@ -143,7 +143,7 @@ export class BranchController {
       });
 
       if (duplicateBranch) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Another branch with the same name or abbreviation already exists",
           code: StatusCode.CONFLICT,
         });
@@ -155,7 +155,7 @@ export class BranchController {
       });
 
       if (!headOfficeBranch) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "The specified head office branch does not exist or is inactive.",
         });
       }
@@ -168,7 +168,7 @@ export class BranchController {
         updatedBy: updatedByObjectId,
       });
 
-      return res.succeed(updatedBranch, {
+      return res.success(updatedBranch, {
         message: "Updated branch successfully",
       });
     } catch (err) {
@@ -182,7 +182,7 @@ export class BranchController {
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -191,13 +191,13 @@ export class BranchController {
       const deletedBranch = await BranchService.softDeleteBranch(id, authenticatedUser?.id);
 
       if (!deletedBranch) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Branch not found",
           code: StatusCode.NOT_FOUND,
         });
       }
 
-      return res.succeed(deletedBranch, {
+      return res.success(deletedBranch, {
         message: "Branch deleted (soft) successfully",
       });
     } catch (err) {

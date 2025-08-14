@@ -7,7 +7,7 @@ export class AddressController {
     try {
       const result = await AddressService.getAllAddresses();
 
-      return res.succeed(result, { message: "Retrieved all addresses successfully." });
+      return res.success(result, { message: "Retrieved all addresses successfully." });
     } catch (err) {
       next(err);
     }
@@ -18,7 +18,7 @@ export class AddressController {
       const addressId = req.query.address_id as string;
 
       if (!addressId) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[address_id] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -26,7 +26,7 @@ export class AddressController {
 
       const result = await AddressService.getAddressbyId(addressId);
 
-      return res.succeed(result, { message: "Retrieved addresses by ID successfully." });
+      return res.success(result, { message: "Retrieved addresses by ID successfully." });
     } catch (err) {
       next(err);
     }

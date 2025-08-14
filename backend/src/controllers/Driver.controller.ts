@@ -6,7 +6,7 @@ export class DriverController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await DriverService.getAll();
-      return res.succeed(result, { message: "Retrieved drivers successfully." });
+      return res.success(result, { message: "Retrieved drivers successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class DriverController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await DriverService.getById(id);
-      return res.succeed(result, { message: "Retrieved driver successfully." });
+      return res.success(result, { message: "Retrieved driver successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class DriverController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await DriverService.create(req.body);
-      return res.succeed(result, { message: "Created driver successfully." });
+      return res.success(result, { message: "Created driver successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class DriverController {
     try {
       const { id } = req.params;
       const result = await DriverService.update(id, req.body);
-      return res.succeed(result, { message: "Updated driver successfully." });
+      return res.success(result, { message: "Updated driver successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class DriverController {
     try {
       const { id } = req.params;
       const result = await DriverService.delete(id);
-      return res.succeed(result, { message: "Deleted driver successfully." });
+      return res.success(result, { message: "Deleted driver successfully." });
     } catch (err) {
       next(err);
     }

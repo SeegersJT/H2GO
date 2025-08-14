@@ -6,7 +6,7 @@ export class VehicleController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await VehicleService.getAll();
-      return res.succeed(result, { message: "Retrieved vehicles successfully." });
+      return res.success(result, { message: "Retrieved vehicles successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class VehicleController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await VehicleService.getById(id);
-      return res.succeed(result, { message: "Retrieved vehicle successfully." });
+      return res.success(result, { message: "Retrieved vehicle successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class VehicleController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await VehicleService.create(req.body);
-      return res.succeed(result, { message: "Created vehicle successfully." });
+      return res.success(result, { message: "Created vehicle successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class VehicleController {
     try {
       const { id } = req.params;
       const result = await VehicleService.update(id, req.body);
-      return res.succeed(result, { message: "Updated vehicle successfully." });
+      return res.success(result, { message: "Updated vehicle successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class VehicleController {
     try {
       const { id } = req.params;
       const result = await VehicleService.delete(id);
-      return res.succeed(result, { message: "Deleted vehicle successfully." });
+      return res.success(result, { message: "Deleted vehicle successfully." });
     } catch (err) {
       next(err);
     }

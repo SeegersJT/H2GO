@@ -6,7 +6,7 @@ export class PaymentController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await PaymentService.getAll();
-      return res.succeed(result, { message: "Retrieved payments successfully." });
+      return res.success(result, { message: "Retrieved payments successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class PaymentController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await PaymentService.getById(id);
-      return res.succeed(result, { message: "Retrieved payment successfully." });
+      return res.success(result, { message: "Retrieved payment successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class PaymentController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await PaymentService.create(req.body);
-      return res.succeed(result, { message: "Created payment successfully." });
+      return res.success(result, { message: "Created payment successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class PaymentController {
     try {
       const { id } = req.params;
       const result = await PaymentService.update(id, req.body);
-      return res.succeed(result, { message: "Updated payment successfully." });
+      return res.success(result, { message: "Updated payment successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class PaymentController {
     try {
       const { id } = req.params;
       const result = await PaymentService.delete(id);
-      return res.succeed(result, { message: "Deleted payment successfully." });
+      return res.success(result, { message: "Deleted payment successfully." });
     } catch (err) {
       next(err);
     }

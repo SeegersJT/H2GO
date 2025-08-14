@@ -6,7 +6,7 @@ export class CustomerController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await CustomerService.getAll();
-      return res.succeed(result, { message: "Retrieved customers successfully." });
+      return res.success(result, { message: "Retrieved customers successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class CustomerController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await CustomerService.getById(id);
-      return res.succeed(result, { message: "Retrieved customer successfully." });
+      return res.success(result, { message: "Retrieved customer successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class CustomerController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await CustomerService.create(req.body);
-      return res.succeed(result, { message: "Created customer successfully." });
+      return res.success(result, { message: "Created customer successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class CustomerController {
     try {
       const { id } = req.params;
       const result = await CustomerService.update(id, req.body);
-      return res.succeed(result, { message: "Updated customer successfully." });
+      return res.success(result, { message: "Updated customer successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class CustomerController {
     try {
       const { id } = req.params;
       const result = await CustomerService.delete(id);
-      return res.succeed(result, { message: "Deleted customer successfully." });
+      return res.success(result, { message: "Deleted customer successfully." });
     } catch (err) {
       next(err);
     }

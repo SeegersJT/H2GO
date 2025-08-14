@@ -6,7 +6,7 @@ export class InvoiceController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await InvoiceService.getAll();
-      return res.succeed(result, { message: "Retrieved invoices successfully." });
+      return res.success(result, { message: "Retrieved invoices successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class InvoiceController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await InvoiceService.getById(id);
-      return res.succeed(result, { message: "Retrieved invoice successfully." });
+      return res.success(result, { message: "Retrieved invoice successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class InvoiceController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await InvoiceService.create(req.body);
-      return res.succeed(result, { message: "Created invoice successfully." });
+      return res.success(result, { message: "Created invoice successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class InvoiceController {
     try {
       const { id } = req.params;
       const result = await InvoiceService.update(id, req.body);
-      return res.succeed(result, { message: "Updated invoice successfully." });
+      return res.success(result, { message: "Updated invoice successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class InvoiceController {
     try {
       const { id } = req.params;
       const result = await InvoiceService.delete(id);
-      return res.succeed(result, { message: "Deleted invoice successfully." });
+      return res.success(result, { message: "Deleted invoice successfully." });
     } catch (err) {
       next(err);
     }

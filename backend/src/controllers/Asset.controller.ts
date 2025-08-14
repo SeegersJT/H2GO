@@ -6,7 +6,7 @@ export class AssetController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await AssetService.getAll();
-      return res.succeed(result, { message: "Retrieved assets successfully." });
+      return res.success(result, { message: "Retrieved assets successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class AssetController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await AssetService.getById(id);
-      return res.succeed(result, { message: "Retrieved asset successfully." });
+      return res.success(result, { message: "Retrieved asset successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class AssetController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await AssetService.create(req.body);
-      return res.succeed(result, { message: "Created asset successfully." });
+      return res.success(result, { message: "Created asset successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class AssetController {
     try {
       const { id } = req.params;
       const result = await AssetService.update(id, req.body);
-      return res.succeed(result, { message: "Updated asset successfully." });
+      return res.success(result, { message: "Updated asset successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class AssetController {
     try {
       const { id } = req.params;
       const result = await AssetService.delete(id);
-      return res.succeed(result, { message: "Deleted asset successfully." });
+      return res.success(result, { message: "Deleted asset successfully." });
     } catch (err) {
       next(err);
     }

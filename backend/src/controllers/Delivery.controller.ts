@@ -6,7 +6,7 @@ export class DeliveryController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await DeliveryService.getAll();
-      return res.succeed(result, { message: "Retrieved deliverys successfully." });
+      return res.success(result, { message: "Retrieved deliverys successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class DeliveryController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await DeliveryService.getById(id);
-      return res.succeed(result, { message: "Retrieved delivery successfully." });
+      return res.success(result, { message: "Retrieved delivery successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class DeliveryController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await DeliveryService.create(req.body);
-      return res.succeed(result, { message: "Created delivery successfully." });
+      return res.success(result, { message: "Created delivery successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class DeliveryController {
     try {
       const { id } = req.params;
       const result = await DeliveryService.update(id, req.body);
-      return res.succeed(result, { message: "Updated delivery successfully." });
+      return res.success(result, { message: "Updated delivery successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class DeliveryController {
     try {
       const { id } = req.params;
       const result = await DeliveryService.delete(id);
-      return res.succeed(result, { message: "Deleted delivery successfully." });
+      return res.success(result, { message: "Deleted delivery successfully." });
     } catch (err) {
       next(err);
     }

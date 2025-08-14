@@ -5,9 +5,9 @@ import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
 import errorHandlingMiddleware from "./middleware/ErrorHandling.middleware";
-import { responsesMiddleware } from "./middleware/Response.middleware";
-import { buildRouter } from "./utils/RouteLoader.util";
+import { responseMiddleware } from "./middleware/Response.middleware";
 import authenticateMiddleware from "./middleware/Authenticate.middleware";
+import { buildRouter } from "./utils/RouteLoader.util";
 
 dotenv.config({ quiet: true });
 
@@ -19,7 +19,7 @@ export const setupApp = async () => {
   app.use(cors({ origin: true, credentials: true }));
   app.use(morgan("dev"));
 
-  app.use(responsesMiddleware);
+  app.use(responseMiddleware);
   app.use(authenticateMiddleware);
 
   const router = await buildRouter();

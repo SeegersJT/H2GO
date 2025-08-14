@@ -8,7 +8,7 @@ export class AuthController {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[email] | [password] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -16,7 +16,7 @@ export class AuthController {
 
       const result = await AuthService.login(email, password);
 
-      return res.succeed(result, { message: "Sent OTP successfully." });
+      return res.success(result, { message: "Sent OTP successfully." });
     } catch (err) {
       next(err);
     }
@@ -27,7 +27,7 @@ export class AuthController {
       const { confirmation_token } = req.body;
 
       if (!confirmation_token) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[confirmation_token] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -35,7 +35,7 @@ export class AuthController {
 
       const result = await AuthService.validateConfirmationToken(confirmation_token);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Confirmation token validated successfully.",
       });
     } catch (err) {
@@ -48,7 +48,7 @@ export class AuthController {
       const { confirmation_token, one_time_pin } = req.body;
 
       if (!confirmation_token || !one_time_pin) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[confirmation_token] | [one_time_pin] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -56,7 +56,7 @@ export class AuthController {
 
       const [result, message] = await AuthService.oneTimePin(confirmation_token, one_time_pin);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: message,
       });
     } catch (err) {
@@ -69,7 +69,7 @@ export class AuthController {
       const { email } = req.body;
 
       if (!email) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[email] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -77,7 +77,7 @@ export class AuthController {
 
       const result = await AuthService.passwordForgot(email);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Email verified. Sent OTP successfully",
       });
     } catch (err) {
@@ -90,7 +90,7 @@ export class AuthController {
       const { confirmation_token, password, confirm_password } = req.body;
 
       if (!confirmation_token || !password || !confirm_password) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[confirmation_token] | [password] | [confirmation_password] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -98,7 +98,7 @@ export class AuthController {
 
       const result = await AuthService.passwordReset(confirmation_token, password, confirm_password);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Password reset and login successful.",
       });
     } catch (err) {
@@ -111,7 +111,7 @@ export class AuthController {
       const { refresh_token } = req.body;
 
       if (!refresh_token) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "[refresh_token] required.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -119,7 +119,7 @@ export class AuthController {
 
       const result = await AuthService.refreshToken(refresh_token);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Access token refreshed Successfully.",
       });
     } catch (err) {

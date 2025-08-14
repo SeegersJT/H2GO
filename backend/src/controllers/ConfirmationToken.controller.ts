@@ -9,12 +9,12 @@ export class ConfirmationTokenController {
       const { confirmation_token } = req.body;
 
       if (!confirmation_token) {
-        return res.fail(null, { message: "Missing confirmation token." });
+        return res.error(null, { message: "Missing confirmation token." });
       }
 
       const result = await ConfirmationTokenService.getConfirmationTokenByToken(confirmation_token);
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Retrieved confirmation token successfully.",
       });
     } catch (err) {
@@ -27,7 +27,7 @@ export class ConfirmationTokenController {
       const { confirmation_token } = req.body;
 
       if (!confirmation_token) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Missing confirmation token.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -35,7 +35,7 @@ export class ConfirmationTokenController {
 
       const result = await ConfirmationTokenService.validateConfirmationToken(confirmation_token);
 
-      return res.succeed(result, { message: "Token validated successfully." });
+      return res.success(result, { message: "Token validated successfully." });
     } catch (err) {
       next(err);
     }
@@ -46,13 +46,13 @@ export class ConfirmationTokenController {
       const { user_id, confirmation_token_type } = req.body;
 
       if (!user_id || !confirmation_token_type) {
-        return res.fail(null, { message: "Missing required fields" });
+        return res.error(null, { message: "Missing required fields" });
       }
 
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -64,7 +64,7 @@ export class ConfirmationTokenController {
         createdBy: new Types.ObjectId(authenticatedUser.id),
       });
 
-      return res.succeed(result, {
+      return res.success(result, {
         message: "Token created successfully",
       });
     } catch (err) {
@@ -77,7 +77,7 @@ export class ConfirmationTokenController {
       const { confirmation_token } = req.body;
 
       if (!confirmation_token) {
-        return res.fail(false, {
+        return res.error(false, {
           message: "Missing confirmation token.",
           code: StatusCode.BAD_REQUEST,
         });
@@ -86,7 +86,7 @@ export class ConfirmationTokenController {
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -97,14 +97,14 @@ export class ConfirmationTokenController {
       });
 
       if (!existingConfirmationToken) {
-        return res.fail(false, {
+        return res.error(false, {
           message: "Token not found or invalid.",
           code: StatusCode.NOT_FOUND,
         });
       }
 
       if (existingConfirmationToken.confirmed) {
-        return res.fail(null, { message: "Token already invalidated.", code: StatusCode.CONFLICT });
+        return res.error(null, { message: "Token already invalidated.", code: StatusCode.CONFLICT });
       }
 
       const updatedConfirmationToken = await ConfirmationTokenService.updateConfirmationToken(existingConfirmationToken.id, {
@@ -112,7 +112,7 @@ export class ConfirmationTokenController {
         updatedBy: new Types.ObjectId(authenticatedUser.id),
       });
 
-      return res.succeed(updatedConfirmationToken, { message: "Token Invalidated successfully." });
+      return res.success(updatedConfirmationToken, { message: "Token Invalidated successfully." });
     } catch (err) {
       next(err);
     }

@@ -7,7 +7,7 @@ const roleAuthorizationMiddleware = (minimumRequiredType: UserType) => {
     const authenticatedUser = req.authenticatedUser;
 
     if (!authenticatedUser || !authenticatedUser.user_type) {
-      return res.fail(null, {
+      return res.error(null, {
         message: "Unauthorized",
         code: StatusCode.UNAUTHORIZED,
       });
@@ -17,7 +17,7 @@ const roleAuthorizationMiddleware = (minimumRequiredType: UserType) => {
     const minRank = UserTypeHierarchy.indexOf(minimumRequiredType);
 
     if (userRank === -1 || minRank === -1 || userRank > minRank) {
-      return res.fail(null, {
+      return res.error(null, {
         message: "Forbidden",
         code: StatusCode.FORBIDDEN,
       });

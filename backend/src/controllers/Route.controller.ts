@@ -6,7 +6,7 @@ export class RouteController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await RouteService.getAll();
-      return res.succeed(result, { message: "Retrieved routes successfully." });
+      return res.success(result, { message: "Retrieved routes successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class RouteController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await RouteService.getById(id);
-      return res.succeed(result, { message: "Retrieved route successfully." });
+      return res.success(result, { message: "Retrieved route successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class RouteController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await RouteService.create(req.body);
-      return res.succeed(result, { message: "Created route successfully." });
+      return res.success(result, { message: "Created route successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class RouteController {
     try {
       const { id } = req.params;
       const result = await RouteService.update(id, req.body);
-      return res.succeed(result, { message: "Updated route successfully." });
+      return res.success(result, { message: "Updated route successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class RouteController {
     try {
       const { id } = req.params;
       const result = await RouteService.delete(id);
-      return res.succeed(result, { message: "Deleted route successfully." });
+      return res.success(result, { message: "Deleted route successfully." });
     } catch (err) {
       next(err);
     }

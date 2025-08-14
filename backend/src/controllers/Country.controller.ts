@@ -7,7 +7,7 @@ export class CountryController {
   static getAllCountries = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const countries = await CountryService.getAllCountries();
-      return res.succeed(countries, { message: "Retrieved countries successfully" });
+      return res.success(countries, { message: "Retrieved countries successfully" });
     } catch (err) {
       next(err);
     }
@@ -19,13 +19,13 @@ export class CountryController {
       const country = await CountryService.getCountryById(countryId);
 
       if (!country) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Country not found",
           code: StatusCode.NOT_FOUND,
         });
       }
 
-      return res.succeed(country, { message: "Retrieved country successfully" });
+      return res.success(country, { message: "Retrieved country successfully" });
     } catch (err) {
       next(err);
     }
@@ -36,13 +36,13 @@ export class CountryController {
       const { country_name, country_code, country_dial_code, max_phone_number_length, createdBy, updatedBy } = req.body;
 
       if (!country_name || !country_code || !country_dial_code || !max_phone_number_length || !createdBy || !updatedBy) {
-        return res.fail(null, { message: "Missing required fields" });
+        return res.error(null, { message: "Missing required fields" });
       }
 
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -57,7 +57,7 @@ export class CountryController {
         updatedBy: new Types.ObjectId(authenticatedUser.id),
       });
 
-      return res.succeed(newCountry, { message: "Country created successfully" });
+      return res.success(newCountry, { message: "Country created successfully" });
     } catch (err) {
       next(err);
     }
@@ -70,7 +70,7 @@ export class CountryController {
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
-        return res.fail(null, {
+        return res.error(null, {
           message: "Unauthorized",
           code: StatusCode.UNAUTHORIZED,
         });
@@ -79,10 +79,10 @@ export class CountryController {
       const updated = await CountryService.updateCountry(countryId, updateData, authenticatedUser.id);
 
       if (!updated) {
-        return res.fail(null, { message: "Country not found", code: StatusCode.NOT_FOUND });
+        return res.error(null, { message: "Country not found", code: StatusCode.NOT_FOUND });
       }
 
-      return res.succeed(updated, { message: "Country updated successfully" });
+      return res.success(updated, { message: "Country updated successfully" });
     } catch (err) {
       next(err);
     }

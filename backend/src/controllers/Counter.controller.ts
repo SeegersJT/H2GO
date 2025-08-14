@@ -7,10 +7,10 @@ export class CounterController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await CounterService.getNextSequence(id);
-      return res.succeed(result, { message: "Retrieved next sequence successfully." });
+      return res.success(result, { message: "Retrieved next sequence successfully." });
     } catch (err) {
       next(err);
     }

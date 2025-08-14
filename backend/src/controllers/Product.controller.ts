@@ -6,7 +6,7 @@ export class ProductController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await ProductService.getAll();
-      return res.succeed(result, { message: "Retrieved products successfully." });
+      return res.success(result, { message: "Retrieved products successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class ProductController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await ProductService.getById(id);
-      return res.succeed(result, { message: "Retrieved product successfully." });
+      return res.success(result, { message: "Retrieved product successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class ProductController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await ProductService.create(req.body);
-      return res.succeed(result, { message: "Created product successfully." });
+      return res.success(result, { message: "Created product successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class ProductController {
     try {
       const { id } = req.params;
       const result = await ProductService.update(id, req.body);
-      return res.succeed(result, { message: "Updated product successfully." });
+      return res.success(result, { message: "Updated product successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class ProductController {
     try {
       const { id } = req.params;
       const result = await ProductService.delete(id);
-      return res.succeed(result, { message: "Deleted product successfully." });
+      return res.success(result, { message: "Deleted product successfully." });
     } catch (err) {
       next(err);
     }

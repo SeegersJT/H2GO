@@ -6,7 +6,7 @@ export class SubscriptionController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await SubscriptionService.getAll();
-      return res.succeed(result, { message: "Retrieved subscriptions successfully." });
+      return res.success(result, { message: "Retrieved subscriptions successfully." });
     } catch (err) {
       next(err);
     }
@@ -16,10 +16,10 @@ export class SubscriptionController {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.fail(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
       const result = await SubscriptionService.getById(id);
-      return res.succeed(result, { message: "Retrieved subscription successfully." });
+      return res.success(result, { message: "Retrieved subscription successfully." });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class SubscriptionController {
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await SubscriptionService.create(req.body);
-      return res.succeed(result, { message: "Created subscription successfully." });
+      return res.success(result, { message: "Created subscription successfully." });
     } catch (err) {
       next(err);
     }
@@ -38,7 +38,7 @@ export class SubscriptionController {
     try {
       const { id } = req.params;
       const result = await SubscriptionService.update(id, req.body);
-      return res.succeed(result, { message: "Updated subscription successfully." });
+      return res.success(result, { message: "Updated subscription successfully." });
     } catch (err) {
       next(err);
     }
@@ -48,7 +48,7 @@ export class SubscriptionController {
     try {
       const { id } = req.params;
       const result = await SubscriptionService.delete(id);
-      return res.succeed(result, { message: "Deleted subscription successfully." });
+      return res.success(result, { message: "Deleted subscription successfully." });
     } catch (err) {
       next(err);
     }

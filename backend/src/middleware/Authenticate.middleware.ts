@@ -28,7 +28,7 @@ const authenticateMiddleware = (req: Request, res: Response, next: NextFunction)
   const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
     log.fatal().server("JWT_SECRET must be defined in environment variables.");
-    return res.fail(null, {
+    return res.error(null, {
       message: "Server misconfiguration: missing JWT secret.",
       code: StatusCode.INTERNAL_SERVER_ERROR,
     });
@@ -36,7 +36,7 @@ const authenticateMiddleware = (req: Request, res: Response, next: NextFunction)
 
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.fail(null, {
+    return res.error(null, {
       message: "Access token missing or malformed.",
       code: StatusCode.UNAUTHORIZED,
     });
@@ -48,7 +48,7 @@ const authenticateMiddleware = (req: Request, res: Response, next: NextFunction)
     req.authenticatedUser = decoded;
     return next();
   } catch {
-    return res.fail(null, {
+    return res.error(null, {
       message: "Invalid or expired access token.",
       code: StatusCode.UNAUTHORIZED,
     });
