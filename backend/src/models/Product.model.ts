@@ -91,6 +91,7 @@ productSchema.pre("validate", async function (next) {
 });
 
 // --- Indexes ---
+productSchema.index({ branch_id: 1, active: 1 });
 productSchema.index({ branch_id: 1, sku: 1 }, { unique: true, name: "uniq_sku_per_branch" });
 productSchema.index({ branch_id: 1, name: 1 }, { unique: false, collation: { locale: "en", strength: 2 }, name: "search_name_per_branch" });
 

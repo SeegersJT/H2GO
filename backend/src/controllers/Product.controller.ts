@@ -18,36 +18,92 @@ export class ProductController {
       if (!id) {
         return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
+
       const result = await ProductService.getById(id);
+
+      if (!result) {
+        return res.error(result, { message: "Invalid or inactive product.", code: StatusCode.BAD_REQUEST });
+      }
+
       return res.success(result, { message: "Retrieved product successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static create = async (req: Request, res: Response, next: NextFunction) => {
+  static insertProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await ProductService.create(req.body);
+      let { branch_id, sku, name, description, product_type, unit, capacity_value, default_price, currency_code } = req.body;
+
+      if (!branch_id || !sku || !name || !description || !product_type || !unit || !capacity_value || !default_price || !currency_code) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await ProductService.insertProduct(req.body, authenticatedUser.id);
+
       return res.success(result, { message: "Created product successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static update = async (req: Request, res: Response, next: NextFunction) => {
+  static updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await ProductService.update(id, req.body);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await ProductService.updateProduct(id, req.body, authenticatedUser.id);
       return res.success(result, { message: "Updated product successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static delete = async (req: Request, res: Response, next: NextFunction) => {
+  static deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await ProductService.delete(id);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await ProductService.deleteProduct(id, authenticatedUser.id);
       return res.success(result, { message: "Deleted product successfully." });
     } catch (err) {
       next(err);

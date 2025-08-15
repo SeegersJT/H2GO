@@ -68,8 +68,6 @@ export class AddressController {
         address_line_01,
         city,
         postal_code,
-        createdBy: new Types.ObjectId(authenticatedUser.id),
-        updatedBy: new Types.ObjectId(authenticatedUser.id),
       };
 
       if (country_id) payload.country_id = new Types.ObjectId(country_id);
@@ -91,7 +89,7 @@ export class AddressController {
         if (value !== undefined) payload[key] = value;
       }
 
-      const newAddress = await AddressService.insertAddress(payload);
+      const newAddress = await AddressService.insertAddress(payload, authenticatedUser.id);
 
       return res.success(newAddress, { message: "Address created successfully." });
     } catch (err) {

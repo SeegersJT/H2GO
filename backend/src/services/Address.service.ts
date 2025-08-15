@@ -11,8 +11,8 @@ export class AddressService {
     return addressRepository.findById(new Types.ObjectId(id));
   }
 
-  static async insertAddress(data: Partial<IAddress>) {
-    return addressRepository.create(data);
+  static async insertAddress(data: Partial<IAddress>, actorId?: string) {
+    return addressRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
   static async updateAddress(id: string, data: Partial<IAddress>, actorId?: string) {

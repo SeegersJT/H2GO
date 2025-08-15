@@ -9,8 +9,8 @@ const restricted = roleAuthorizationMiddleware(UserType.ADMIN);
 
 router.get("/all", restricted, PriceListController.getAll);
 router.get("/:id", restricted, PriceListController.getById);
-router.post("/", restricted, PriceListController.create);
-router.put("/:id", restricted, PriceListController.update);
-router.delete("/:id", restricted, PriceListController.delete);
+router.post("/", restricted, PriceListController.insertPriceList);
+router.put("/:id", restricted, PriceListController.updatePriceList);
+router.delete("/:id", restricted, PriceListController.deletePriceList);
 
 export default router;

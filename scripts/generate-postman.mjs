@@ -155,20 +155,20 @@ function parseRouteFile(filePath, urlPrefix) {
       if (['login', 'passwordForgot'].includes(controllerMethod)) {
         tests = [
           'const json = pm.response.json();',
-          'pm.environment.set("confirmation_token", json.data.confirmation_token);',
-          'pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
-          'pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
-          'pm.environment.set("otp", json.data.otp);',
+          'if (json.data.confirmation_token) pm.environment.set("confirmation_token", json.data.confirmation_token);',
+          'if (json.data.confirmation_token_type) pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
+          'if (json.data.confirmation_token_expiry_date) pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
+          'if (json.data.otp) pm.environment.set("otp", json.data.otp);',
         ];
       } else if (['oneTimePin', 'passwordReset', 'refreshToken'].includes(controllerMethod)) {
         tests = [
           'const json = pm.response.json();',
-          'pm.environment.set("access_token", json.data.access_token);',
-          'pm.environment.set("refresh_token", json.data.refresh_token);',
-          'pm.environment.set("confirmation_token", json.data.confirmation_token);',
-          'pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
-          'pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
-          'pm.environment.set("otp", json.data.otp);',
+          'if (json.data.access_token) pm.environment.set("access_token", json.data.access_token);',
+          'if (json.data.refresh_token) pm.environment.set("refresh_token", json.data.refresh_token);',
+          'if (json.data.confirmation_token) pm.environment.set("confirmation_token", json.data.confirmation_token);',
+          'if (json.data.confirmation_token_type) pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
+          'if (json.data.confirmation_token_expiry_date) pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
+          'if (json.data.otp) pm.environment.set("otp", json.data.otp);',
         ];
       }
       if (tests.length > 0) {

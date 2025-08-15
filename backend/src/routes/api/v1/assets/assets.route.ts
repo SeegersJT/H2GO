@@ -9,8 +9,8 @@ const restricted = roleAuthorizationMiddleware(UserType.ADMIN);
 
 router.get("/all", restricted, AssetController.getAll);
 router.get("/:id", restricted, AssetController.getById);
-router.post("/", restricted, AssetController.create);
-router.put("/:id", restricted, AssetController.update);
-router.delete("/:id", restricted, AssetController.delete);
+router.post("/", restricted, AssetController.insertAsset);
+router.put("/:id", restricted, AssetController.updateAsset);
+router.delete("/:id", restricted, AssetController.deleteAsset);
 
 export default router;

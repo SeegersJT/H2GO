@@ -18,36 +18,94 @@ export class AssetController {
       if (!id) {
         return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
       }
+
       const result = await AssetService.getById(id);
+
+      if (!result) {
+        return res.error(result, { message: "Invalid or inactive asset", code: StatusCode.BAD_REQUEST });
+      }
+
       return res.success(result, { message: "Retrieved asset successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static create = async (req: Request, res: Response, next: NextFunction) => {
+  static insertAsset = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await AssetService.create(req.body);
+      let { product_id, serial_no, asset_state, current_holder_type, current_holder_id } = req.body;
+
+      if (!product_id || !serial_no || !asset_state || !current_holder_type || !current_holder_id) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await AssetService.insertAsset(req.body, authenticatedUser.id);
+
       return res.success(result, { message: "Created asset successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static update = async (req: Request, res: Response, next: NextFunction) => {
+  static updateAsset = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await AssetService.update(id, req.body);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await AssetService.updateAsset(id, req.body, authenticatedUser.id);
+
       return res.success(result, { message: "Updated asset successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static delete = async (req: Request, res: Response, next: NextFunction) => {
+  static deleteAsset = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await AssetService.delete(id);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await AssetService.deleteAsset(id, authenticatedUser.id);
+
       return res.success(result, { message: "Deleted asset successfully." });
     } catch (err) {
       next(err);

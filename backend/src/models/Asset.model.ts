@@ -5,7 +5,7 @@ import { nextSeq, formatHumanCode } from "../utils/sequence.utils";
 
 export type HolderType = "BRANCH" | "VEHICLE" | "CUSTOMER" | "USER" | "SUPPLIER" | "OTHER";
 export type AssetStatus = "ACTIVE" | "LOST" | "DAMAGED" | "RETIRED";
-export type AssetState = "FULL" | "EMPTY" | "CLEANING" | "UNKNOWN";
+export type AssetState = "FULL" | "EMPTY" | "IN_USE" | "IN_TRANSIT" | "CLEANING" | "STORED" | "UNKNOWN";
 
 export interface IAsset extends Document {
   asset_no: string; // e.g., "ASSET-H2GO-0001"
@@ -17,6 +17,8 @@ export interface IAsset extends Document {
   current_holder_type: HolderType; // where the asset currently is
   current_holder_id: Types.ObjectId; // the specific holder document _id
   last_movement_at?: Date;
+
+  active: boolean;
 
   createdBy: Types.ObjectId | null;
   updatedBy: Types.ObjectId | null;
@@ -43,6 +45,8 @@ const assetSchema = new Schema<IAsset>(
     current_holder_id: { type: Schema.Types.ObjectId, required: true, index: true },
 
     last_movement_at: { type: Date, required: false },
+
+    active: { type: Boolean, required: true, default: true },
 
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: false, default: null },
     updatedBy: { type: Schema.Types.ObjectId, ref: "User", required: false, default: null },
@@ -81,6 +85,7 @@ assetSchema.pre("validate", async function (next) {
 });
 
 // --- Indexes ---
+assetSchema.index({ product_id: 1, active: 1 });
 assetSchema.index({ product_id: 1, serial_no: 1 }, { unique: true, sparse: true, name: "uniq_serial_per_product" });
 assetSchema.index({ current_holder_type: 1, current_holder_id: 1 }, { name: "by_current_holder" });
 

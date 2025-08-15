@@ -33,21 +33,19 @@ export class GenericRepository<TSchema extends WithMaybeId, TDoc extends Hydrate
 
   private applyAuditOnCreate(obj: AnyKeys<TSchema>, opts?: WriteOptions) {
     if (!opts?.actorId) return;
+
     const anyObj = obj as any;
-    if ("createdBy" in anyObj && (anyObj.createdBy == null || anyObj.createdBy === undefined)) {
-      anyObj.createdBy = opts.actorId;
-    }
-    if ("updatedBy" in anyObj) {
-      anyObj.updatedBy = opts.actorId;
-    }
+
+    anyObj.createdBy = opts.actorId;
+    anyObj.updatedBy = opts.actorId;
   }
 
   private applyAuditOnUpdate(obj: AnyKeys<TSchema>, opts?: WriteOptions) {
     if (!opts?.actorId) return;
+
     const anyObj = obj as any;
-    if ("updatedBy" in anyObj) {
-      anyObj.updatedBy = opts.actorId;
-    }
+
+    anyObj.updatedBy = opts.actorId;
   }
 
   /** Adds `{active: true}` by default when the schema has an `active` path */
