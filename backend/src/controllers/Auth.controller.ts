@@ -35,6 +35,13 @@ export class AuthController {
 
       const result = await AuthService.validateConfirmationToken(confirmation_token);
 
+      if (!result) {
+        return res.error(result, {
+          message: "Confirmation token validation failed.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
       return res.success(result, {
         message: "Confirmation token validated successfully.",
       });
@@ -64,27 +71,6 @@ export class AuthController {
     }
   };
 
-  static passwordForgot = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { email } = req.body;
-
-      if (!email) {
-        return res.error(null, {
-          message: "[email] required.",
-          code: StatusCode.BAD_REQUEST,
-        });
-      }
-
-      const result = await AuthService.passwordForgot(email);
-
-      return res.success(result, {
-        message: "Email verified. Sent OTP successfully",
-      });
-    } catch (err) {
-      next(err);
-    }
-  };
-
   static passwordReset = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { confirmation_token, password, confirm_password } = req.body;
@@ -100,6 +86,27 @@ export class AuthController {
 
       return res.success(result, {
         message: "Password reset and login successful.",
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static passwordForgot = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.error(null, {
+          message: "[email] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const result = await AuthService.passwordForgot(email);
+
+      return res.success(result, {
+        message: "Email verified. Sent OTP successfully",
       });
     } catch (err) {
       next(err);

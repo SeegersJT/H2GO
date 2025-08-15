@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 
 export interface IConfirmationToken extends Document {
   confirmation_token: string; // e.g. "1234-5678-9012-3456-7890"
-  confirmation_token_hash: string; // sha256 of digits-only normalization
   user_id: Types.ObjectId; // -> User
   confirmation_token_expiry_date: Date; // TTL date
   confirmation_token_type: ConfirmationTokenType;
@@ -69,14 +68,6 @@ const confirmationTokenSchema = new Schema<IConfirmationToken, IConfirmationToke
       required: true,
       trim: true, // stored exactly as generated (e.g., "1234-5678-..."),
     },
-    confirmation_token_hash: {
-      type: String,
-      required: true,
-      minlength: 64,
-      maxlength: 64,
-      select: false, // keep out of normal query results
-      index: true,
-    },
 
     user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     confirmation_token_expiry_date: { type: Date, required: true, index: true },
@@ -123,8 +114,6 @@ confirmationTokenSchema.pre("validate", function (next) {
     return next(new Error("confirmation_token_expiry_date must be in the future"));
   }
 
-  // Always keep the hash in sync with the stored human token
-  this.confirmation_token_hash = hashToken(this.confirmation_token);
   next();
 });
 
@@ -149,7 +138,6 @@ confirmationTokenSchema.set("toJSON", {
   versionKey: false,
   transform: (_doc, ret: any) => {
     delete ret.otp_hash;
-    delete ret.confirmation_token_hash;
     return ret;
   },
 });

@@ -1,6 +1,7 @@
 {
   "name": "h2go",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend start\"",
     "generate:postman": "node scripts/generate-postman.js"
