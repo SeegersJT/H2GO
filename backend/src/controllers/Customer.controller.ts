@@ -25,29 +25,78 @@ export class CustomerController {
     }
   };
 
-  static create = async (req: Request, res: Response, next: NextFunction) => {
+  static insertCustomer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await CustomerService.create(req.body);
+      let { branch_id, name, email, phone } = req.body;
+
+      if (!branch_id || !name || !email || !phone) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await CustomerService.insertCustomer(req.body, authenticatedUser.id);
       return res.success(result, { message: "Created customer successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static update = async (req: Request, res: Response, next: NextFunction) => {
+  static updateCustomer = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await CustomerService.update(id, req.body);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await CustomerService.updateCustomer(id, req.body, authenticatedUser.id);
       return res.success(result, { message: "Updated customer successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static delete = async (req: Request, res: Response, next: NextFunction) => {
+  static deleteCustomer = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await CustomerService.delete(id);
+
+      if (!id) {
+        return res.error(null, {
+          message: "[id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await CustomerService.deleteCustomer(id, authenticatedUser.id);
       return res.success(result, { message: "Deleted customer successfully." });
     } catch (err) {
       next(err);

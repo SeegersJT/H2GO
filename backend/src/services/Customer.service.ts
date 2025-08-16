@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { customerRepository } from "../repositories/Customer.repository";
+import { ICustomer } from "../models/Customer.model";
 
 export class CustomerService {
   static getAll() {
@@ -10,15 +11,20 @@ export class CustomerService {
     return customerRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return customerRepository.create(data);
+  static insertCustomer(data: Partial<ICustomer>, actorId?: string) {
+    return customerRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return customerRepository.updateById(new Types.ObjectId(id), data);
+  static updateCustomer(id: string, data: Partial<ICustomer>, actorId?: string) {
+    const customer = this.getById(id);
+    if (!customer) {
+      throw new Error("Invalid or inactive customer");
+    }
+
+    return customerRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return customerRepository.deleteById(new Types.ObjectId(id));
+  static deleteCustomer(id: string, actorId?: string) {
+    return customerRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }
