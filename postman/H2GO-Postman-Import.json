@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "08f21587-c1f7-4529-851b-7205b3a0642b",
+    "_postman_id": "8b06e0a4-5665-46a1-b9bb-aa4af93243d6",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1563,187 +1563,6 @@
       ]
     },
     {
-      "name": "orders",
-      "item": [
-        {
-          "name": "GET /api/v1/orders/all",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/all",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders",
-                "all"
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /api/v1/orders/",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders"
-              ],
-              "query": [
-                {
-                  "key": "order_id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "POST /api/v1/orders/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"branch_id\": \"\",\n  \"user_id\": \"\",\n  \"address_id\": \"\",\n  \"items\": \"\",\n  \"desired_date\": \"\",\n  \"window_start\": \"\",\n  \"window_end\": \"\",\n  \"totals\": \"\",\n  \"source\": \"\",\n  \"status\": \"\",\n  \"notes\": \"\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "PUT /api/v1/orders/",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders"
-              ],
-              "query": [
-                {
-                  "key": "order_id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "DELETE /api/v1/orders/",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders"
-              ],
-              "query": [
-                {
-                  "key": "order_id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "POST /api/v1/orders/generate",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/generate",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "orders",
-                "generate"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"desired_date\": \"\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "payments",
       "item": [
         {
@@ -2235,6 +2054,39 @@
                 "api",
                 "v1",
                 "routes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"date\": \"\",\n  \"vehicle_id\": \"\",\n  \"driver_id\": \"\",\n  \"notes\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/routes/generate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/generate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "routes",
+                "generate"
               ]
             },
             "body": {

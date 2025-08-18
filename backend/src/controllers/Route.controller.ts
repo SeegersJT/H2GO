@@ -51,6 +51,30 @@ export class RouteController {
     }
   };
 
+  static generateRoute = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { branch_id, date, vehicle_id, driver_id, notes } = req.body;
+      if (!branch_id || !date || !vehicle_id || !driver_id || !notes) {
+        return res.error(null, { message: "Missing required fields.", code: StatusCode.BAD_REQUEST });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const routeDate = new Date(date);
+      if (isNaN(routeDate.getTime())) {
+        return res.error(null, { message: "Invalid date.", code: StatusCode.BAD_REQUEST });
+      }
+
+      const result = await RouteService.generateForDay(branch_id, routeDate, vehicle_id, driver_id, notes, authenticatedUser.id);
+      return res.success(result, { message: "Generated route successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   static updateRoute = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const routeId = req.query.route_id as string;
