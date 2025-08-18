@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "1a9a6772-704c-4d36-879b-2e65464eb751",
+    "_postman_id": "052ad052-7d40-45c3-8950-e93d044cb1f3",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1144,6 +1144,118 @@
                   "value": ""
                 }
               ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/v1/deliveries/status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "deliveries",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_id\": \"\",\n  \"status\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /api/v1/deliveries/proof",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/proof",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "deliveries",
+                "proof"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_id\": \"\",\n  \"proof\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/deliveries/events",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "deliveries",
+                "events"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_id\": \"\",\n  \"type\": \"\",\n  \"data\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/deliveries/swap",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/swap",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "deliveries",
+                "swap"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_id\": \"\",\n  \"empty_serial\": \"\",\n  \"full_serial\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         }

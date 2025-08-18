@@ -6,11 +6,18 @@ import { DeliveryController } from "../../../../controllers/Delivery.controller"
 const router = Router();
 
 const restricted = roleAuthorizationMiddleware(UserType.BRANCH_ADMIN);
+const driverRestricted = roleAuthorizationMiddleware(UserType.DRIVER);
 
 router.get("/all", restricted, DeliveryController.getAll);
 router.get("/", restricted, DeliveryController.getById);
 router.post("/", restricted, DeliveryController.insertDelivery);
 router.put("/", restricted, DeliveryController.updateDelivery);
 router.delete("/", restricted, DeliveryController.deleteDelivery);
+
+// Driver/Admin endpoints for delivery progress
+router.put("/status", driverRestricted, DeliveryController.updateStatus);
+router.put("/proof", driverRestricted, DeliveryController.updateProof);
+router.post("/events", driverRestricted, DeliveryController.addEvent);
+router.post("/swap", driverRestricted, DeliveryController.swapProducts);
 
 export default router;
