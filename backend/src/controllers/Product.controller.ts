@@ -14,12 +14,12 @@ export class ProductController {
 
   static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+      const productId = req.query.product_id as string;
+      if (!productId) {
+        return res.error(null, { message: "[product_id] required.", code: StatusCode.BAD_REQUEST });
       }
 
-      const result = await ProductService.getById(id);
+      const result = await ProductService.getById(productId);
 
       if (!result) {
         return res.error(result, { message: "Invalid or inactive product.", code: StatusCode.BAD_REQUEST });
@@ -58,11 +58,11 @@ export class ProductController {
 
   static updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const productId = req.query.product_id as string;
 
-      if (!id) {
+      if (!productId) {
         return res.error(null, {
-          message: "[id] required.",
+          message: "[product_id] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -76,7 +76,7 @@ export class ProductController {
         });
       }
 
-      const result = await ProductService.updateProduct(id, req.body, authenticatedUser.id);
+      const result = await ProductService.updateProduct(productId, req.body, authenticatedUser.id);
       return res.success(result, { message: "Updated product successfully." });
     } catch (err) {
       next(err);
@@ -85,11 +85,11 @@ export class ProductController {
 
   static deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const productId = req.query.product_id as string;
 
-      if (!id) {
+      if (!productId) {
         return res.error(null, {
-          message: "[id] required.",
+          message: "[product_id] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -103,7 +103,7 @@ export class ProductController {
         });
       }
 
-      const result = await ProductService.deleteProduct(id, authenticatedUser.id);
+      const result = await ProductService.deleteProduct(productId, authenticatedUser.id);
       return res.success(result, { message: "Deleted product successfully." });
     } catch (err) {
       next(err);

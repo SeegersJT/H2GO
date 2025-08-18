@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { orderRepository } from "../repositories/Order.repository";
+import { IOrder } from "../models/Order.model";
 
 export class OrderService {
   static getAll() {
@@ -10,15 +11,29 @@ export class OrderService {
     return orderRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return orderRepository.create(data);
+  static insertOrder(data: Partial<IOrder>, actorId?: string) {
+    return orderRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return orderRepository.updateById(new Types.ObjectId(id), data);
+  static updateOrder(id: string, data: Partial<IOrder>, actorId?: string) {
+    const order = this.getById(id);
+    if (!order) {
+      throw new Error("Invalid or inactive order");
+    }
+
+    return orderRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return orderRepository.deleteById(new Types.ObjectId(id));
+  static deleteOrder(id: string, actorId?: string) {
+    const order = this.getById(id);
+    if (!order) {
+      throw new Error("Invalid or inactive order");
+    }
+
+    return orderRepository.updateById(
+      new Types.ObjectId(id),
+      { status: "cancelled" },
+      actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+    );
   }
 }

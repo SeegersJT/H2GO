@@ -14,12 +14,13 @@ export class AssetController {
 
   static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+      const assetId = req.query.asset_id as string;
+
+      if (!assetId) {
+        return res.error(null, { message: "[assetId] required.", code: StatusCode.BAD_REQUEST });
       }
 
-      const result = await AssetService.getById(id);
+      const result = await AssetService.getById(assetId);
 
       if (!result) {
         return res.error(result, { message: "Invalid or inactive asset", code: StatusCode.BAD_REQUEST });
@@ -58,9 +59,9 @@ export class AssetController {
 
   static updateAsset = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const assetId = req.query.asset_id as string;
 
-      if (!id) {
+      if (!assetId) {
         return res.error(null, {
           message: "[id] required.",
           code: StatusCode.BAD_REQUEST,
@@ -76,7 +77,7 @@ export class AssetController {
         });
       }
 
-      const result = await AssetService.updateAsset(id, req.body, authenticatedUser.id);
+      const result = await AssetService.updateAsset(assetId, req.body, authenticatedUser.id);
 
       return res.success(result, { message: "Updated asset successfully." });
     } catch (err) {
@@ -86,9 +87,9 @@ export class AssetController {
 
   static deleteAsset = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const assetId = req.query.asset_id as string;
 
-      if (!id) {
+      if (!assetId) {
         return res.error(null, {
           message: "[id] required.",
           code: StatusCode.BAD_REQUEST,
@@ -104,7 +105,7 @@ export class AssetController {
         });
       }
 
-      const result = await AssetService.deleteAsset(id, authenticatedUser.id);
+      const result = await AssetService.deleteAsset(assetId, authenticatedUser.id);
 
       return res.success(result, { message: "Deleted asset successfully." });
     } catch (err) {

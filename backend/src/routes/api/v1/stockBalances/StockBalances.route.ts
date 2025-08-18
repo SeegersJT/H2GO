@@ -8,9 +8,9 @@ const router = Router();
 const restricted = roleAuthorizationMiddleware(UserType.WAREHOUSE_MANAGER);
 
 router.get("/all", restricted, StockBalanceController.getAll);
-router.get("/:id", restricted, StockBalanceController.getById);
+router.get("/", restricted, StockBalanceController.getById);
 router.post("/", restricted, StockBalanceController.create);
-router.put("/:id", restricted, StockBalanceController.update);
-router.delete("/:id", restricted, StockBalanceController.delete);
+router.put("/", restricted, StockBalanceController.update);
+router.delete("/", restricted, StockBalanceController.delete);
 
 export default router;

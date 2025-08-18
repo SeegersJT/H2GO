@@ -8,9 +8,9 @@ const router = Router();
 const restricted = roleAuthorizationMiddleware(UserType.BRANCH_ADMIN);
 
 router.get("/all", restricted, DriverController.getAll);
-router.get("/:id", restricted, DriverController.getById);
+router.get("/", restricted, DriverController.getById);
 router.post("/", restricted, DriverController.create);
-router.put("/:id", restricted, DriverController.update);
-router.delete("/:id", restricted, DriverController.delete);
+router.put("/", restricted, DriverController.update);
+router.delete("/", restricted, DriverController.delete);
 
 export default router;

@@ -15,8 +15,8 @@ export class InvoiceRepository extends GenericRepository<IInvoice, InvoiceDoc> {
     return this.findOne({ invoice_no: invoiceNo }, opts);
   }
 
-  async findByCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions): Promise<InvoiceDoc[]> {
-    return this.findMany({ customer_id: customerId }, opts);
+  async findByUser(userId: Types.ObjectId | string, opts?: ReadOptions): Promise<InvoiceDoc[]> {
+    return this.findMany({ user_id: userId }, opts);
   }
 
   async searchInBranch(

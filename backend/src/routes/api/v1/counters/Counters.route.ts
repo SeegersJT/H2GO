@@ -7,6 +7,6 @@ const router = Router();
 
 const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
-router.get("/:id", restricted, CounterController.getNextSequence);
+router.get("/", restricted, CounterController.getNextSequence);
 
 export default router;

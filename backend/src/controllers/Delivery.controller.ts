@@ -14,11 +14,11 @@ export class DeliveryController {
 
   static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+      const deliveryId = req.query.delivery_id as string;
+      if (!deliveryId) {
+        return res.error(null, { message: "[delivery_id] required.", code: StatusCode.BAD_REQUEST });
       }
-      const result = await DeliveryService.getById(id);
+      const result = await DeliveryService.getById(deliveryId);
       return res.success(result, { message: "Retrieved delivery successfully." });
     } catch (err) {
       next(err);

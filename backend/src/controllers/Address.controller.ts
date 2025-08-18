@@ -40,7 +40,6 @@ export class AddressController {
         country_id,
         label,
         address_line_01,
-        address_line_02,
         suburb,
         city,
         region,
@@ -50,10 +49,23 @@ export class AddressController {
         delivery_instructions,
         contact_person,
         contact_phone,
-        is_default,
       } = req.body;
 
-      if (!user_id || !address_line_01 || !city || !postal_code) {
+      if (
+        !user_id ||
+        !country_id ||
+        !label ||
+        !address_line_01 ||
+        !suburb ||
+        !city ||
+        !region ||
+        !postal_code ||
+        !lat ||
+        !lng ||
+        !delivery_instructions ||
+        !contact_person ||
+        !contact_phone
+      ) {
         return res.error(null, { message: "Missing required fields" });
       }
 
@@ -63,33 +75,7 @@ export class AddressController {
         return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
-      const payload: any = {
-        user_id: new Types.ObjectId(user_id),
-        address_line_01,
-        city,
-        postal_code,
-      };
-
-      if (country_id) payload.country_id = new Types.ObjectId(country_id);
-
-      const optional = {
-        label,
-        address_line_02,
-        suburb,
-        region,
-        lat,
-        lng,
-        delivery_instructions,
-        contact_person,
-        contact_phone,
-        is_default,
-      };
-
-      for (const [key, value] of Object.entries(optional)) {
-        if (value !== undefined) payload[key] = value;
-      }
-
-      const newAddress = await AddressService.insertAddress(payload, authenticatedUser.id);
+      const newAddress = await AddressService.insertAddress(req.body, authenticatedUser.id);
 
       return res.success(newAddress, { message: "Address created successfully." });
     } catch (err) {
@@ -99,7 +85,7 @@ export class AddressController {
 
   static updateAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const addressId = req.params.id;
+      const addressId = req.query.address_id as string;
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
@@ -125,7 +111,7 @@ export class AddressController {
 
   static deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const addressId = req.params.id;
+      const addressId = req.query.address_id as string;
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {

@@ -8,9 +8,9 @@ const router = Router();
 const restricted = roleAuthorizationMiddleware(UserType.ADMIN);
 
 router.get("/all", restricted, SubscriptionController.getAll);
-router.get("/:id", restricted, SubscriptionController.getById);
-router.post("/", restricted, SubscriptionController.create);
-router.put("/:id", restricted, SubscriptionController.update);
-router.delete("/:id", restricted, SubscriptionController.delete);
+router.get("/", restricted, SubscriptionController.getById);
+router.post("/", restricted, SubscriptionController.insertSubscription);
+router.put("/", restricted, SubscriptionController.updateSubscription);
+router.delete("/", restricted, SubscriptionController.deleteSubscription);
 
 export default router;

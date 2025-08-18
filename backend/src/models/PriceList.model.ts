@@ -18,7 +18,7 @@ export interface IPriceList extends Document {
   valid_to?: Date;
   active: boolean;
   is_default?: boolean; // branch default
-  customer_id?: Types.ObjectId | null; // optional customer-specific list
+  user_id?: Types.ObjectId | null; // optional user-specific list
   items: IPriceListItem[]; // product price rows
   priority?: number; // resolve conflicts (higher wins)
 
@@ -48,7 +48,7 @@ const priceListSchema = new Schema<IPriceList>(
     valid_to: { type: Date },
     active: { type: Boolean, required: true, default: true, index: true },
     is_default: { type: Boolean, default: false, index: true },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", default: null, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true },
     items: { type: [priceListItemSchema], default: [], validate: [(v: IPriceListItem[]) => v?.length > 0, "at least one item required"] },
     priority: { type: Number, default: 0, index: true },
 

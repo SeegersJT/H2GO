@@ -19,8 +19,8 @@ export class PaymentRepository extends GenericRepository<IPayment, PaymentDoc> {
     return this.findMany({ invoice_id: invoiceId }, opts);
   }
 
-  async findByCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions): Promise<PaymentDoc[]> {
-    return this.findMany({ customer_id: customerId }, opts);
+  async findByUser(userId: Types.ObjectId | string, opts?: ReadOptions): Promise<PaymentDoc[]> {
+    return this.findMany({ user_id: userId }, opts);
   }
 
   async searchInBranch(

@@ -14,12 +14,12 @@ export class PriceListController {
 
   static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+      const priceListId = req.query.price_list_id as string;
+      if (!priceListId) {
+        return res.error(null, { message: "[price_list_id] required.", code: StatusCode.BAD_REQUEST });
       }
 
-      const result = await PriceListService.getById(id);
+      const result = await PriceListService.getById(priceListId);
       if (!result) {
         return res.error(result, { message: "Invalid or inactive price list", code: StatusCode.BAD_REQUEST });
       }
@@ -56,11 +56,11 @@ export class PriceListController {
 
   static updatePriceList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const priceListId = req.query.price_list_id as string;
 
-      if (!id) {
+      if (!priceListId) {
         return res.error(null, {
-          message: "[id] required.",
+          message: "[price_list_id] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -74,7 +74,7 @@ export class PriceListController {
         });
       }
 
-      const result = await PriceListService.updatePriceList(id, req.body, authenticatedUser.id);
+      const result = await PriceListService.updatePriceList(priceListId, req.body, authenticatedUser.id);
       return res.success(result, { message: "Updated pricelist successfully." });
     } catch (err) {
       next(err);
@@ -83,11 +83,11 @@ export class PriceListController {
 
   static deletePriceList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const priceListId = req.query.price_list_id as string;
 
-      if (!id) {
+      if (!priceListId) {
         return res.error(null, {
-          message: "[id] required.",
+          message: "[price_list_id] required.",
           code: StatusCode.BAD_REQUEST,
         });
       }
@@ -101,7 +101,7 @@ export class PriceListController {
         });
       }
 
-      const result = await PriceListService.deletePriceList(id, authenticatedUser.id);
+      const result = await PriceListService.deletePriceList(priceListId, authenticatedUser.id);
       return res.success(result, { message: "Deleted pricelist successfully." });
     } catch (err) {
       next(err);

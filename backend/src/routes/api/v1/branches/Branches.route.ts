@@ -9,9 +9,9 @@ const router = Router();
 const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
 router.get("/all", restricted, BranchController.getAllBranches);
-router.get("/:id", restricted, BranchController.getBranchById);
+router.get("/", restricted, BranchController.getBranchById);
 router.post("/", restricted, BranchController.insertBranch);
-router.put("/:id", restricted, BranchController.updateBranch);
-router.delete("/:id", restricted, BranchController.deleteBranch);
+router.put("/", restricted, BranchController.updateBranch);
+router.delete("/", restricted, BranchController.deleteBranch);
 
 export default router;

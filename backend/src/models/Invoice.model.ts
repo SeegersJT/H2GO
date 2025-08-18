@@ -19,7 +19,7 @@ export interface IInvoiceLine {
 export interface IInvoice extends Document {
   invoice_no: string; // "INV-H2GO-0001"
   branch_id: Types.ObjectId; // -> Branch
-  customer_id: Types.ObjectId; // -> Customer
+  user_id: Types.ObjectId; // -> User
   order_id?: Types.ObjectId; // -> Order (optional)
   currency_code: string; // ISO-4217, e.g., "ZAR"
 
@@ -66,7 +66,7 @@ const invoiceSchema = new Schema<IInvoice>(
   {
     invoice_no: { type: String, required: true, unique: true, trim: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     order_id: { type: Schema.Types.ObjectId, ref: "Order" },
     currency_code: { type: String, required: true, trim: true, set: (v: string) => v?.toUpperCase() },
 

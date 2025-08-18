@@ -15,7 +15,7 @@ export interface IOrderItem {
 export interface IOrder extends Document {
   order_no: string; // "ORDER-H2GO-0001"
   branch_id: Types.ObjectId; // owning branch (for numbering)
-  customer_id: Types.ObjectId; // -> Customer
+  user_id: Types.ObjectId; // -> User
   address_id: Types.ObjectId; // -> Address (delivery address)
   items: IOrderItem[];
 
@@ -50,7 +50,7 @@ const orderSchema = new Schema<IOrder>(
   {
     order_no: { type: String, required: true, unique: true, trim: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     address_id: { type: Schema.Types.ObjectId, ref: "Address", required: true },
     items: { type: [orderItemSchema], validate: [(v: IOrderItem[]) => v?.length > 0, "at least one item required"] },
 

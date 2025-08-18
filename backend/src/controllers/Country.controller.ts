@@ -15,7 +15,8 @@ export class CountryController {
 
   static getCountryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const countryId = req.params.id;
+      const countryId = req.query.country_id as string;
+
       const country = await CountryService.getCountryById(countryId);
 
       if (!country) {
@@ -65,7 +66,7 @@ export class CountryController {
 
   static updateCountry = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const countryId = req.params.id;
+      const countryId = req.query.country_id as string;
       const updateData = req.body;
       const authenticatedUser = req.authenticatedUser;
 

@@ -9,8 +9,8 @@ const router = Router();
 const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 
 router.get("/all", restricted, CountryController.getAllCountries);
-router.get("/:id", restricted, CountryController.getCountryById);
+router.get("/", restricted, CountryController.getCountryById);
 router.post("/", restricted, CountryController.insertCountry);
-router.put("/:id", restricted, CountryController.updateCountry);
+router.put("/", restricted, CountryController.updateCountry);
 
 export default router;

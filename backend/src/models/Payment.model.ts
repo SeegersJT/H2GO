@@ -8,7 +8,7 @@ export type PaymentStatus = "pending" | "succeeded" | "failed" | "refunded" | "v
 export interface IPayment extends Document {
   payment_no: string; // "PMT-H2GO-0001"
   branch_id: Types.ObjectId; // -> Branch
-  customer_id: Types.ObjectId; // -> Customer
+  user_id: Types.ObjectId; // -> User
   invoice_id?: Types.ObjectId | null; // -> Invoice (optional prepayment)
   method: PaymentMethod;
   status: PaymentStatus;
@@ -31,7 +31,7 @@ const paymentSchema = new Schema<IPayment>(
   {
     payment_no: { type: String, required: true, unique: true, trim: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     invoice_id: { type: Schema.Types.ObjectId, ref: "Invoice", default: null, index: true },
 
     method: { type: String, enum: ["cash", "card", "bank_transfer", "mobile", "other"], required: true, index: true },
@@ -66,7 +66,7 @@ paymentSchema.pre("validate", async function (next) {
   }
 });
 
-paymentSchema.index({ customer_id: 1, received_at: -1 }, { name: "payments_by_customer_recent" });
+paymentSchema.index({ user_id: 1, received_at: -1 }, { name: "payments_by_user_recent" });
 paymentSchema.set("toJSON", { versionKey: false, transform: (_d, r) => r });
 
 const Payment: Model<IPayment> = mongoose.model<IPayment>("Payment", paymentSchema);

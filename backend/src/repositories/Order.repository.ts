@@ -21,9 +21,9 @@ export class OrderRepository extends GenericRepository<IOrder, OrderDoc> {
     return this.findMany({ branch_id: branchId }, opts);
   }
 
-  /** List orders for a given customer */
-  async findByCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions): Promise<OrderDoc[]> {
-    return this.findMany({ customer_id: customerId }, opts);
+  /** List orders for a given user */
+  async findByUser(userId: Types.ObjectId | string, opts?: ReadOptions): Promise<OrderDoc[]> {
+    return this.findMany({ user_id: userId }, opts);
   }
 
   /** List orders in a branch within a date range (inclusive start, exclusive end) */

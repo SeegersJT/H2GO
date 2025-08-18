@@ -18,7 +18,8 @@ export class BranchController {
 
   static getBranchById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const branchId = req.params.id;
+      const branchId = req.query.branch_id as string;
+
       const branch = await BranchService.getBranchById(branchId);
 
       return res.success(branch, {
@@ -98,8 +99,7 @@ export class BranchController {
 
   static updateBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const branchId = req.params.id;
-
+      const branchId = req.query.branch_id as string;
       const { branch_name, branch_abbreviation, country_id, headoffice_id } = req.body;
 
       if (!branch_name || !branch_abbreviation || !country_id || !headoffice_id) {
@@ -173,7 +173,7 @@ export class BranchController {
 
   static deleteBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const branchId = req.query.branch_id as string;
       const authenticatedUser = req.authenticatedUser;
 
       if (!authenticatedUser) {
@@ -183,7 +183,7 @@ export class BranchController {
         });
       }
 
-      const deletedBranch = await BranchService.softDeleteBranch(id, authenticatedUser?.id);
+      const deletedBranch = await BranchService.softDeleteBranch(branchId, authenticatedUser?.id);
 
       if (!deletedBranch) {
         return res.error(null, {

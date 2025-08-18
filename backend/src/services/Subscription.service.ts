@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { subscriptionRepository } from "../repositories/Subscription.repository";
+import { ISubscription } from "../models/Subscription.model";
 
 export class SubscriptionService {
   static getAll() {
@@ -10,15 +11,29 @@ export class SubscriptionService {
     return subscriptionRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return subscriptionRepository.create(data);
+  static insertSubscription(data: Partial<ISubscription>, actorId?: string) {
+    return subscriptionRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return subscriptionRepository.updateById(new Types.ObjectId(id), data);
+  static updateSubscription(id: string, data: Partial<ISubscription>, actorId?: string) {
+    const subscription = this.getById(id);
+    if (!subscription) {
+      throw new Error("Invalid or inactive subscription");
+    }
+
+    return subscriptionRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return subscriptionRepository.deleteById(new Types.ObjectId(id));
+  static deleteSubscription(id: string, actorId?: string) {
+    const subscription = this.getById(id);
+    if (!subscription) {
+      throw new Error("Invalid or inactive subscription");
+    }
+
+    return subscriptionRepository.updateById(
+      new Types.ObjectId(id),
+      { status: "cancelled" },
+      actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+    );
   }
 }

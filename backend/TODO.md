@@ -76,7 +76,6 @@ _2025-07-24_
 - [ ] Push delivery updates back to admin:
   - [ ] ENROUTE
   - [ ] ARRIVED
-  - [ ] CALLING CUSTOMER → SUCCESS / FAILED
   - [ ] DELIVERY COMPLETED / FAILED
   - [ ] Next delivery automatically starts
 - [ ] Admin should be able to reprioritize and push route updates

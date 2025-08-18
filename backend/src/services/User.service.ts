@@ -7,7 +7,6 @@ import { CountryService } from "./Country.service";
 import User from "../models/User.model";
 import dayjs from "dayjs";
 import { UserType } from "../utils/constants/UserType.constant";
-import { CustomerDoc, customerRepository } from "../repositories/Customer.repository";
 
 export class UserService {
   static async getAllUsers() {
@@ -88,13 +87,7 @@ export class UserService {
       active: true,
     };
 
-    const user = await userRepository.create(newUser, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
-
-    if (user.user_type === UserType.CUSTOMER) {
-      // INSERT CUSTOMER
-    }
-
-    return user;
+    return await userRepository.create(newUser, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
   static async updateUser(id: string, data: Partial<IUser>, actorId?: string) {

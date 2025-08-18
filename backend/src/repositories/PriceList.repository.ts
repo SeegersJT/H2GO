@@ -34,9 +34,9 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
     return lists.filter((pl) => isWithin(opts.onDate!, pl.valid_from ?? undefined, pl.valid_to ?? undefined));
   }
 
-  /** Customer‑specific lists (most specific first) */
-  async findForCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions & { onDate?: Date }): Promise<PriceListDoc[]> {
-    const filter: any = { customer_id: customerId };
+  /** User‑specific lists (most specific first) */
+  async findForUser(userId: Types.ObjectId | string, opts?: ReadOptions & { onDate?: Date }): Promise<PriceListDoc[]> {
+    const filter: any = { user_id: userId };
     const lists = await this.findMany(filter, { ...opts, sort: { priority: -1, createdAt: -1 } });
     if (!opts?.onDate) return lists;
     return lists.filter((pl) => isWithin(opts.onDate!, pl.valid_from ?? undefined, pl.valid_to ?? undefined));
@@ -151,19 +151,19 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
   }
 
   /**
-   * Resolve the applicable lists given branch/customer/date, ordered by priority desc.
-   * If customerId is provided, customer lists come first, then branch lists (defaults included).
+   * Resolve the applicable lists given branch/user/date, ordered by priority desc.
+   * If userId is provided, user lists come first, then branch lists (defaults included).
    */
   async getApplicableLists(
     branchId: Types.ObjectId | string,
-    customerId?: Types.ObjectId | string | null,
+    userId?: Types.ObjectId | string | null,
     onDate: Date = new Date(),
     opts?: ReadOptions
   ): Promise<PriceListDoc[]> {
     const lists: PriceListDoc[] = [];
 
-    if (customerId) {
-      lists.push(...(await this.findForCustomer(customerId, { ...opts, onDate, sort: { priority: -1, createdAt: -1 } })));
+    if (userId) {
+      lists.push(...(await this.findForUser(userId, { ...opts, onDate, sort: { priority: -1, createdAt: -1 } })));
     }
 
     const branchLists = await this.findByBranch(branchId, { ...opts, onDate, sort: { priority: -1, createdAt: -1 } });
@@ -184,7 +184,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
 
   /**
    * Compute effective unit price for a product, considering:
-   * - customer-specific price lists first (if provided)
+   * - user-specific price lists first (if provided)
    * - then branch lists (including default)
    * - validity windows, active flag
    * - min_qty tiers (choose the best tier where min_qty <= qty)
@@ -195,14 +195,14 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
       branchId: Types.ObjectId | string;
       productId: Types.ObjectId | string;
       quantity?: number;
-      customerId?: Types.ObjectId | string | null;
+      userId?: Types.ObjectId | string | null;
       onDate?: Date;
     },
     opts?: ReadOptions
   ): Promise<{ price: number; currency: string | null; sourcePriceListId: Types.ObjectId } | null> {
-    const { branchId, productId, quantity = 1, customerId = null, onDate = new Date() } = params;
+    const { branchId, productId, quantity = 1, userId = null, onDate = new Date() } = params;
 
-    const applicable = await this.getApplicableLists(branchId, customerId, onDate, opts);
+    const applicable = await this.getApplicableLists(branchId, userId, onDate, opts);
     if (!applicable.length) return null;
 
     // Iterate in priority order; pick the first list with a qualifying tier

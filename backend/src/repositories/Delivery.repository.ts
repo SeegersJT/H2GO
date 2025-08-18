@@ -31,9 +31,9 @@ export class DeliveryRepository extends GenericRepository<IDelivery, DeliveryDoc
     return this.findMany({ order_id: orderId }, opts);
   }
 
-  /** List deliveries for a customer */
-  async findByCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions): Promise<DeliveryDoc[]> {
-    return this.findMany({ customer_id: customerId }, opts);
+  /** List deliveries for a user */
+  async findByUser(userId: Types.ObjectId | string, opts?: ReadOptions): Promise<DeliveryDoc[]> {
+    return this.findMany({ user_id: userId }, opts);
   }
 
   /** List deliveries in a branch by status */

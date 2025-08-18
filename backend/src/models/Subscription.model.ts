@@ -7,7 +7,7 @@ export type SubscriptionStatus = "active" | "paused" | "cancelled";
 export interface ISubscription extends Document {
   subscription_no: string; // "SUB-H2GO-0001"
   branch_id: Types.ObjectId; // -> Branch
-  customer_id: Types.ObjectId; // -> Customer
+  user_id: Types.ObjectId; // -> User
   address_id: Types.ObjectId; // -> Address used for deliveries
   items: { product_id: Types.ObjectId; name?: string; quantity: number; unit_price?: number }[];
 
@@ -38,7 +38,7 @@ const subscriptionSchema = new Schema<ISubscription>(
   {
     subscription_no: { type: String, required: true, unique: true, trim: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     address_id: { type: Schema.Types.ObjectId, ref: "Address", required: true },
     items: { type: [subscriptionItemSchema], validate: [(v: any[]) => v?.length > 0, "at least one item required"] },
 

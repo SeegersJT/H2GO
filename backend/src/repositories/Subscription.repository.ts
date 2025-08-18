@@ -15,8 +15,8 @@ export class SubscriptionRepository extends GenericRepository<ISubscription, Sub
     return this.findOne({ subscription_no: subscriptionNo }, opts);
   }
 
-  async findByCustomer(customerId: Types.ObjectId | string, opts?: ReadOptions): Promise<SubscriptionDoc[]> {
-    return this.findMany({ customer_id: customerId }, opts);
+  async findByUser(userId: Types.ObjectId | string, opts?: ReadOptions): Promise<SubscriptionDoc[]> {
+    return this.findMany({ user_id: userId }, opts);
   }
 
   async dueForRun(before: Date, opts?: ReadOptions): Promise<SubscriptionDoc[]> {

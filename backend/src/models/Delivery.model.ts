@@ -10,7 +10,7 @@ export interface IDelivery extends Document {
   route_id: Types.ObjectId; // -> Route
   branch_id: Types.ObjectId; // redundant but helps scope numbering/queries
   order_id?: Types.ObjectId; // -> Order (optional if ad-hoc)
-  customer_id: Types.ObjectId; // -> Customer
+  user_id: Types.ObjectId; // -> User
   address_id: Types.ObjectId; // -> Address
 
   sequence: number; // stop order on the route
@@ -40,7 +40,7 @@ const deliverySchema = new Schema<IDelivery>(
     route_id: { type: Schema.Types.ObjectId, ref: "Route", required: true, index: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
     order_id: { type: Schema.Types.ObjectId, ref: "Order" },
-    customer_id: { type: Schema.Types.ObjectId, ref: "Customer", required: true, index: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     address_id: { type: Schema.Types.ObjectId, ref: "Address", required: true },
     sequence: { type: Number, required: true, default: 0, index: true },
     window_start: { type: String },

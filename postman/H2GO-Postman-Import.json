@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "fa3db7f3-4d78-409b-bc2a-be16f68147d8",
+    "_postman_id": "fc48e440-c64b-482f-b082-6e91b0f99406",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -84,7 +84,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"user_id\": \"\",\n  \"country_id\": \"\",\n  \"label\": \"\",\n  \"address_line_01\": \"\",\n  \"address_line_02\": \"\",\n  \"suburb\": \"\",\n  \"city\": \"\",\n  \"region\": \"\",\n  \"postal_code\": \"\",\n  \"lat\": \"\",\n  \"lng\": \"\",\n  \"delivery_instructions\": \"\",\n  \"contact_person\": \"\",\n  \"contact_phone\": \"\",\n  \"is_default\": \"\",\n  \"\": \"\"\n}",
+              "raw": "{\n  \"user_id\": \"\",\n  \"country_id\": \"\",\n  \"label\": \"\",\n  \"address_line_01\": \"\",\n  \"suburb\": \"\",\n  \"city\": \"\",\n  \"region\": \"\",\n  \"postal_code\": \"\",\n  \"lat\": \"\",\n  \"lng\": \"\",\n  \"delivery_instructions\": \"\",\n  \"contact_person\": \"\",\n  \"contact_phone\": \"\",\n  \"\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -94,7 +94,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/addresses/{{id}}",
+          "name": "PUT /api/v1/addresses/",
           "request": {
             "method": "PUT",
             "header": [
@@ -104,19 +104,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/addresses/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/addresses/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "addresses",
-                "{{id}}"
+                "addresses"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "address_id",
                   "value": ""
                 }
               ]
@@ -124,7 +123,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/addresses/{{id}}",
+          "name": "DELETE /api/v1/addresses/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -134,19 +133,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/addresses/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/addresses/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "addresses",
-                "{{id}}"
+                "addresses"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "address_id",
                   "value": ""
                 }
               ]
@@ -183,7 +181,7 @@
           }
         },
         {
-          "name": "GET /api/v1/assets/{{id}}",
+          "name": "GET /api/v1/assets/",
           "request": {
             "method": "GET",
             "header": [
@@ -193,19 +191,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/assets/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/assets/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "assets",
-                "{{id}}"
+                "assets"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "asset_id",
                   "value": ""
                 }
               ]
@@ -245,7 +242,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/assets/{{id}}",
+          "name": "PUT /api/v1/assets/",
           "request": {
             "method": "PUT",
             "header": [
@@ -255,19 +252,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/assets/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/assets/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "assets",
-                "{{id}}"
+                "assets"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "asset_id",
                   "value": ""
                 }
               ]
@@ -275,7 +271,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/assets/{{id}}",
+          "name": "DELETE /api/v1/assets/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -285,19 +281,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/assets/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/assets/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "assets",
-                "{{id}}"
+                "assets"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "asset_id",
                   "value": ""
                 }
               ]
@@ -589,7 +584,7 @@
           }
         },
         {
-          "name": "GET /api/v1/branches/{{id}}",
+          "name": "GET /api/v1/branches/",
           "request": {
             "method": "GET",
             "header": [
@@ -599,19 +594,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/branches/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/branches/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "branches",
-                "{{id}}"
+                "branches"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "branch_id",
                   "value": ""
                 }
               ]
@@ -651,7 +645,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/branches/{{id}}",
+          "name": "PUT /api/v1/branches/",
           "request": {
             "method": "PUT",
             "header": [
@@ -661,19 +655,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/branches/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/branches/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "branches",
-                "{{id}}"
+                "branches"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "branch_id",
                   "value": ""
                 }
               ]
@@ -690,7 +683,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/branches/{{id}}",
+          "name": "DELETE /api/v1/branches/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -700,19 +693,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/branches/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/branches/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "branches",
-                "{{id}}"
+                "branches"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "branch_id",
                   "value": ""
                 }
               ]
@@ -860,7 +852,7 @@
       "name": "counters",
       "item": [
         {
-          "name": "GET /api/v1/counters/{{id}}",
+          "name": "GET /api/v1/counters/",
           "request": {
             "method": "GET",
             "header": [
@@ -870,19 +862,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/counters/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/counters/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "counters",
-                "{{id}}"
+                "counters"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "counter_id",
                   "value": ""
                 }
               ]
@@ -919,7 +910,7 @@
           }
         },
         {
-          "name": "GET /api/v1/countries/{{id}}",
+          "name": "GET /api/v1/countries/",
           "request": {
             "method": "GET",
             "header": [
@@ -929,19 +920,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/countries/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/countries/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "countries",
-                "{{id}}"
+                "countries"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "country_id",
                   "value": ""
                 }
               ]
@@ -981,7 +971,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/countries/{{id}}",
+          "name": "PUT /api/v1/countries/",
           "request": {
             "method": "PUT",
             "header": [
@@ -991,170 +981,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/countries/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/countries/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "countries",
-                "{{id}}"
+                "countries"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "customers",
-      "item": [
-        {
-          "name": "GET /api/v1/customers/all",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/customers/all",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "customers",
-                "all"
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /api/v1/customers/{{id}}",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/customers/{{id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "customers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "POST /api/v1/customers/",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/customers/",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "customers"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"branch_id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"phone\": \"\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "PUT /api/v1/customers/{{id}}",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/customers/{{id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "customers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "DELETE /api/v1/customers/{{id}}",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/customers/{{id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "customers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
+                  "key": "country_id",
                   "value": ""
                 }
               ]
@@ -1191,7 +1029,7 @@
           }
         },
         {
-          "name": "GET /api/v1/deliveries/{{id}}",
+          "name": "GET /api/v1/deliveries/",
           "request": {
             "method": "GET",
             "header": [
@@ -1201,19 +1039,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/deliveries/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/deliveries/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "deliveries",
-                "{{id}}"
+                "deliveries"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "delivery_id",
                   "value": ""
                 }
               ]
@@ -1244,7 +1081,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/deliveries/{{id}}",
+          "name": "PUT /api/v1/deliveries/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1254,27 +1091,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/deliveries/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/deliveries/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "deliveries",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "deliveries"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/deliveries/{{id}}",
+          "name": "DELETE /api/v1/deliveries/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1284,21 +1114,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/deliveries/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/deliveries/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "deliveries",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "deliveries"
               ]
             }
           }
@@ -1333,7 +1156,7 @@
           }
         },
         {
-          "name": "GET /api/v1/drivers/{{id}}",
+          "name": "GET /api/v1/drivers/",
           "request": {
             "method": "GET",
             "header": [
@@ -1343,21 +1166,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/drivers/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/drivers/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "drivers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "drivers"
               ]
             }
           }
@@ -1386,7 +1202,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/drivers/{{id}}",
+          "name": "PUT /api/v1/drivers/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1396,27 +1212,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/drivers/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/drivers/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "drivers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "drivers"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/drivers/{{id}}",
+          "name": "DELETE /api/v1/drivers/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1426,21 +1235,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/drivers/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/drivers/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "drivers",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "drivers"
               ]
             }
           }
@@ -1471,10 +1273,10 @@
       ]
     },
     {
-      "name": "InventoryMovements",
+      "name": "inventoryMovements",
       "item": [
         {
-          "name": "GET /api/v1/InventoryMovements/all",
+          "name": "GET /api/v1/inventoryMovements/all",
           "request": {
             "method": "GET",
             "header": [
@@ -1484,21 +1286,21 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/all",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/all",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 "all"
               ]
             }
           }
         },
         {
-          "name": "GET /api/v1/InventoryMovements/{{id}}",
+          "name": "GET /api/v1/inventoryMovements/",
           "request": {
             "method": "GET",
             "header": [
@@ -1508,27 +1310,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "POST /api/v1/InventoryMovements/",
+          "name": "POST /api/v1/inventoryMovements/",
           "request": {
             "method": "POST",
             "header": [
@@ -1538,20 +1333,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "PUT /api/v1/InventoryMovements/{{id}}",
+          "name": "PUT /api/v1/inventoryMovements/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1561,27 +1356,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/InventoryMovements/{{id}}",
+          "name": "DELETE /api/v1/inventoryMovements/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1591,21 +1379,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "inventoryMovements"
               ]
             }
           }
@@ -1640,7 +1421,7 @@
           }
         },
         {
-          "name": "GET /api/v1/invoices/{{id}}",
+          "name": "GET /api/v1/invoices/",
           "request": {
             "method": "GET",
             "header": [
@@ -1650,21 +1431,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/invoices/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "invoices",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "invoices"
               ]
             }
           }
@@ -1693,7 +1467,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/invoices/{{id}}",
+          "name": "PUT /api/v1/invoices/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1703,27 +1477,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/invoices/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "invoices",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "invoices"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/invoices/{{id}}",
+          "name": "DELETE /api/v1/invoices/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1733,21 +1500,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/invoices/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "invoices",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "invoices"
               ]
             }
           }
@@ -1782,7 +1542,7 @@
           }
         },
         {
-          "name": "GET /api/v1/orders/{{id}}",
+          "name": "GET /api/v1/orders/",
           "request": {
             "method": "GET",
             "header": [
@@ -1792,19 +1552,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/orders/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "orders",
-                "{{id}}"
+                "orders"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "order_id",
                   "value": ""
                 }
               ]
@@ -1831,11 +1590,20 @@
                 "v1",
                 "orders"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"user_id\": \"\",\n  \"address_id\": \"\",\n  \"items\": \"\",\n  \"desired_date\": \"\",\n  \"window_start\": \"\",\n  \"window_end\": \"\",\n  \"totals\": \"\",\n  \"source\": \"\",\n  \"status\": \"\",\n  \"notes\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         },
         {
-          "name": "PUT /api/v1/orders/{{id}}",
+          "name": "PUT /api/v1/orders/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1845,19 +1613,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/orders/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "orders",
-                "{{id}}"
+                "orders"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "order_id",
                   "value": ""
                 }
               ]
@@ -1865,7 +1632,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/orders/{{id}}",
+          "name": "DELETE /api/v1/orders/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1875,21 +1642,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/orders/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "orders",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "orders"
               ]
             }
           }
@@ -1924,7 +1684,7 @@
           }
         },
         {
-          "name": "GET /api/v1/payments/{{id}}",
+          "name": "GET /api/v1/payments/",
           "request": {
             "method": "GET",
             "header": [
@@ -1934,21 +1694,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/payments/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "payments",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "payments"
               ]
             }
           }
@@ -1977,7 +1730,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/payments/{{id}}",
+          "name": "PUT /api/v1/payments/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1987,27 +1740,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/payments/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "payments",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "payments"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/payments/{{id}}",
+          "name": "DELETE /api/v1/payments/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2017,21 +1763,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/payments/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "payments",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "payments"
               ]
             }
           }
@@ -2066,7 +1805,7 @@
           }
         },
         {
-          "name": "GET /api/v1/pricelist/{{id}}",
+          "name": "GET /api/v1/pricelist/",
           "request": {
             "method": "GET",
             "header": [
@@ -2076,19 +1815,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/pricelist/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/pricelist/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "pricelist",
-                "{{id}}"
+                "pricelist"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "price_list_id",
                   "value": ""
                 }
               ]
@@ -2128,7 +1866,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/pricelist/{{id}}",
+          "name": "PUT /api/v1/pricelist/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2138,19 +1876,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/pricelist/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/pricelist/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "pricelist",
-                "{{id}}"
+                "pricelist"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "price_list_id",
                   "value": ""
                 }
               ]
@@ -2158,7 +1895,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/pricelist/{{id}}",
+          "name": "DELETE /api/v1/pricelist/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2168,19 +1905,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/pricelist/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/pricelist/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "pricelist",
-                "{{id}}"
+                "pricelist"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "price_list_id",
                   "value": ""
                 }
               ]
@@ -2217,7 +1953,7 @@
           }
         },
         {
-          "name": "GET /api/v1/products/{{id}}",
+          "name": "GET /api/v1/products/",
           "request": {
             "method": "GET",
             "header": [
@@ -2227,19 +1963,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/products/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "products",
-                "{{id}}"
+                "products"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "product_id",
                   "value": ""
                 }
               ]
@@ -2279,7 +2014,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/products/{{id}}",
+          "name": "PUT /api/v1/products/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2289,19 +2024,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/products/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "products",
-                "{{id}}"
+                "products"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "product_id",
                   "value": ""
                 }
               ]
@@ -2309,7 +2043,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/products/{{id}}",
+          "name": "DELETE /api/v1/products/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2319,19 +2053,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/products/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "products",
-                "{{id}}"
+                "products"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "product_id",
                   "value": ""
                 }
               ]
@@ -2368,7 +2101,7 @@
           }
         },
         {
-          "name": "GET /api/v1/routes/{{id}}",
+          "name": "GET /api/v1/routes/",
           "request": {
             "method": "GET",
             "header": [
@@ -2378,21 +2111,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/routes/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "routes",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "routes"
               ]
             }
           }
@@ -2421,7 +2147,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/routes/{{id}}",
+          "name": "PUT /api/v1/routes/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2431,27 +2157,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/routes/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "routes",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "routes"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/routes/{{id}}",
+          "name": "DELETE /api/v1/routes/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2461,21 +2180,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/routes/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "routes",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "routes"
               ]
             }
           }
@@ -2510,7 +2222,7 @@
           }
         },
         {
-          "name": "GET /api/v1/stockBalances/{{id}}",
+          "name": "GET /api/v1/stockBalances/",
           "request": {
             "method": "GET",
             "header": [
@@ -2520,21 +2232,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/stockBalances/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/stockBalances/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "stockBalances",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "stockBalances"
               ]
             }
           }
@@ -2563,7 +2268,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/stockBalances/{{id}}",
+          "name": "PUT /api/v1/stockBalances/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2573,27 +2278,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/stockBalances/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/stockBalances/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "stockBalances",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "stockBalances"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/stockBalances/{{id}}",
+          "name": "DELETE /api/v1/stockBalances/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2603,21 +2301,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/stockBalances/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/stockBalances/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "stockBalances",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "stockBalances"
               ]
             }
           }
@@ -2652,7 +2343,7 @@
           }
         },
         {
-          "name": "GET /api/v1/subscriptions/{{id}}",
+          "name": "GET /api/v1/subscriptions/",
           "request": {
             "method": "GET",
             "header": [
@@ -2662,19 +2353,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/subscriptions/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/subscriptions/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "subscriptions",
-                "{{id}}"
+                "subscriptions"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "subscription_id",
                   "value": ""
                 }
               ]
@@ -2701,11 +2391,20 @@
                 "v1",
                 "subscriptions"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"user_id\": \"\",\n  \"address_id\": \"\",\n  \"items\": \"\",\n  \"rrule\": \"\",\n  \"anchor_date\": \"\",\n  \"desired_window\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         },
         {
-          "name": "PUT /api/v1/subscriptions/{{id}}",
+          "name": "PUT /api/v1/subscriptions/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2715,19 +2414,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/subscriptions/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/subscriptions/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "subscriptions",
-                "{{id}}"
+                "subscriptions"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "product_id",
                   "value": ""
                 }
               ]
@@ -2735,7 +2433,7 @@
           }
         },
         {
-          "name": "DELETE /api/v1/subscriptions/{{id}}",
+          "name": "DELETE /api/v1/subscriptions/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2745,19 +2443,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/subscriptions/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/subscriptions/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "subscriptions",
-                "{{id}}"
+                "subscriptions"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "subscription_id",
                   "value": ""
                 }
               ]
@@ -2794,7 +2491,7 @@
           }
         },
         {
-          "name": "GET /api/v1/users/{{id}}",
+          "name": "GET /api/v1/users/",
           "request": {
             "method": "GET",
             "header": [
@@ -2804,19 +2501,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/users/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "users",
-                "{{id}}"
+                "users"
               ],
-              "variable": [
+              "query": [
                 {
-                  "key": "id",
+                  "key": "user_id",
                   "value": ""
                 }
               ]
@@ -2856,7 +2552,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/users/{{id}}",
+          "name": "PUT /api/v1/users/",
           "request": {
             "method": "PUT",
             "header": [
@@ -2866,27 +2562,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/users/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "users",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "users"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/users/{{id}}",
+          "name": "DELETE /api/v1/users/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2896,21 +2585,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/users/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "users",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "users"
               ]
             }
           }
@@ -2945,7 +2627,7 @@
           }
         },
         {
-          "name": "GET /api/v1/vehicles/{{id}}",
+          "name": "GET /api/v1/vehicles/",
           "request": {
             "method": "GET",
             "header": [
@@ -2955,21 +2637,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/vehicles/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/vehicles/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "vehicles",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "vehicles"
               ]
             }
           }
@@ -2998,7 +2673,7 @@
           }
         },
         {
-          "name": "PUT /api/v1/vehicles/{{id}}",
+          "name": "PUT /api/v1/vehicles/",
           "request": {
             "method": "PUT",
             "header": [
@@ -3008,27 +2683,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/vehicles/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/vehicles/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "vehicles",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "vehicles"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/vehicles/{{id}}",
+          "name": "DELETE /api/v1/vehicles/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -3038,21 +2706,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/vehicles/{{id}}",
+              "raw": "{{baseUrl}}/api/v1/vehicles/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "vehicles",
-                "{{id}}"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": ""
-                }
+                "vehicles"
               ]
             }
           }
