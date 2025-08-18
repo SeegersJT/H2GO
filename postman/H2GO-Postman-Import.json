@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "fc48e440-c64b-482f-b082-6e91b0f99406",
+    "_postman_id": "7b1165ad-e27e-4a0e-95f6-12a53f7b8804",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1650,7 +1650,46 @@
                 "api",
                 "v1",
                 "orders"
+              ],
+              "query": [
+                {
+                  "key": "order_id",
+                  "value": ""
+                }
               ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/orders/generate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/generate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "generate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"desired_date\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         }

@@ -12,5 +12,6 @@ router.get("/", restricted, OrderController.getById);
 router.post("/", restricted, OrderController.insertOrder);
 router.put("/", restricted, OrderController.updateOrder);
 router.delete("/", restricted, OrderController.deleteOrder);
+router.post("/generate", restricted, OrderController.generateForDate);
 
 export default router;
