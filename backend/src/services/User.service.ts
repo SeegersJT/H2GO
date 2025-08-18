@@ -6,7 +6,6 @@ import { BranchService } from "./Branch.service";
 import { CountryService } from "./Country.service";
 import User from "../models/User.model";
 import dayjs from "dayjs";
-import { UserType } from "../utils/constants/UserType.constant";
 
 export class UserService {
   static async getAllUsers() {
@@ -90,7 +89,7 @@ export class UserService {
     return await userRepository.create(newUser, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async updateUser(id: string, data: Partial<IUser>, actorId?: string) {
+  static async updateUser(id: string, data: Partial<IUser>, actorId: string) {
     const user = this.getUserById(id);
     if (!user) {
       throw new Error("Invalid or inactive user");

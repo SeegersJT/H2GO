@@ -9,8 +9,8 @@ const restricted = roleAuthorizationMiddleware(UserType.BRANCH_ADMIN);
 
 router.get("/all", restricted, DeliveryController.getAll);
 router.get("/", restricted, DeliveryController.getById);
-router.post("/", restricted, DeliveryController.create);
-router.put("/", restricted, DeliveryController.update);
-router.delete("/", restricted, DeliveryController.delete);
+router.post("/", restricted, DeliveryController.insertDelivery);
+router.put("/", restricted, DeliveryController.updateDelivery);
+router.delete("/", restricted, DeliveryController.deleteDelivery);
 
 export default router;

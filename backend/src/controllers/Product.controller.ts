@@ -34,13 +34,11 @@ export class ProductController {
   static insertProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { branch_id, sku, name, description, product_type, unit, capacity_value, default_price, currency_code } = req.body;
-
       if (!branch_id || !sku || !name || !description || !product_type || !unit || !capacity_value || !default_price || !currency_code) {
         return res.error(null, { message: "Missing required fields" });
       }
 
       const authenticatedUser = req.authenticatedUser;
-
       if (!authenticatedUser) {
         return res.error(null, {
           message: "Unauthorized",
@@ -59,7 +57,6 @@ export class ProductController {
   static updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = req.query.product_id as string;
-
       if (!productId) {
         return res.error(null, {
           message: "[product_id] required.",
@@ -68,7 +65,6 @@ export class ProductController {
       }
 
       const authenticatedUser = req.authenticatedUser;
-
       if (!authenticatedUser) {
         return res.error(null, {
           message: "Unauthorized",
@@ -86,7 +82,6 @@ export class ProductController {
   static deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = req.query.product_id as string;
-
       if (!productId) {
         return res.error(null, {
           message: "[product_id] required.",
@@ -95,7 +90,6 @@ export class ProductController {
       }
 
       const authenticatedUser = req.authenticatedUser;
-
       if (!authenticatedUser) {
         return res.error(null, {
           message: "Unauthorized",

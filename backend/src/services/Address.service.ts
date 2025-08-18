@@ -11,15 +11,15 @@ export class AddressService {
     return addressRepository.findById(new Types.ObjectId(id));
   }
 
-  static async insertAddress(data: Partial<IAddress>, actorId?: string) {
+  static async insertAddress(data: Partial<IAddress>, actorId: string) {
     return addressRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async updateAddress(id: string, data: Partial<IAddress>, actorId?: string) {
+  static async updateAddress(id: string, data: Partial<IAddress>, actorId: string) {
     return addressRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async deleteAddress(id: string, actorId?: string) {
+  static async deleteAddress(id: string, actorId: string) {
     return addressRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }

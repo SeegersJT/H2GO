@@ -11,11 +11,11 @@ export class AssetService {
     return assetRepository.findById(new Types.ObjectId(id));
   }
 
-  static async insertAsset(data: Partial<IAsset>, actorId?: string) {
+  static async insertAsset(data: Partial<IAsset>, actorId: string) {
     return assetRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async updateAsset(id: string, data: Partial<IAsset>, actorId?: string) {
+  static async updateAsset(id: string, data: Partial<IAsset>, actorId: string) {
     const asset = await this.getById(id);
     if (!asset) {
       throw new Error("Invalid or inactive asset");
@@ -24,7 +24,7 @@ export class AssetService {
     return assetRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async deleteAsset(id: string, actorId?: string) {
+  static async deleteAsset(id: string, actorId: string) {
     const asset = await this.getById(id);
     if (!asset) {
       throw new Error("Invalid or inactive asset");

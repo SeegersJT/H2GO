@@ -11,11 +11,11 @@ export class ProductService {
     return productRepository.findById(new Types.ObjectId(id));
   }
 
-  static async insertProduct(data: Partial<IProduct>, actorId?: string) {
+  static async insertProduct(data: Partial<IProduct>, actorId: string) {
     return productRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async updateProduct(id: string, data: Partial<IProduct>, actorId?: string) {
+  static async updateProduct(id: string, data: Partial<IProduct>, actorId: string) {
     const product = await this.getById(id);
     if (!product) {
       throw new Error("Invalid or inactive product");
@@ -24,7 +24,7 @@ export class ProductService {
     return productRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async deleteProduct(id: string, actorId?: string) {
+  static async deleteProduct(id: string, actorId: string) {
     const product = await this.getById(id);
     if (!product) {
       throw new Error("Invalid or inactive product");

@@ -1,6 +1,6 @@
 export const RegexPatterns = {
   VALIDATE_NAME: /^[A-Z][a-z]+$/,
-  VALIDATE_SURNAME: /^[A-Z][a-z]+(?:-[A-Z][a-z]+)*$/,
+  VALIDATE_SURNAME: /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/,
   VALIDATE_EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   VALIDATE_MOBILE_SOUTH_AFRICA: /^(?:\+27|27|0)[6-8][0-9]{8}$/,
   VALIDATE_GENDER: /^(Male|Female)$/,

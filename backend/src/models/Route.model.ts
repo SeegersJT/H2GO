@@ -13,6 +13,8 @@ export interface IRoute extends Document {
   status: RouteStatus;
   notes?: string;
 
+  active: boolean;
+
   createdBy: Types.ObjectId | null;
   updatedBy: Types.ObjectId | null;
   createdAt?: Date;
@@ -28,6 +30,7 @@ const routeSchema = new Schema<IRoute>(
     driver_id: { type: Schema.Types.ObjectId, ref: "Driver" },
     status: { type: String, enum: ["planning", "in_progress", "completed", "cancelled"], default: "planning", index: true },
     notes: { type: String, trim: true },
+    active: { type: Boolean, default: true, index: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
     updatedBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
   },

@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { vehicleRepository } from "../repositories/Vehicle.repository";
+import { IVehicle } from "../models/Vehicle.model";
 
 export class VehicleService {
   static getAll() {
@@ -10,15 +11,25 @@ export class VehicleService {
     return vehicleRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return vehicleRepository.create(data);
+  static insertVehicle(data: Partial<IVehicle>, actorId: string) {
+    return vehicleRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return vehicleRepository.updateById(new Types.ObjectId(id), data);
+  static updateVehicle(id: string, data: Partial<IVehicle>, actorId: string) {
+    const vehicle = this.getById(id);
+    if (!vehicle) {
+      throw new Error("Invalid or inactive vehicle");
+    }
+
+    return vehicleRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return vehicleRepository.deleteById(new Types.ObjectId(id));
+  static deleteVehicle(id: string, actorId: string) {
+    const vehicle = this.getById(id);
+    if (!vehicle) {
+      throw new Error("Invalid or inactive vehicle");
+    }
+
+    return vehicleRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }

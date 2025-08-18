@@ -3,6 +3,7 @@ import Branch from "./Branch.model";
 import { nextSeq, formatHumanCode } from "../utils/sequence.utils";
 
 export type VehicleType = "bike" | "car" | "van" | "truck";
+export type VehicleUnit = "unit" | "L" | "kg";
 
 export interface IVehicle extends Document {
   vehicle_no: string; // e.g., "VEH-H2GO-0001"
@@ -10,7 +11,7 @@ export interface IVehicle extends Document {
   reg_number: string; // license plate
   type: VehicleType;
   capacity_value?: number; // e.g., 300
-  capacity_unit?: "unit" | "L" | "kg";
+  capacity_unit?: VehicleUnit;
   active: boolean;
 
   createdBy: Types.ObjectId | null;

@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { driverRepository } from "../repositories/Driver.repository";
+import { IDriver } from "../models/Driver.model";
 
 export class DriverService {
   static getAll() {
@@ -10,15 +11,25 @@ export class DriverService {
     return driverRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return driverRepository.create(data);
+  static insertDriver(data: Partial<IDriver>, actorId: string) {
+    return driverRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return driverRepository.updateById(new Types.ObjectId(id), data);
+  static updateDriver(id: string, data: Partial<IDriver>, actorId: string) {
+    const driver = this.getById(id);
+    if (!driver) {
+      throw new Error("Invalid or inactive driver");
+    }
+
+    return driverRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return driverRepository.deleteById(new Types.ObjectId(id));
+  static deleteDriver(id: string, actorId: string) {
+    const driver = this.getById(id);
+    if (!driver) {
+      throw new Error("Invalid or inactive driver");
+    }
+
+    return driverRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }

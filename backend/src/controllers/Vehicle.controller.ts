@@ -14,40 +14,88 @@ export class VehicleController {
 
   static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.error(null, { message: "[id] required.", code: StatusCode.BAD_REQUEST });
+      const vehicleId = req.query.vehicle_id as string;
+      if (!vehicleId) {
+        return res.error(null, { message: "[vehicle_id] required.", code: StatusCode.BAD_REQUEST });
       }
-      const result = await VehicleService.getById(id);
+
+      const result = await VehicleService.getById(vehicleId);
+      if (!result) {
+        return res.error(null, { message: "Invalid or inactive vehicle", code: StatusCode.BAD_REQUEST });
+      }
+
       return res.success(result, { message: "Retrieved vehicle successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static create = async (req: Request, res: Response, next: NextFunction) => {
+  static insertVehicle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await VehicleService.create(req.body);
+      const { branch_id, reg_number, type, capacity_value, capacity_unit } = req.body;
+      if (!branch_id || !reg_number || !type || !capacity_value || !capacity_unit) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await VehicleService.insertVehicle(req.body, authenticatedUser.id);
       return res.success(result, { message: "Created vehicle successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static update = async (req: Request, res: Response, next: NextFunction) => {
+  static updateVehicle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const result = await VehicleService.update(id, req.body);
+      const vehicleId = req.query.vehicle_id as string;
+      if (!vehicleId) {
+        return res.error(null, {
+          message: "[vehicle_id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await VehicleService.updateVehicle(vehicleId, req.body, authenticatedUser.id);
       return res.success(result, { message: "Updated vehicle successfully." });
     } catch (err) {
       next(err);
     }
   };
 
-  static delete = async (req: Request, res: Response, next: NextFunction) => {
+  static deleteVehicle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const result = await VehicleService.delete(id);
+      const vehicleId = req.query.vehicle_id as string;
+      if (!vehicleId) {
+        return res.error(null, {
+          message: "[vehicle_id] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, {
+          message: "Unauthorized",
+          code: StatusCode.UNAUTHORIZED,
+        });
+      }
+
+      const result = await VehicleService.deleteVehicle(vehicleId, authenticatedUser.id);
       return res.success(result, { message: "Deleted vehicle successfully." });
     } catch (err) {
       next(err);

@@ -11,11 +11,11 @@ export class PriceListService {
     return priceListRepository.findById(new Types.ObjectId(id));
   }
 
-  static async insertPriceList(data: Partial<IPriceList>, actorId?: string) {
+  static async insertPriceList(data: Partial<IPriceList>, actorId: string) {
     return priceListRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async updatePriceList(id: string, data: Partial<IPriceList>, actorId?: string) {
+  static async updatePriceList(id: string, data: Partial<IPriceList>, actorId: string) {
     const priceList = await this.getById(id);
     if (!priceList) {
       throw new Error("Invalid or inactive price list");
@@ -24,7 +24,7 @@ export class PriceListService {
     return priceListRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static async deletePriceList(id: string, actorId?: string) {
+  static async deletePriceList(id: string, actorId: string) {
     const priceList = await this.getById(id);
     if (!priceList) {
       throw new Error("Invalid or inactive price list");

@@ -11,11 +11,11 @@ export class SubscriptionService {
     return subscriptionRepository.findById(new Types.ObjectId(id));
   }
 
-  static insertSubscription(data: Partial<ISubscription>, actorId?: string) {
+  static insertSubscription(data: Partial<ISubscription>, actorId: string) {
     return subscriptionRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static updateSubscription(id: string, data: Partial<ISubscription>, actorId?: string) {
+  static updateSubscription(id: string, data: Partial<ISubscription>, actorId: string) {
     const subscription = this.getById(id);
     if (!subscription) {
       throw new Error("Invalid or inactive subscription");
@@ -24,7 +24,7 @@ export class SubscriptionService {
     return subscriptionRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static deleteSubscription(id: string, actorId?: string) {
+  static deleteSubscription(id: string, actorId: string) {
     const subscription = this.getById(id);
     if (!subscription) {
       throw new Error("Invalid or inactive subscription");

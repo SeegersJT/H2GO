@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { routeRepository } from "../repositories/Route.repository";
+import { IRoute } from "express";
 
 export class RouteService {
   static getAll() {
@@ -10,15 +11,25 @@ export class RouteService {
     return routeRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return routeRepository.create(data);
+  static insertRoute(data: Partial<IRoute>, actorId: string) {
+    return routeRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return routeRepository.updateById(new Types.ObjectId(id), data);
+  static updateRoute(id: string, data: Partial<IRoute>, actorId: string) {
+    const route = this.getById(id);
+    if (!route) {
+      throw new Error("Invalid or inactive route");
+    }
+
+    return routeRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return routeRepository.deleteById(new Types.ObjectId(id));
+  static deleteRoute(id: string, actorId: string) {
+    const route = this.getById(id);
+    if (!route) {
+      throw new Error("Invalid or inactive route");
+    }
+
+    return routeRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }
