@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { RouteService } from "../services/Route.service";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { DriverService } from "../services/Driver.controller";
 
 export class RouteController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {
@@ -22,6 +23,35 @@ export class RouteController {
       const result = await RouteService.getById(routeId);
       if (!result) {
         return res.error(null, { message: "Invalid or inactive route", code: StatusCode.BAD_REQUEST });
+      }
+      return res.success(result, { message: "Retrieved route successfully." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static getByDriverAndDate = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const driver_id = req.query.driver_id as string;
+      const date = req.query.date as string;
+
+      if (!driver_id || !date) {
+        return res.error(null, { message: "[date] required.", code: StatusCode.BAD_REQUEST });
+      }
+
+      const driver = await DriverService.getById(driver_id);
+      if (!driver) {
+        return res.error(null, { message: "Driver not found", code: StatusCode.BAD_REQUEST });
+      }
+
+      const day = new Date(date);
+      if (isNaN(day.getTime())) {
+        return res.error(null, { message: "Invalid [date]", code: StatusCode.BAD_REQUEST });
+      }
+
+      const result = await RouteService.getByDriverAndDate(driver.id, day);
+      if (!result) {
+        return res.error(null, { message: "Route not found", code: StatusCode.BAD_REQUEST });
       }
       return res.success(result, { message: "Retrieved route successfully." });
     } catch (err) {

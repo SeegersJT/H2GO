@@ -26,6 +26,15 @@ export class RouteRepository extends GenericRepository<IRoute, RouteDoc> {
     return this.findMany({ driver_id: driverId }, opts);
   }
 
+  /** Find a route for a specific driver on a given day */
+  async findByDriverAndDate(driverId: Types.ObjectId | string, day: Date, opts?: ReadOptions): Promise<RouteDoc | null> {
+    const start = new Date(day);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    return this.findOne({ driver_id: driverId, date: { $gte: start, $lt: end } }, opts);
+  }
+
   /** List routes assigned to a vehicle */
   async findByVehicle(vehicleId: Types.ObjectId | string, opts?: ReadOptions): Promise<RouteDoc[]> {
     return this.findMany({ vehicle_id: vehicleId }, opts);

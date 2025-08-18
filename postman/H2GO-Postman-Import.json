@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "8b06e0a4-5665-46a1-b9bb-aa4af93243d6",
+    "_postman_id": "1a9a6772-704c-4d36-879b-2e65464eb751",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -2152,6 +2152,35 @@
               "query": [
                 {
                   "key": "product_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/routes/driver",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/driver",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "routes",
+                "driver"
+              ],
+              "query": [
+                {
+                  "key": "driver_id",
+                  "value": ""
+                },
+                {
+                  "key": "date",
                   "value": ""
                 }
               ]

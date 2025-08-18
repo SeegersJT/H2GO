@@ -14,6 +14,19 @@ export class RouteService {
     return routeRepository.findById(new Types.ObjectId(id));
   }
 
+  static async getByDriverAndDate(driverId: string, day: Date) {
+    const route = await routeRepository.findByDriverAndDate(new Types.ObjectId(driverId), day);
+    if (!route) {
+      throw new Error("Invalid or inactive route");
+    }
+
+    const deliveries = await deliveryRepository.findByRoute(route.id);
+    return {
+      ...route.toJSON(),
+      deliveries: deliveries.map((d) => d.toJSON()),
+    };
+  }
+
   static insertRoute(data: Partial<IRoute>, actorId: string) {
     return routeRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
