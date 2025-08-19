@@ -31,9 +31,9 @@ export class DeliveryController {
 
   static insertDelivery = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { route_id, branch_id, user_id, address_id, items, window_start, window_end, source } = req.body;
-      if (!route_id || !branch_id || !user_id || !address_id || !items || !window_start || !window_end || !source) {
-        return res.error(null, { message: "Missing required fileds", code: StatusCode.BAD_REQUEST });
+      const { route_id, branch_id, user_id, address_id, items, window_start, window_end, source, scheduled_for } = req.body;
+      if (!branch_id || !user_id || !address_id || !items || !window_start || !window_end || !source || (!route_id && !scheduled_for)) {
+        return res.error(null, { message: "Missing required fields", code: StatusCode.BAD_REQUEST });
       }
 
       const authenticatedUser = req.authenticatedUser;

@@ -29,6 +29,8 @@ export interface IDelivery extends Document {
   items: IOrderItem[];
 
   sequence: number; // stop order on the route
+
+  scheduled_for?: Date; // target date for delivery when unassigned
   window_start?: string; // "HH:mm"
   window_end?: string; // "HH:mm"
 
@@ -89,6 +91,8 @@ const deliverySchema = new Schema<IDelivery>(
 
     sequence: { type: Number, required: true, default: 0, index: true },
 
+    scheduled_for: { type: Date, required: false, index: true },
+
     window_start: {
       type: String,
       validate: {
@@ -145,12 +149,13 @@ const deliverySchema = new Schema<IDelivery>(
 
 deliverySchema.pre("validate", async function (next) {
   try {
+    if (this.route_id && (!this.branch_id || !this.scheduled_for)) {
+      const route = await Route.findById(this.route_id).select("branch_id date").lean();
+      if (!this.branch_id && route?.branch_id) this.branch_id = route.branch_id as any;
+      if (!this.scheduled_for && route?.date) this.scheduled_for = route.date;
+    }
+
     if (this.isNew && !this.delivery_no) {
-      // derive branch scope from route if not set
-      if (!this.branch_id && this.route_id) {
-        const route = await Route.findById(this.route_id).select("branch_id").lean();
-        if (route?.branch_id) this.branch_id = route.branch_id as any;
-      }
       const branch = await Branch.findById(this.branch_id).select("branch_abbreviation").lean();
       if (!branch?.branch_abbreviation) return next(new Error("Invalid branch_id for delivery_no"));
       const scope = String(branch.branch_abbreviation).toUpperCase();
@@ -180,6 +185,8 @@ deliverySchema.pre("save", function (next) {
 });
 
 deliverySchema.index({ route_id: 1, sequence: 1 });
+deliverySchema.index({ branch_id: 1, scheduled_for: 1 });
+
 // (optional) helpful secondary indexes
 // deliverySchema.index({ branch_id: 1, status: 1, active: 1 });
 

@@ -18,12 +18,14 @@ export class RouteService {
   static async getByDriverAndDate(driverId: string, day: Date) {
     const route = await routeRepository.findByDriverAndDate(new Types.ObjectId(driverId), day);
     if (!route) {
-      throw new Error("Invalid or inactive route");
+      throw new Error("No route has been generated for this driver.");
     }
 
     const deliveries = await deliveryRepository.findByRoute(route.id);
     return {
-      ...route.toJSON(),
+      route: {
+        ...route.toJSON(),
+      },
       deliveries: deliveries.map((d) => d.toJSON()),
     };
   }
@@ -130,6 +132,7 @@ export class RouteService {
                 unit_price: i.unit_price ?? 0,
               })),
               sequence: sequence++,
+              scheduled_for: start,
               window_start: sub.desired_window?.start,
               window_end: sub.desired_window?.end,
               source: "subscription",

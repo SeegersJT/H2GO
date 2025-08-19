@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "052ad052-7d40-45c3-8950-e93d044cb1f3",
+    "_postman_id": "213367c7-d651-4e4f-b6d6-965d660b973d",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1080,7 +1080,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"route_id\": \"\",\n  \"branch_id\": \"\",\n  \"user_id\": \"\",\n  \"address_id\": \"\",\n  \"items\": \"\",\n  \"window_start\": \"\",\n  \"window_end\": \"\",\n  \"source\": \"\"\n}",
+              "raw": "{\n  \"route_id\": \"\",\n  \"branch_id\": \"\",\n  \"user_id\": \"\",\n  \"address_id\": \"\",\n  \"items\": \"\",\n  \"window_start\": \"\",\n  \"window_end\": \"\",\n  \"source\": \"\",\n  \"scheduled_for\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1162,11 +1162,17 @@
                 "v1",
                 "deliveries",
                 "status"
+              ],
+              "query": [
+                {
+                  "key": "delivery_id",
+                  "value": ""
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_id\": \"\",\n  \"status\": \"\"\n}",
+              "raw": "{\n  \"status\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1190,11 +1196,17 @@
                 "v1",
                 "deliveries",
                 "proof"
+              ],
+              "query": [
+                {
+                  "key": "delivery_id",
+                  "value": ""
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_id\": \"\",\n  \"proof\": \"\"\n}",
+              "raw": "{\n  \"proof\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1218,11 +1230,17 @@
                 "v1",
                 "deliveries",
                 "events"
+              ],
+              "query": [
+                {
+                  "key": "delivery_id",
+                  "value": ""
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_id\": \"\",\n  \"type\": \"\",\n  \"data\": \"\"\n}",
+              "raw": "{\n  \"type\": \"\",\n  \"data\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1246,11 +1264,17 @@
                 "v1",
                 "deliveries",
                 "swap"
+              ],
+              "query": [
+                {
+                  "key": "delivery_id",
+                  "value": ""
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_id\": \"\",\n  \"empty_serial\": \"\",\n  \"full_serial\": \"\"\n}",
+              "raw": "{\n  \"outbound_serial\": \"\",\n  \"inbound_serial\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2203,7 +2227,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"branch_id\": \"\",\n  \"date\": \"\",\n  \"vehicle_id\": \"\",\n  \"driver_id\": \"\",\n  \"notes\": \"\"\n}",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"date\": \"\",\n  \"vehicle_id\": \"\",\n  \"driver_id\": \"\",\n  \"notes\": \"\",\n  \"subscription_ids\": \"\",\n  \"suburb\": \"\",\n  \"city\": \"\",\n  \"region\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
