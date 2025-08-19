@@ -3,7 +3,7 @@ import { nextSeq, formatHumanCode } from "../utils/sequence.utils";
 import Route from "./Route.model";
 import Branch from "./Branch.model";
 
-export type DeliveryStatus = "scheduled" | "en_route" | "arrived" | "delivered" | "failed" | "cancelled";
+export type DeliveryStatus = "unassigned" | "scheduled" | "en_route" | "arrived" | "delivered" | "failed" | "cancelled";
 export type OrderSource = "manual" | "subscription" | "api";
 
 export interface IOrderItem {
@@ -21,7 +21,7 @@ export interface IOrderEvent {
 
 export interface IDelivery extends Document {
   delivery_no: string; // "DLV-H2GO-0001"
-  route_id: Types.ObjectId; // -> Route
+  route_id: Types.ObjectId | null; // -> Route
   branch_id: Types.ObjectId; // redundant but helps scope numbering/queries
   user_id: Types.ObjectId; // -> User
   address_id: Types.ObjectId; // -> Address
@@ -77,7 +77,7 @@ const deliverySchema = new Schema<IDelivery>(
   {
     delivery_no: { type: String, required: true, unique: true, trim: true },
 
-    route_id: { type: Schema.Types.ObjectId, ref: "Route", required: true, index: true },
+    route_id: { type: Schema.Types.ObjectId, ref: "Route", required: false, default: null, index: true },
     branch_id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, index: true },
     user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     address_id: { type: Schema.Types.ObjectId, ref: "Address", required: true },
@@ -118,8 +118,10 @@ const deliverySchema = new Schema<IDelivery>(
 
     status: {
       type: String,
-      enum: ["scheduled", "en_route", "arrived", "delivered", "failed", "cancelled"],
-      default: "scheduled",
+      enum: ["unassigned", "scheduled", "en_route", "arrived", "delivered", "failed", "cancelled"],
+      default: function (this: IDelivery) {
+        return this.route_id ? "scheduled" : "unassigned";
+      },
       index: true,
     },
 

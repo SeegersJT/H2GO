@@ -4,6 +4,7 @@ import { DeliveryDoc, deliveryRepository } from "../repositories/Delivery.reposi
 import { SubscriptionDoc, subscriptionRepository } from "../repositories/Subscription.repository";
 import dayjs from "dayjs";
 import { IRoute } from "../models/Route.model";
+import { addressRepository } from "../repositories/Address.repository";
 
 export class RouteService {
   static getAll() {
@@ -37,7 +38,8 @@ export class RouteService {
     vehicleId: string,
     driverId: string,
     notes: string,
-    actorId: string
+    actorId: string,
+    opts?: { subscription_ids?: string[]; suburb?: string; city?: string; region?: string }
   ): Promise<{ route: RouteDoc; deliveries: DeliveryDoc[] }> {
     const start = new Date(routeDate);
     start.setHours(0, 0, 0, 0);
@@ -56,7 +58,26 @@ export class RouteService {
         { actorId: new Types.ObjectId(actorId), session }
       );
 
-      const subscriptions = await subscriptionRepository.findMany({ branch_id: new Types.ObjectId(branchId), status: "active" }, { session });
+      const subFilter: any = { branch_id: new Types.ObjectId(branchId), status: "active" };
+      if (opts?.subscription_ids?.length) {
+        subFilter._id = { $in: opts.subscription_ids.map((id) => new Types.ObjectId(id)) };
+      }
+
+      let subscriptions = await subscriptionRepository.findMany(subFilter, { session });
+
+      if (opts?.suburb || opts?.city || opts?.region) {
+        const addressIds = subscriptions.map((s) => s.address_id);
+        const addresses = await addressRepository.findMany({ _id: { $in: addressIds } }, { session });
+        const map = new Map(addresses.map((a) => [String(a._id), a]));
+        subscriptions = subscriptions.filter((s) => {
+          const addr = map.get(String(s.address_id));
+          if (!addr) return false;
+          if (opts.suburb && addr.suburb !== opts.suburb) return false;
+          if (opts.city && addr.city !== opts.city) return false;
+          if (opts.region && addr.region !== opts.region) return false;
+          return true;
+        });
+      }
 
       const occursOn = (sub: SubscriptionDoc): boolean => {
         const parts = Object.fromEntries(sub.rrule.split(";").map((p) => p.split("=")));
@@ -99,6 +120,17 @@ export class RouteService {
           );
           deliveries.push(delivery);
         }
+      }
+
+      const unassigned = await deliveryRepository.findUnassignedForDate(new Types.ObjectId(branchId), start, end, { session });
+
+      for (const d of unassigned) {
+        const updated = await deliveryRepository.updateById(
+          d._id,
+          { route_id: route._id, sequence: sequence++ },
+          { actorId: new Types.ObjectId(actorId), session }
+        );
+        if (updated) deliveries.push(updated);
       }
 
       return { route, deliveries };

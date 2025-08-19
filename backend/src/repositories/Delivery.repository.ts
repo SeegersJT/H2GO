@@ -41,6 +41,18 @@ export class DeliveryRepository extends GenericRepository<IDelivery, DeliveryDoc
     return this.findMany({ branch_id: branchId, status }, opts);
   }
 
+  /** List deliveries without a route scheduled for a specific date */
+  async findUnassignedForDate(branchId: Types.ObjectId | string, start: Date, end: Date, opts?: ReadOptions): Promise<DeliveryDoc[]> {
+    return this.findMany(
+      {
+        branch_id: branchId,
+        route_id: null,
+        scheduled_for: { $gte: start, $lt: end },
+      },
+      { ...opts, sort: opts?.sort ?? { scheduled_for: 1, createdAt: 1 } }
+    );
+  }
+
   /** Search & paginate deliveries in a branch across delivery_no */
   async searchInBranch(
     branchId: Types.ObjectId | string,

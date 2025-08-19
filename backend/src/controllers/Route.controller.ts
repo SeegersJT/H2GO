@@ -83,7 +83,7 @@ export class RouteController {
 
   static generateRoute = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { branch_id, date, vehicle_id, driver_id, notes } = req.body;
+      const { branch_id, date, vehicle_id, driver_id, notes, subscription_ids, suburb, city, region } = req.body;
       if (!branch_id || !date || !vehicle_id || !driver_id || !notes) {
         return res.error(null, { message: "Missing required fields.", code: StatusCode.BAD_REQUEST });
       }
@@ -98,7 +98,12 @@ export class RouteController {
         return res.error(null, { message: "Invalid date.", code: StatusCode.BAD_REQUEST });
       }
 
-      const result = await RouteService.generateForDay(branch_id, routeDate, vehicle_id, driver_id, notes, authenticatedUser.id);
+      const result = await RouteService.generateForDay(branch_id, routeDate, vehicle_id, driver_id, notes, authenticatedUser.id, {
+        subscription_ids,
+        suburb,
+        city,
+        region,
+      });
       return res.success(result, { message: "Generated route successfully." });
     } catch (err) {
       next(err);

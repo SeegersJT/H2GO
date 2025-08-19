@@ -13,6 +13,7 @@ dotenv.config({ quiet: true });
 
 export const setupApp = async () => {
   const app = express();
+
   app.use(express.json({ limit: "1mb" }));
   app.use(helmet());
   app.use(compression());
@@ -23,6 +24,7 @@ export const setupApp = async () => {
   app.use(authenticateMiddleware);
 
   const router = await buildRouter();
+
   app.use(router);
 
   app.use(errorHandlingMiddleware);
