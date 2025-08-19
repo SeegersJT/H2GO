@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "93a6912b-409c-4b5e-8ddb-2ff0168b9f37",
+    "_postman_id": "dc9ad874-900c-48bc-b888-62b05b3df61d",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1724,82 +1724,7 @@
           }
         },
         {
-          "name": "POST /api/v1/invoices/generate/eligible",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/generate/eligible",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "invoices",
-                "generate",
-                "eligible"
-              ]
-            }
-          }
-        },
-        {
-          "name": "POST /api/v1/invoices/generate/current-month",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/generate/current-month",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "invoices",
-                "generate",
-                "current-month"
-              ]
-            }
-          }
-        },
-        {
-          "name": "POST /api/v1/invoices/generate/payments-due",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/generate/payments-due",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "invoices",
-                "generate",
-                "payments-due"
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /api/v1/invoices/generate/current-month/{{user_id}}",
+          "name": "GET /api/v1/invoices/generate/month",
           "request": {
             "method": "GET",
             "header": [
@@ -1809,7 +1734,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/generate/current-month/{{user_id}}",
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/month",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1818,12 +1743,19 @@
                 "v1",
                 "invoices",
                 "generate",
-                "current-month",
-                "{{user_id}}"
+                "month"
               ],
-              "variable": [
+              "query": [
                 {
                   "key": "user_id",
+                  "value": ""
+                },
+                {
+                  "key": "year",
+                  "value": ""
+                },
+                {
+                  "key": "month",
                   "value": ""
                 }
               ]
@@ -1831,9 +1763,9 @@
           }
         },
         {
-          "name": "GET /api/v1/invoices/generate/date-range",
+          "name": "POST /api/v1/invoices/generate/month",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
@@ -1841,7 +1773,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/invoices/generate/date-range",
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/month",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1850,15 +1782,15 @@
                 "v1",
                 "invoices",
                 "generate",
-                "date-range"
+                "month"
               ],
               "query": [
                 {
-                  "key": "start",
+                  "key": "year",
                   "value": ""
                 },
                 {
-                  "key": "end",
+                  "key": "month",
                   "value": ""
                 }
               ]

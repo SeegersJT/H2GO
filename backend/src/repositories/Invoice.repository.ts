@@ -19,6 +19,15 @@ export class InvoiceRepository extends GenericRepository<IInvoice, InvoiceDoc> {
     return this.findMany({ user_id: userId }, opts);
   }
 
+  async findForUserAddressPeriod(
+    userId: Types.ObjectId | string,
+    addressId: Types.ObjectId | string,
+    periodKey: string,
+    opts?: ReadOptions
+  ): Promise<InvoiceDoc | null> {
+    return this.findOne({ user_id: userId, address_id: addressId, period_key: periodKey, active: true }, opts);
+  }
+
   async searchInBranch(
     branchId: Types.ObjectId | string,
     q: string | undefined,
@@ -26,7 +35,7 @@ export class InvoiceRepository extends GenericRepository<IInvoice, InvoiceDoc> {
   ): Promise<PaginateResult<InvoiceDoc>> {
     const filter: any = { branch_id: branchId };
     if (q && q.trim()) {
-      const rx = new RegExp(q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+      const rx = new RegExp(q.trim().replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"), "i");
       filter.$or = [{ invoice_no: rx }, { notes: rx }];
     }
     return this.paginate(filter, { ...opts, sort: opts?.sort ?? { issue_date: -1 } });

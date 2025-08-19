@@ -88,54 +88,49 @@ export class InvoiceController {
     }
   };
 
-  static generateForEligibleUsers = async (_req: Request, res: Response, next: NextFunction) => {
+  static generateForMonth = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await InvoiceService.generateInvoicesForEligibleUsers();
-      return res.success(result, { message: "Generated invoices for eligible users." });
+      const year = Number(req.query.year);
+      const month = Number(req.query.month);
+
+      if (!year || !month || !Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+        return res.error(null, { message: "[year] (e.g. 2025) and [month] (1–12) are required.", code: StatusCode.BAD_REQUEST });
+      }
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const result = await InvoiceService.generateInvoicesForMonth(year!, month!, authenticatedUser.id);
+
+      return res.success(result, { message: `Generated invoices for ${year}-${String(month).padStart(2, "0")}` });
     } catch (err) {
       next(err);
     }
   };
 
-  static generateCurrentMonth = async (_req: Request, res: Response, next: NextFunction) => {
+  static generateForUserAndMonth = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await InvoiceService.generateCurrentMonthInvoices();
-      return res.success(result, { message: "Generated current month's invoices." });
-    } catch (err) {
-      next(err);
-    }
-  };
-
-  static generatePaymentsDue = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await InvoiceService.generatePaymentsDueInvoices();
-      return res.success(result, { message: "Generated payments due invoices." });
-    } catch (err) {
-      next(err);
-    }
-  };
-
-  static generateCurrentMonthForUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.params.user_id;
+      const userId = req.query.user_id as string;
       if (!userId) {
         return res.error(null, { message: "[user_id] required.", code: StatusCode.BAD_REQUEST });
       }
-      const result = await InvoiceService.generateCurrentMonthInvoiceForUser(userId);
-      return res.success(result, { message: "Generated current month's invoice for user." });
-    } catch (err) {
-      next(err);
-    }
-  };
 
-  static generateByDateRange = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { start, end } = req.query;
-      if (!start || !end) {
-        return res.error(null, { message: "[start] and [end] required.", code: StatusCode.BAD_REQUEST });
+      const year = Number(req.query.year);
+      const month = Number(req.query.month);
+
+      if (!year || !month || !Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+        return res.error(null, { message: "[year] (e.g. 2025) and [month] (1–12) are required.", code: StatusCode.BAD_REQUEST });
       }
-      const result = await InvoiceService.generateInvoicesByDateRange(new Date(start as string), new Date(end as string));
-      return res.success(result, { message: "Generated invoices by date range." });
+
+      const authenticatedUser = req.authenticatedUser;
+      if (!authenticatedUser) {
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
+      }
+
+      const result = await InvoiceService.generateInvoiceForUserAndMonth(userId, year!, month!, authenticatedUser.id);
+      return res.success(result, { message: `Generated invoice(s) for user for ${year}-${String(month).padStart(2, "0")}` });
     } catch (err) {
       next(err);
     }
