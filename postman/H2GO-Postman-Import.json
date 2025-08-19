@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "439ed422-1301-4e2f-9b00-9bc73c44193e",
+    "_postman_id": "93a6912b-409c-4b5e-8ddb-2ff0168b9f37",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1623,6 +1623,12 @@
                 "api",
                 "v1",
                 "invoices"
+              ],
+              "query": [
+                {
+                  "key": "invoice_id",
+                  "value": ""
+                }
               ]
             }
           }
@@ -1647,6 +1653,15 @@
                 "v1",
                 "invoices"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"sku\": \"\",\n  \"name\": \"\",\n  \"description\": \"\",\n  \"product_type\": \"\",\n  \"unit\": \"\",\n  \"capacity_value\": \"\",\n  \"default_price\": \"\",\n  \"currency_code\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         },
@@ -1669,6 +1684,12 @@
                 "api",
                 "v1",
                 "invoices"
+              ],
+              "query": [
+                {
+                  "key": "invoice_id",
+                  "value": ""
+                }
               ]
             }
           }
@@ -1692,6 +1713,154 @@
                 "api",
                 "v1",
                 "invoices"
+              ],
+              "query": [
+                {
+                  "key": "invoice_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/invoices/generate/eligible",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/eligible",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "generate",
+                "eligible"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/invoices/generate/current-month",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/current-month",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "generate",
+                "current-month"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/invoices/generate/payments-due",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/payments-due",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "generate",
+                "payments-due"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/invoices/generate/current-month/{{user_id}}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/current-month/{{user_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "generate",
+                "current-month",
+                "{{user_id}}"
+              ],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/invoices/generate/date-range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/generate/date-range",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "generate",
+                "date-range"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": ""
+                },
+                {
+                  "key": "end",
+                  "value": ""
+                }
               ]
             }
           }

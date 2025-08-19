@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { invoiceRepository } from "../repositories/Invoice.repository";
-import { IInvoice } from "../models/Invoice.model";
+import { IInvoice, IInvoiceLine } from "../models/Invoice.model";
+import { subscriptionRepository } from "../repositories/Subscription.repository";
 
 export class InvoiceService {
   static getAll() {
@@ -23,29 +24,129 @@ export class InvoiceService {
     return invoiceRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  // Generation helpers
-  static generateInvoicesForEligibleUsers() {
-    // TODO: Implement generation logic for users with products or subscriptions
-    return [];
+  /** Compute line and invoice totals. Mutates the line array to populate line_* fields. */
+  private static calculateTotals(lines: IInvoiceLine[]): IInvoice["totals"] {
+    let subtotal = 0;
+    let tax = 0;
+    lines.forEach((l) => {
+      const lineSubtotal = l.quantity * l.unit_price;
+      const lineTax = l.tax_rate ? (lineSubtotal * l.tax_rate) / 100 : 0;
+      l.line_subtotal = lineSubtotal;
+      l.line_tax = lineTax;
+      l.line_total = lineSubtotal + lineTax;
+      subtotal += lineSubtotal;
+      tax += lineTax;
+    });
+    return { subtotal, tax, total: subtotal + tax };
   }
 
-  static generateCurrentMonthInvoices() {
-    // TODO: Implement generation logic for current month's invoices
-    return [];
+  /** Generate invoices for all active subscriptions. */
+  static async generateInvoicesForEligibleUsers() {
+    const subs = await subscriptionRepository.findMany({ status: "active" });
+    const invoices: IInvoice[] = [];
+    for (const sub of subs) {
+      if (!sub.items?.length) continue;
+      const lines: IInvoiceLine[] = sub.items.map((it) => ({
+        product_id: it.product_id,
+        description: it.name,
+        quantity: it.quantity,
+        unit_price: it.unit_price ?? 0,
+        currency_code: (it as any).currency_code,
+        tax_rate: undefined,
+      }));
+      const totals = this.calculateTotals(lines);
+      const issueDate = new Date();
+      const dueDate = new Date(issueDate);
+      dueDate.setDate(dueDate.getDate() + 30);
+      const invoice = await invoiceRepository.create({
+        branch_id: sub.branch_id as any,
+        user_id: sub.user_id as any,
+        currency_code: lines[0]?.currency_code ?? "ZAR",
+        lines,
+        totals,
+        status: "issued",
+        issue_date: issueDate,
+        due_date: dueDate,
+      });
+      invoices.push(invoice as any);
+    }
+    return invoices;
   }
 
-  static generatePaymentsDueInvoices() {
-    // TODO: Implement generation logic for all payments due
-    return [];
+  /** Generate invoices for the current month. Delegates to eligible user generator. */
+  static async generateCurrentMonthInvoices() {
+    return this.generateInvoicesForEligibleUsers();
   }
 
-  static generateCurrentMonthInvoiceForUser(userId: string) {
-    // TODO: Implement generation logic for current month invoice for a specific user
-    return { userId, invoices: [] };
+  /** Find invoices that are due for payment (status issued/partially_paid and due_date in past). */
+  static async generatePaymentsDueInvoices() {
+    const now = new Date();
+    return invoiceRepository.findMany({
+      status: { $in: ["issued", "partially_paid"] },
+      due_date: { $lte: now },
+    });
   }
 
-  static generateInvoicesByDateRange(start: Date, end: Date) {
-    // TODO: Implement generation logic for custom date range
-    return { start, end, invoices: [] };
+  /** Generate current month's invoice for a single user. */
+  static async generateCurrentMonthInvoiceForUser(userId: string) {
+    const subs = await subscriptionRepository.findByUser(new Types.ObjectId(userId));
+    const invoices: IInvoice[] = [];
+    for (const sub of subs) {
+      if (!sub.items?.length) continue;
+      const lines: IInvoiceLine[] = sub.items.map((it) => ({
+        product_id: it.product_id,
+        description: it.name,
+        quantity: it.quantity,
+        unit_price: it.unit_price ?? 0,
+        currency_code: (it as any).currency_code,
+        tax_rate: undefined,
+      }));
+      const totals = this.calculateTotals(lines);
+      const issueDate = new Date();
+      const dueDate = new Date(issueDate);
+      dueDate.setDate(dueDate.getDate() + 30);
+      const invoice = await invoiceRepository.create({
+        branch_id: sub.branch_id as any,
+        user_id: sub.user_id as any,
+        currency_code: lines[0]?.currency_code ?? "ZAR",
+        lines,
+        totals,
+        status: "issued",
+        issue_date: issueDate,
+        due_date: dueDate,
+      });
+      invoices.push(invoice as any);
+    }
+    return { userId, invoices };
+  }
+
+  /** Generate invoices for all active subscriptions within a custom date range. */
+  static async generateInvoicesByDateRange(start: Date, end: Date) {
+    const subs = await subscriptionRepository.findMany({ status: "active" });
+    const invoices: IInvoice[] = [];
+    for (const sub of subs) {
+      if (!sub.items?.length) continue;
+      const lines: IInvoiceLine[] = sub.items.map((it) => ({
+        product_id: it.product_id,
+        description: it.name,
+        quantity: it.quantity,
+        unit_price: it.unit_price ?? 0,
+        currency_code: (it as any).currency_code,
+        tax_rate: undefined,
+      }));
+      const totals = this.calculateTotals(lines);
+      const invoice = await invoiceRepository.create({
+        branch_id: sub.branch_id as any,
+        user_id: sub.user_id as any,
+        currency_code: lines[0]?.currency_code ?? "ZAR",
+        lines,
+        totals,
+        status: "issued",
+        issue_date: start,
+        due_date: end,
+      });
+      invoices.push(invoice as any);
+    }
+    return { start, end, invoices };
   }
 }
