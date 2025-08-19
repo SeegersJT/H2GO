@@ -13,4 +13,10 @@ router.post("/", restricted, InvoiceController.insertInvoice);
 router.put("/", restricted, InvoiceController.updateInvoice);
 router.delete("/", restricted, InvoiceController.deleteInvoice);
 
+router.post("/generate/eligible", restricted, InvoiceController.generateForEligibleUsers);
+router.post("/generate/current-month", restricted, InvoiceController.generateCurrentMonth);
+router.post("/generate/payments-due", restricted, InvoiceController.generatePaymentsDue);
+router.get("/generate/current-month/:user_id", restricted, InvoiceController.generateCurrentMonthForUser);
+router.get("/generate/date-range", restricted, InvoiceController.generateByDateRange);
+
 export default router;

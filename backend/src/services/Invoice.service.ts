@@ -22,4 +22,30 @@ export class InvoiceService {
   static deleteInvoice(id: string, actorId: string) {
     return invoiceRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
+
+  // Generation helpers
+  static generateInvoicesForEligibleUsers() {
+    // TODO: Implement generation logic for users with products or subscriptions
+    return [];
+  }
+
+  static generateCurrentMonthInvoices() {
+    // TODO: Implement generation logic for current month's invoices
+    return [];
+  }
+
+  static generatePaymentsDueInvoices() {
+    // TODO: Implement generation logic for all payments due
+    return [];
+  }
+
+  static generateCurrentMonthInvoiceForUser(userId: string) {
+    // TODO: Implement generation logic for current month invoice for a specific user
+    return { userId, invoices: [] };
+  }
+
+  static generateInvoicesByDateRange(start: Date, end: Date) {
+    // TODO: Implement generation logic for custom date range
+    return { start, end, invoices: [] };
+  }
 }

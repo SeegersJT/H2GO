@@ -87,4 +87,57 @@ export class InvoiceController {
       next(err);
     }
   };
+
+  static generateForEligibleUsers = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await InvoiceService.generateInvoicesForEligibleUsers();
+      return res.success(result, { message: "Generated invoices for eligible users." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static generateCurrentMonth = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await InvoiceService.generateCurrentMonthInvoices();
+      return res.success(result, { message: "Generated current month's invoices." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static generatePaymentsDue = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await InvoiceService.generatePaymentsDueInvoices();
+      return res.success(result, { message: "Generated payments due invoices." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static generateCurrentMonthForUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.params.user_id;
+      if (!userId) {
+        return res.error(null, { message: "[user_id] required.", code: StatusCode.BAD_REQUEST });
+      }
+      const result = await InvoiceService.generateCurrentMonthInvoiceForUser(userId);
+      return res.success(result, { message: "Generated current month's invoice for user." });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static generateByDateRange = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { start, end } = req.query;
+      if (!start || !end) {
+        return res.error(null, { message: "[start] and [end] required.", code: StatusCode.BAD_REQUEST });
+      }
+      const result = await InvoiceService.generateInvoicesByDateRange(new Date(start as string), new Date(end as string));
+      return res.success(result, { message: "Generated invoices by date range." });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
