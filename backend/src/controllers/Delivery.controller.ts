@@ -38,10 +38,7 @@ export class DeliveryController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DeliveryService.insertDelivery(req.body, authenticatedUser.id);
@@ -63,10 +60,7 @@ export class DeliveryController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DeliveryService.updateDelivery(deliveryId, req.body, authenticatedUser.id);
@@ -88,10 +82,7 @@ export class DeliveryController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DeliveryService.deleteDelivery(deliveryId, authenticatedUser.id);

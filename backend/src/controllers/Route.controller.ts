@@ -68,10 +68,7 @@ export class RouteController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await RouteService.insertRoute(req.body, authenticatedUser.id);
@@ -122,10 +119,7 @@ export class RouteController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await RouteService.updateRoute(routeId, req.body, authenticatedUser.id);
@@ -147,10 +141,7 @@ export class RouteController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await RouteService.deleteRoute(productId, authenticatedUser.id);

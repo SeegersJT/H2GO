@@ -41,6 +41,8 @@ export interface IInvoice extends Document {
   reference_type?: string; // e.g., "DELIVERY","ORDER","ROUTE"
   reference_id?: Types.ObjectId | null;
 
+  active: boolean;
+
   createdBy: Types.ObjectId | null;
   updatedBy: Types.ObjectId | null;
   createdAt?: Date;
@@ -87,6 +89,8 @@ const invoiceSchema = new Schema<IInvoice>(
     notes: { type: String, trim: true },
     reference_type: { type: String, trim: true },
     reference_id: { type: Schema.Types.ObjectId, default: null },
+
+    active: { type: Boolean, default: true, index: true },
 
     createdBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
     updatedBy: { type: Schema.Types.ObjectId, ref: "User", default: null },

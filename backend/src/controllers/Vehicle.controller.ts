@@ -39,10 +39,7 @@ export class VehicleController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await VehicleService.insertVehicle(req.body, authenticatedUser.id);
@@ -64,10 +61,7 @@ export class VehicleController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await VehicleService.updateVehicle(vehicleId, req.body, authenticatedUser.id);
@@ -89,10 +83,7 @@ export class VehicleController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await VehicleService.deleteVehicle(vehicleId, authenticatedUser.id);

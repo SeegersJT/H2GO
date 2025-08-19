@@ -38,10 +38,7 @@ export class DriverController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DriverService.insertDriver(req.body, authenticatedUser.id);
@@ -60,10 +57,7 @@ export class DriverController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DriverService.updateDriver(driverId, req.body, authenticatedUser.id);
@@ -82,10 +76,7 @@ export class DriverController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await DriverService.deleteDriver(driverId, authenticatedUser.id);

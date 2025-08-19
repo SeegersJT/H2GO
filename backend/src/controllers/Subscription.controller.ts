@@ -74,10 +74,7 @@ export class SubscriptionController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await SubscriptionService.insertSubscription(req.body, authenticatedUser.id);
@@ -99,10 +96,7 @@ export class SubscriptionController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await SubscriptionService.updateSubscription(productId, req.body, authenticatedUser.id);
@@ -124,10 +118,7 @@ export class SubscriptionController {
 
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
-        return res.error(null, {
-          message: "Unauthorized",
-          code: StatusCode.UNAUTHORIZED,
-        });
+        return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });
       }
 
       const result = await SubscriptionService.deleteSubscription(subscriptionId, authenticatedUser.id);

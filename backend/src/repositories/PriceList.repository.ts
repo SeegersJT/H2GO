@@ -213,6 +213,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
       const tiers = (pl.items ?? []).filter((i) => String(i.product_id) === String(productId)).sort((a, b) => (b.min_qty ?? 1) - (a.min_qty ?? 1)); // highest min_qty first
 
       const chosen = tiers.find((t) => (t.min_qty ?? 1) <= quantity);
+
       if (chosen) {
         return {
           price: chosen.unit_price,

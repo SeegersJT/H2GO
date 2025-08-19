@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { invoiceRepository } from "../repositories/Invoice.repository";
+import { IInvoice } from "../models/Invoice.model";
 
 export class InvoiceService {
   static getAll() {
@@ -10,15 +11,15 @@ export class InvoiceService {
     return invoiceRepository.findById(new Types.ObjectId(id));
   }
 
-  static create(data: any) {
-    return invoiceRepository.create(data);
+  static insertInvoice(data: Partial<IInvoice>, actorId: string) {
+    return invoiceRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static update(id: string, data: any) {
-    return invoiceRepository.updateById(new Types.ObjectId(id), data);
+  static updateInvoice(id: string, data: Partial<IInvoice>, actorId: string) {
+    return invoiceRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return invoiceRepository.deleteById(new Types.ObjectId(id));
+  static deleteInvoice(id: string, actorId: string) {
+    return invoiceRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }
