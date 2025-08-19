@@ -129,7 +129,7 @@ export class RouteService {
                 product_id: i.product_id,
                 name: i.name,
                 quantity: i.quantity,
-                unit_price: i.unit_price ?? 0,
+                unit_price: i.billing_period === "monthly" ? 0 : (i.unit_price ?? 0),
               })),
               sequence: sequence++,
               scheduled_for: start,

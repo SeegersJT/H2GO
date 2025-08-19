@@ -99,6 +99,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
     unitPrice: number,
     minQty: number = 1,
     currencyCode?: string,
+    billingPeriod: "per_delivery" | "monthly" = "per_delivery",
     opts?: WriteOptions
   ): Promise<PriceListDoc | null> {
     const session = opts?.session ?? undefined;
@@ -111,6 +112,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
           $set: {
             "items.$.unit_price": unitPrice,
             "items.$.currency_code": currencyCode ? normCurrency(currencyCode) : undefined,
+            "items.$.billing_period": billingPeriod,
           },
         },
         { new: true, session }
@@ -130,6 +132,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
               unit_price: unitPrice,
               min_qty: Math.max(1, minQty),
               ...(currencyCode ? { currency_code: normCurrency(currencyCode) } : {}),
+              billing_period: billingPeriod,
             },
           },
         },
@@ -199,7 +202,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
       onDate?: Date;
     },
     opts?: ReadOptions
-  ): Promise<{ price: number; currency: string | null; sourcePriceListId: Types.ObjectId } | null> {
+  ): Promise<{ price: number; billingPeriod: "per_delivery" | "monthly"; currency: string | null; sourcePriceListId: Types.ObjectId } | null> {
     const { branchId, productId, quantity = 1, userId = null, onDate = new Date() } = params;
 
     const applicable = await this.getApplicableLists(branchId, userId, onDate, opts);
@@ -213,6 +216,7 @@ export class PriceListRepository extends GenericRepository<IPriceList, PriceList
       if (chosen) {
         return {
           price: chosen.unit_price,
+          billingPeriod: chosen.billing_period ?? "per_delivery",
           currency: chosen.currency_code ?? pl.currency_code ?? null,
           sourcePriceListId: pl._id as any,
         };

@@ -24,6 +24,8 @@ export interface IProduct extends Document {
   default_price?: number;
   currency_code?: string; // ISO-4217, e.g., "ZAR"
 
+  billing_period?: "per_delivery" | "monthly"; // price frequency
+
   active: boolean;
 
   createdBy: Types.ObjectId | null;
@@ -51,6 +53,12 @@ const productSchema = new Schema<IProduct>(
 
     default_price: { type: Number, required: false, min: 0 },
     currency_code: { type: String, required: false, trim: true },
+
+    billing_period: {
+      type: String,
+      enum: ["per_delivery", "monthly"],
+      default: "per_delivery",
+    },
 
     active: { type: Boolean, required: true, default: true, index: true },
 

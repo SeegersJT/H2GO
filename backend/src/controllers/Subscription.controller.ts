@@ -51,6 +51,9 @@ export class SubscriptionController {
         if (item.unit_price !== undefined && (typeof item.unit_price !== "number" || item.unit_price < 0)) {
           return res.error(null, { message: `Item ${i + 1}: unit_price must be >= 0` });
         }
+        if (item.billing_period && !["per_delivery", "monthly"].includes(item.billing_period)) {
+          return res.error(null, { message: `Item ${i + 1}: billing_period must be 'per_delivery' or 'monthly'` });
+        }
       }
 
       if (desired_window) {

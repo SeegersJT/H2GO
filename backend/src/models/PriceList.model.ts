@@ -7,6 +7,7 @@ export interface IPriceListItem {
   unit_price: number; // price per sellable unit
   min_qty?: number; // for simple tiering (default 1)
   currency_code?: string; // override list currency if needed
+  billing_period?: "per_delivery" | "monthly"; // price frequency
 }
 
 export interface IPriceList extends Document {
@@ -34,6 +35,11 @@ const priceListItemSchema = new Schema<IPriceListItem>(
     unit_price: { type: Number, required: true, min: 0 },
     min_qty: { type: Number, min: 1, default: 1 },
     currency_code: { type: String, trim: true, set: (v: string) => v?.toUpperCase() },
+    billing_period: {
+      type: String,
+      enum: ["per_delivery", "monthly"],
+      default: "per_delivery",
+    },
   },
   { _id: false }
 );

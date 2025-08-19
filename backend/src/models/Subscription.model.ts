@@ -9,7 +9,7 @@ export interface ISubscription extends Document {
   branch_id: Types.ObjectId; // -> Branch
   user_id: Types.ObjectId; // -> User
   address_id: Types.ObjectId; // -> Address used for deliveries
-  items: { product_id: Types.ObjectId; name?: string; quantity: number; unit_price?: number }[];
+  items: { product_id: Types.ObjectId; name?: string; quantity: number; unit_price?: number; billing_period?: "per_delivery" | "monthly" }[];
 
   rrule: string; // e.g., FREQ=WEEKLY;BYDAY=WE;INTERVAL=1
   anchor_date: Date; // first occurrence reference
@@ -30,6 +30,11 @@ const subscriptionItemSchema = new Schema(
     name: { type: String, trim: true },
     quantity: { type: Number, required: true, min: 1 },
     unit_price: { type: Number, min: 0 },
+    billing_period: {
+      type: String,
+      enum: ["per_delivery", "monthly"],
+      default: "per_delivery",
+    },
   },
   { _id: false }
 );
