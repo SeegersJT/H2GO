@@ -46,6 +46,25 @@ export class RouteService {
     const end = new Date(start);
     end.setDate(start.getDate() + 1);
 
+    const existing = await routeRepository.findByDriverAndDate(new Types.ObjectId(driverId), start);
+    if (existing) {
+      return routeRepository.runInTransaction(async (session) => {
+        const current = await deliveryRepository.findByRoute(existing.id, { session });
+        let sequence = current.length + 1;
+        const unassigned = await deliveryRepository.findUnassignedForDate(new Types.ObjectId(branchId), start, end, { session });
+        const added: DeliveryDoc[] = [];
+        for (const d of unassigned) {
+          const updated = await deliveryRepository.updateById(
+            d._id,
+            { route_id: existing._id as any, sequence: sequence++ },
+            { actorId: new Types.ObjectId(actorId), session }
+          );
+          if (updated) added.push(updated);
+        }
+        return { route: existing, deliveries: current.concat(added) };
+      });
+    }
+
     return routeRepository.runInTransaction(async (session) => {
       const route = await routeRepository.create(
         {
