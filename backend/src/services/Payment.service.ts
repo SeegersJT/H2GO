@@ -16,9 +16,10 @@ export class PaymentService {
     const created = await paymentRepository.create(data as any, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
 
     try {
-      await InvoiceService.allocatePaymentToInvoice(created.id, (created as any).invoice_id ?? undefined);
+      const invoiceId = (created as any).invoice_id as Types.ObjectId | undefined;
+      await InvoiceService.allocatePaymentToInvoice(created.id, invoiceId);
     } catch {
-      // swallow allocation errors; optionally log
+      throw new Error("Failed to allocate payment to invoice");
     }
 
     return created;
