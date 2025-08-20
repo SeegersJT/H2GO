@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 import { paymentRepository } from "../repositories/Payment.repository";
+import { InvoiceService } from "./Invoice.service";
+import { IPayment } from "../models/Payment.model";
 
 export class PaymentService {
   static getAll() {
@@ -14,9 +16,10 @@ export class PaymentService {
     const created = await paymentRepository.create(data as any, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
 
     try {
-      await InvoiceService.allocatePaymentToInvoice(created._id, (created as any).invoice_id ?? undefined);
+      const invoiceId = (created as any).invoice_id as Types.ObjectId | undefined;
+      await InvoiceService.allocatePaymentToInvoice(created.id, invoiceId);
     } catch {
-      // swallow allocation errors; optionally log
+      throw new Error("Failed to allocate payment to invoice");
     }
 
     return created;
@@ -32,11 +35,11 @@ export class PaymentService {
     }
   }
 
-  static update(id: string, data: any) {
-    return paymentRepository.updateById(new Types.ObjectId(id), data);
+  static update(id: string, data: any, actorId?: string) {
+    return paymentRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return paymentRepository.deleteById(new Types.ObjectId(id));
+  static delete(id: string, actorId?: string) {
+    return paymentRepository.deleteById(new Types.ObjectId(id), actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }
