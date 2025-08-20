@@ -9,8 +9,8 @@ const restricted = roleAuthorizationMiddleware(UserType.FINANCE);
 
 router.get("/all", restricted, PaymentController.getAll);
 router.get("/", restricted, PaymentController.getById);
-router.post("/", restricted, PaymentController.create);
-router.put("/", restricted, PaymentController.update);
-router.delete("/", restricted, PaymentController.delete);
+router.post("/", restricted, PaymentController.insertPayment);
+router.put("/", restricted, PaymentController.updatePayment);
+router.delete("/", restricted, PaymentController.deletePayment);
 
 export default router;

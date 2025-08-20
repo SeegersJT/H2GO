@@ -34,11 +34,11 @@ export class PaymentService {
     }
   }
 
-  static update(id: string, data: any) {
-    return paymentRepository.updateById(new Types.ObjectId(id), data);
+  static update(id: string, data: any, actorId?: string) {
+    return paymentRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 
-  static delete(id: string) {
-    return paymentRepository.deleteById(new Types.ObjectId(id));
+  static delete(id: string, actorId?: string) {
+    return paymentRepository.deleteById(new Types.ObjectId(id), actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
   }
 }
