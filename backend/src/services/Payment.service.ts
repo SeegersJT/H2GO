@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 import { paymentRepository } from "../repositories/Payment.repository";
+import { InvoiceService } from "./Invoice.service";
+import { IPayment } from "../models/Payment.model";
 
 export class PaymentService {
   static getAll() {
@@ -14,7 +16,7 @@ export class PaymentService {
     const created = await paymentRepository.create(data as any, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
 
     try {
-      await InvoiceService.allocatePaymentToInvoice(created._id, (created as any).invoice_id ?? undefined);
+      await InvoiceService.allocatePaymentToInvoice(created.id, (created as any).invoice_id ?? undefined);
     } catch {
       // swallow allocation errors; optionally log
     }

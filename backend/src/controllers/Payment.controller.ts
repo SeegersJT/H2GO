@@ -27,7 +27,7 @@ export class PaymentController {
 
   static create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await PaymentService.create(req.body);
+      const result = await PaymentService.createPayment(req.body);
       return res.success(result, { message: "Created payment successfully." });
     } catch (err) {
       next(err);

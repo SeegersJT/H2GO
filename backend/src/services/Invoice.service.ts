@@ -163,7 +163,8 @@ export class InvoiceService {
     start: Date,
     end: Date,
     periodYear: number,
-    periodMonth: number
+    periodMonth: number,
+    actorId: string
   ) {
     const rawLines: IInvoiceLine[] = [];
     const deliverySummaries: {
@@ -235,22 +236,25 @@ export class InvoiceService {
     const amount_paid = this.sumAmountPaid(paymentSnapshots);
     const balance_due = Math.max(0, (totals.total ?? 0) - amount_paid);
 
-    const created = await invoiceRepository.create({
-      branch_id: branchId as any,
-      user_id: userId as any,
-      address_id: addressId as any,
-      currency_code: mergedLines[0]?.currency_code ?? "ZAR",
-      lines: mergedLines,
-      deliveries: deliverySummaries,
-      payments: paymentSnapshots,
-      totals: { ...totals, amount_paid, balance_due },
-      status: balance_due <= 0 ? "paid" : "issued",
-      issue_date: issueDate,
-      due_date: dueDate,
-      period_year: periodYear,
-      period_month: periodMonth,
-      period_key,
-    });
+    const created = await invoiceRepository.create(
+      {
+        branch_id: branchId as any,
+        user_id: userId as any,
+        address_id: addressId as any,
+        currency_code: mergedLines[0]?.currency_code ?? "ZAR",
+        lines: mergedLines,
+        deliveries: deliverySummaries,
+        payments: paymentSnapshots,
+        totals: { ...totals, amount_paid, balance_due },
+        status: balance_due <= 0 ? "paid" : "issued",
+        issue_date: issueDate,
+        due_date: dueDate,
+        period_year: periodYear,
+        period_month: periodMonth,
+        period_key,
+      },
+      actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+    );
 
     if (!(created as any).payment_reference) {
       const payment_reference = this.formatPaymentReference(userId, issueDate, (created as any).invoice_no);
@@ -275,7 +279,8 @@ export class InvoiceService {
     start: Date,
     end: Date,
     periodYear: number,
-    periodMonth: number
+    periodMonth: number,
+    actorId: string
   ) {
     interface Group {
       deliveries: IDelivery[];
@@ -333,29 +338,30 @@ export class InvoiceService {
         start,
         end,
         periodYear,
-        periodMonth
+        periodMonth,
+        actorId
       );
       if (inv) invoices.push(inv as any);
     }
     return invoices;
   }
 
-  static async generateInvoicesForMonth(year: number, month: number) {
+  static async generateInvoicesForMonth(year: number, month: number, actorId: string) {
     const { start, end } = monthBounds(year, month);
     const subs = await subscriptionRepository.findMany({ status: "active" });
     const deliveries = await deliveryRepository.findMany({
       source: { $in: ["manual", "subscription"] },
       scheduled_for: { $gte: start, $lte: end },
     });
-    return this.generateInvoices(deliveries as any, subs as any, start, end, year, month);
+    return this.generateInvoices(deliveries as any, subs as any, start, end, year, month, actorId);
   }
 
-  static async generateCurrentMonthInvoices() {
+  static async generateCurrentMonthInvoices(actorId: string) {
     const now = dayjs();
-    return this.generateInvoicesForMonth(now.year(), now.month() + 1);
+    return this.generateInvoicesForMonth(now.year(), now.month() + 1, actorId);
   }
 
-  static async generateInvoiceForUserAndMonth(userId: string, year: number, month: number) {
+  static async generateInvoiceForUserAndMonth(userId: string, year: number, month: number, actorId: string) {
     const userObjId = new Types.ObjectId(userId);
     const { start, end } = monthBounds(year, month);
 
@@ -366,7 +372,7 @@ export class InvoiceService {
       scheduled_for: { $gte: start, $lte: end },
     });
 
-    const invoices = await this.generateInvoices(deliveries as any, subs as any, start, end, year, month);
+    const invoices = await this.generateInvoices(deliveries as any, subs as any, start, end, year, month, actorId);
     return { userId, year, month, invoices };
   }
 }
