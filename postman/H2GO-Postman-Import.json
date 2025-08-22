@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "dc9ad874-900c-48bc-b888-62b05b3df61d",
+    "_postman_id": "416b9a44-4ac7-41fb-b77f-e188852d346f",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1457,10 +1457,10 @@
       ]
     },
     {
-      "name": "inventoryMovements",
+      "name": "InventoryMovements",
       "item": [
         {
-          "name": "GET /api/v1/inventoryMovements/all",
+          "name": "GET /api/v1/InventoryMovements/all",
           "request": {
             "method": "GET",
             "header": [
@@ -1470,21 +1470,21 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/inventoryMovements/all",
+              "raw": "{{baseUrl}}/api/v1/InventoryMovements/all",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "inventoryMovements",
+                "InventoryMovements",
                 "all"
               ]
             }
           }
         },
         {
-          "name": "GET /api/v1/inventoryMovements/",
+          "name": "GET /api/v1/InventoryMovements/",
           "request": {
             "method": "GET",
             "header": [
@@ -1494,20 +1494,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "inventoryMovements"
+                "InventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "POST /api/v1/inventoryMovements/",
+          "name": "POST /api/v1/InventoryMovements/",
           "request": {
             "method": "POST",
             "header": [
@@ -1517,20 +1517,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "inventoryMovements"
+                "InventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "PUT /api/v1/inventoryMovements/",
+          "name": "PUT /api/v1/InventoryMovements/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1540,20 +1540,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "inventoryMovements"
+                "InventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/inventoryMovements/",
+          "name": "DELETE /api/v1/InventoryMovements/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1563,14 +1563,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "inventoryMovements"
+                "InventoryMovements"
               ]
             }
           }
@@ -1845,6 +1845,12 @@
                 "api",
                 "v1",
                 "payments"
+              ],
+              "query": [
+                {
+                  "key": "payment_id",
+                  "value": ""
+                }
               ]
             }
           }
@@ -1891,6 +1897,12 @@
                 "api",
                 "v1",
                 "payments"
+              ],
+              "query": [
+                {
+                  "key": "payment_id",
+                  "value": ""
+                }
               ]
             }
           }
@@ -1914,6 +1926,12 @@
                 "api",
                 "v1",
                 "payments"
+              ],
+              "query": [
+                {
+                  "key": "payment_id",
+                  "value": ""
+                }
               ]
             }
           }

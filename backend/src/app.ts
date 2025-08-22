@@ -24,7 +24,6 @@ export const setupApp = async () => {
   app.use(authenticateMiddleware);
 
   const router = await buildRouter();
-
   app.use(router);
 
   app.use(errorHandlingMiddleware);

@@ -5,7 +5,7 @@ import log from "./utils/Logger";
 const PORT = Number(process.env.PORT || 5000);
 
 const startServer = async () => {
-  try {
+  try { 
     if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI missing");
     await connectDB();
     const app = await setupApp();
