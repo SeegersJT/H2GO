@@ -1,0 +1,62 @@
+name: Deploy Backend to Elastic Beanstalk
+
+on:
+  push:
+    branches: [ master ]            # change to main if needed
+    paths:
+      - "backend/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: af-south-1
+  EB_APP: h2go-api                  # ← your EB Application name
+  EB_ENV: H2go-api-env              # ← your EB Environment name (case-sensitive)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install & Build (backend)
+        working-directory: backend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Create deploy bundle
+        run: |
+          mkdir -p deploy
+          cp backend/package.json deploy/
+          if [ -f backend/package-lock.json ]; then cp backend/package-lock.json deploy/; fi
+          if [ -f backend/yarn.lock ]; then cp backend/yarn.lock deploy/; fi
+          if [ -f backend/Procfile ]; then cp backend/Procfile deploy/; fi
+          rsync -av --exclude='*.map' backend/dist/ deploy/dist/
+          cd deploy && zip -r ../app.zip .
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          region: ${{ env.AWS_REGION }}
+          application_name: ${{ env.EB_APP }}
+          environment_name: ${{ env.EB_ENV }}
+          version_label: v-${{ github.sha }}
+          deployment_package: app.zip
