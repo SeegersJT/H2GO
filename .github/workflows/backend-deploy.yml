@@ -57,8 +57,7 @@ jobs:
         run: |
           PKG_VERSION=$(jq -r .version backend/package.json)
           RAW_DT=$(date +'%Y-%m-%d %H:%M:%S')
-          SAFE_DT=$(echo "$RAW_DT" | sed 's/ /_/; s/:/-/g')
-          VERSION_LABEL="H2GO-API - v${PKG_VERSION} - ${SAFE_DT}"
+          VERSION_LABEL="H2GO-API - v${PKG_VERSION} - ${RAW_DT}"
 
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           EB_BUCKET="elasticbeanstalk-${AWS_REGION}-${ACCOUNT_ID}"
