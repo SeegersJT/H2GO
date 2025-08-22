@@ -13,7 +13,7 @@ permissions:
 env:
   AWS_REGION: af-south-1
   EB_APP: h2go-api
-  EB_ENV: H2go-api-env
+  EB_ENV: h2go-api-env-1
   # Adjust if your role name/ARN differs:
   AWS_ROLE_ARN: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
 
