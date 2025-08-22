@@ -2,7 +2,7 @@ name: Deploy Backend to Elastic Beanstalk
 
 on:
   push:
-    branches: [ master ]          # change to main if needed
+    branches: [ master ]
     paths:
       - "backend/**"
 
@@ -14,6 +14,8 @@ env:
   AWS_REGION: af-south-1
   EB_APP: h2go-api
   EB_ENV: H2go-api-env
+  # Adjust if your role name/ARN differs:
+  AWS_ROLE_ARN: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
 
 jobs:
   deploy:
@@ -26,11 +28,14 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Debug AWS identity (optional)
+      - name: Verify AWS identity
         run: aws sts get-caller-identity
+
+      - name: Ensure jq is available
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -45,48 +50,58 @@ jobs:
           npm ci
           npm run build
 
+      # Build the human-friendly version label:
+      # H2GO-API-<package.json version>-<YYYYMMDD-HHMMSS>
+      - name: Compute version label and S3 key
+        id: meta
+        run: |
+          PKG_VERSION=$(jq -r .version backend/package.json)
+          DT=$(date +'%Y%m%d-%H%M%S')
+          VERSION_LABEL="H2GO-API-${PKG_VERSION}-${DT}"
+
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          EB_BUCKET="elasticbeanstalk-${AWS_REGION}-${ACCOUNT_ID}"
+          S3_KEY="appversions/${{ env.EB_APP }}/${VERSION_LABEL}.zip"
+
+          echo "pkg_version=$PKG_VERSION" >> $GITHUB_OUTPUT
+          echo "dt=$DT" >> $GITHUB_OUTPUT
+          echo "version_label=$VERSION_LABEL" >> $GITHUB_OUTPUT
+          echo "account_id=$ACCOUNT_ID" >> $GITHUB_OUTPUT
+          echo "eb_bucket=$EB_BUCKET" >> $GITHUB_OUTPUT
+          echo "s3_key=$S3_KEY" >> $GITHUB_OUTPUT
+
       - name: Create deploy bundle
         run: |
           rm -rf deploy && mkdir -p deploy/dist
           cp backend/package.json deploy/
-          if [ -f backend/package-lock.json ]; then cp backend/package-lock.json deploy/; fi
-          if [ -f backend/Procfile ]; then cp backend/Procfile deploy/; fi
+          [ -f backend/package-lock.json ] && cp backend/package-lock.json deploy/
+          [ -f backend/Procfile ] && cp backend/Procfile deploy/
           rsync -a backend/dist/ deploy/dist/
-          # prevent EB from running lifecycle scripts (like "prepare") during npm install
+          # Prevent EB from running lifecycle scripts (e.g., "prepare") during npm install
           echo 'ignore-scripts=true' > deploy/.npmrc
           (cd deploy && zip -r ../app.zip .)
 
-      - name: Compute EB bucket name
-        id: bucket
-        run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
-          # Default EB bucket name pattern:
-          echo "EB_BUCKET=elasticbeanstalk-${{ env.AWS_REGION }}-${ACCOUNT_ID}" >> $GITHUB_ENV
-          echo "VERSION_LABEL=v-${{ github.sha }}" >> $GITHUB_ENV
-          echo "S3_KEY=appversions/${{ env.EB_APP }}-${{ github.sha }}.zip" >> $GITHUB_ENV
-
       - name: Ensure EB bucket exists (ok if already exists)
         run: |
-          if ! aws s3 ls "s3://${EB_BUCKET}" >/dev/null 2>&1; then
-            aws s3 mb "s3://${EB_BUCKET}" --region "${AWS_REGION}"
+          if ! aws s3 ls "s3://${{ steps.meta.outputs.eb_bucket }}" >/dev/null 2>&1; then
+            aws s3 mb "s3://${{ steps.meta.outputs.eb_bucket }}" --region "${AWS_REGION}"
           fi
 
-      - name: Upload application bundle to S3
+      - name: Upload bundle to S3
         run: |
-          aws s3 cp app.zip "s3://${EB_BUCKET}/${S3_KEY}"
+          aws s3 cp app.zip "s3://${{ steps.meta.outputs.eb_bucket }}/${{ steps.meta.outputs.s3_key }}"
 
       - name: Create EB application version
         run: |
           aws elasticbeanstalk create-application-version \
             --application-name "${EB_APP}" \
-            --version-label "${VERSION_LABEL}" \
-            --description "GitHub Actions deploy ${GITHUB_SHA}" \
-            --source-bundle S3Bucket="${EB_BUCKET}",S3Key="${S3_KEY}" \
+            --version-label "${{ steps.meta.outputs.version_label }}" \
+            --description "CI deploy ${GITHUB_SHA}" \
+            --source-bundle S3Bucket="${{ steps.meta.outputs.eb_bucket }}",S3Key="${{ steps.meta.outputs.s3_key }}" \
             --auto-create-application
 
       - name: Update EB environment to new version
         run: |
           aws elasticbeanstalk update-environment \
             --environment-name "${EB_ENV}" \
-            --version-label "${VERSION_LABEL}"
+            --version-label "${{ steps.meta.outputs.version_label }}"
