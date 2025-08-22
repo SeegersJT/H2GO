@@ -2,12 +2,12 @@ name: Deploy Backend to Elastic Beanstalk
 
 on:
   push:
-    branches: [ master ]        # change to main if needed
+    branches: [ master ]          # change to main if needed
     paths:
       - "backend/**"
 
 permissions:
-  id-token: write               # required for OIDC
+  id-token: write
   contents: read
 
 env:
@@ -24,10 +24,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials (OIDC)
+        id: awscreds
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
           aws-region: ${{ env.AWS_REGION }}
+
+      # Promote the temp creds to the workflow env so we can reference them explicitly
+      - name: Export AWS creds to GITHUB_ENV
+        run: |
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> $GITHUB_ENV
+
+      # Optional: sanity check OIDC worked
+      - name: Debug AWS identity
+        run: aws sts get-caller-identity
 
       - name: Detect lockfile
         id: lock
@@ -71,34 +83,16 @@ jobs:
           if [ -f backend/Procfile ]; then cp backend/Procfile deploy/; fi
           rsync -a backend/dist/ deploy/dist/
           (cd deploy && zip -r ../app.zip .)
-          ls -la app.zip
 
-      # ---- Deploy with AWS CLI (no third-party action) ----
-      - name: Upload bundle to EB S3 bucket
-        id: upload
-        run: |
-          set -euo pipefail
-          BUCKET=$(aws elasticbeanstalk create-storage-location --query S3Bucket --output text)
-          echo "bucket=$BUCKET" >> $GITHUB_OUTPUT
-          KEY="$EB_APP/${{ github.sha }}.zip"
-          echo "key=$KEY" >> $GITHUB_OUTPUT
-          aws s3 cp app.zip "s3://$BUCKET/$KEY" --only-show-errors
-
-      - name: Create EB application version
-        run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name "$EB_APP" \
-            --version-label "v-${{ github.sha }}" \
-            --source-bundle S3Bucket=${{ steps.upload.outputs.bucket }},S3Key=${{ steps.upload.outputs.key }} \
-            --process
-
-      - name: Update EB environment to new version
-        run: |
-          aws elasticbeanstalk update-environment \
-            --environment-name "$EB_ENV" \
-            --version-label "v-${{ github.sha }}"
-
-      - name: Wait for environment update to finish
-        run: |
-          aws elasticbeanstalk wait environment-updated \
-            --environment-names "$EB_ENV"
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        env:
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+        with:
+          region: ${{ env.AWS_REGION }}
+          application_name: ${{ env.EB_APP }}
+          environment_name: ${{ env.EB_ENV }}
+          version_label: v-${{ github.sha }}
+          deployment_package: app.zip
