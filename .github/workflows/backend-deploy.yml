@@ -24,75 +24,67 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials (OIDC)
-        id: awscreds
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::101573021364:role/h2go-eb-github-deploy
           aws-region: ${{ env.AWS_REGION }}
 
-      # Promote the temp creds to the workflow env so we can reference them explicitly
-      - name: Export AWS creds to GITHUB_ENV
-        run: |
-          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> $GITHUB_ENV
-
-      # Optional: sanity check OIDC worked
-      - name: Debug AWS identity
+      - name: Debug AWS identity (optional)
         run: aws sts get-caller-identity
-
-      - name: Detect lockfile
-        id: lock
-        run: |
-          if [ -f backend/package-lock.json ]; then
-            echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "lock=backend/package-lock.json" >> $GITHUB_OUTPUT
-          elif [ -f backend/yarn.lock ]; then
-            echo "manager=yarn" >> $GITHUB_OUTPUT
-            echo "lock=backend/yarn.lock" >> $GITHUB_OUTPUT
-          else
-            echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "lock=" >> $GITHUB_OUTPUT
-          fi
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: ${{ steps.lock.outputs.manager }}
-          cache-dependency-path: ${{ steps.lock.outputs.lock }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install & Build (backend)
         working-directory: backend
         run: |
-          if [ "${{ steps.lock.outputs.manager }}" = "yarn" ]; then
-            corepack enable
-            yarn install --frozen-lockfile
-            yarn build
-          else
-            npm ci
-            npm run build
-          fi
+          npm ci
+          npm run build
 
       - name: Create deploy bundle
         run: |
           rm -rf deploy && mkdir -p deploy/dist
           cp backend/package.json deploy/
           if [ -f backend/package-lock.json ]; then cp backend/package-lock.json deploy/; fi
-          if [ -f backend/yarn.lock ]; then cp backend/yarn.lock deploy/; fi
           if [ -f backend/Procfile ]; then cp backend/Procfile deploy/; fi
           rsync -a backend/dist/ deploy/dist/
           (cd deploy && zip -r ../app.zip .)
 
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v22
-        env:
-          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
-        with:
-          region: ${{ env.AWS_REGION }}
-          application_name: ${{ env.EB_APP }}
-          environment_name: ${{ env.EB_ENV }}
-          version_label: v-${{ github.sha }}
-          deployment_package: app.zip
+      - name: Compute EB bucket name
+        id: bucket
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
+          # Default EB bucket name pattern:
+          echo "EB_BUCKET=elasticbeanstalk-${{ env.AWS_REGION }}-${ACCOUNT_ID}" >> $GITHUB_ENV
+          echo "VERSION_LABEL=v-${{ github.sha }}" >> $GITHUB_ENV
+          echo "S3_KEY=appversions/${{ env.EB_APP }}-${{ github.sha }}.zip" >> $GITHUB_ENV
+
+      - name: Ensure EB bucket exists (ok if already exists)
+        run: |
+          if ! aws s3 ls "s3://${EB_BUCKET}" >/dev/null 2>&1; then
+            aws s3 mb "s3://${EB_BUCKET}" --region "${AWS_REGION}"
+          fi
+
+      - name: Upload application bundle to S3
+        run: |
+          aws s3 cp app.zip "s3://${EB_BUCKET}/${S3_KEY}"
+
+      - name: Create EB application version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name "${EB_APP}" \
+            --version-label "${VERSION_LABEL}" \
+            --description "GitHub Actions deploy ${GITHUB_SHA}" \
+            --source-bundle S3Bucket="${EB_BUCKET}",S3Key="${S3_KEY}" \
+            --auto-create-application
+
+      - name: Update EB environment to new version
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name "${EB_ENV}" \
+            --version-label "${VERSION_LABEL}"
