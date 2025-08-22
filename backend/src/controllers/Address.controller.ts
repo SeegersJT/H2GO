@@ -26,7 +26,6 @@ export class AddressController {
       }
 
       const result = await AddressService.getAddressbyId(addressId);
-      if ()
 
       return res.success(result, { message: "Retrieved addresses by ID successfully." });
     } catch (err) {
