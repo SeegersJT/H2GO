@@ -11,6 +11,7 @@ import { buildRouter } from "./utils/RouteLoader.util";
 
 dotenv.config({ quiet: true });
 
+
 export const setupApp = async () => {
   const app = express();
 

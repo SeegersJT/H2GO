@@ -52,6 +52,8 @@ jobs:
           if [ -f backend/package-lock.json ]; then cp backend/package-lock.json deploy/; fi
           if [ -f backend/Procfile ]; then cp backend/Procfile deploy/; fi
           rsync -a backend/dist/ deploy/dist/
+          # prevent EB from running lifecycle scripts (like "prepare") during npm install
+          echo 'ignore-scripts=true' > deploy/.npmrc
           (cd deploy && zip -r ../app.zip .)
 
       - name: Compute EB bucket name
