@@ -12,11 +12,9 @@ const AuthLoginFormContainer = () => {
     event.preventDefault()
     setIsLoading(true)
 
-    // Simulate API request
     setTimeout(() => {
       setIsLoading(false)
       if (type === 'login') {
-        // Store a mock token
         localStorage.setItem('waterboy_auth', 'mock_token')
         toast({
           title: 'Login successful',

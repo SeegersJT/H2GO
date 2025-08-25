@@ -73,7 +73,7 @@ const AuthLoginForm = ({ isLoading, onAuthLoginFormClick }) => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="reg-phone">Phone Number</Label>
-                  <Input id="reg-phone" type="text" placeholder="+1 (555) 123 4567" required />
+                  <Input id="reg-phone" type="text" placeholder="+27 12 345 6789" required />
                 </div>
               </div>
 
