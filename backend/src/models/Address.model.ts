@@ -14,8 +14,8 @@ export interface IAddress extends Document {
   city: string;
   region?: string; // province/state
   postal_code: string;
-  lat?: number;
   lng?: number;
+  lat?: number;
   location?: { type: "Point"; coordinates: [number, number] }; // derived from lng/lat
   delivery_instructions?: string;
   contact_person?: string;
@@ -44,8 +44,8 @@ const addressSchema = new Schema<IAddress>(
     region: { type: String, required: false, trim: true },
     postal_code: { type: String, required: true, trim: true },
 
-    lat: { type: Number, required: false, min: -90, max: 90 },
     lng: { type: Number, required: false, min: -180, max: 180 },
+    lat: { type: Number, required: false, min: -90, max: 90 },
 
     // GeoJSON point (kept in sync from lng/lat)
     location: {

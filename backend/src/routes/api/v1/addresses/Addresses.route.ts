@@ -7,8 +7,8 @@ const router = Router();
 
 const restricted = roleAuthorizationMiddleware(UserType.ADMIN);
 
-router.get("/all", restricted, AddressController.getAllAddresses);
-router.get("/", restricted, AddressController.getAddressbyId);
+router.get("/all", restricted, AddressController.getAll);
+router.get("/", restricted, AddressController.getById);
 router.post("/", restricted, AddressController.insertAddress);
 router.put("/", restricted, AddressController.updateAddress);
 router.delete("/", restricted, AddressController.deleteAddress);

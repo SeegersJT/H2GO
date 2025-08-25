@@ -4,7 +4,7 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { Types } from "mongoose";
 
 export class AddressController {
-  static getAllAddresses = async (req: Request, res: Response, next: NextFunction) => {
+  static getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await AddressService.getAllAddresses();
 
@@ -14,7 +14,7 @@ export class AddressController {
     }
   };
 
-  static getAddressbyId = async (req: Request, res: Response, next: NextFunction) => {
+  static getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const addressId = req.query.address_id as string;
 
