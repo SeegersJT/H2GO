@@ -1,9 +1,9 @@
-import AuthLoginForm from '@/components/login/AuthLoginForm.component'
+import Login from '@/components/authentication/login/Login.component'
 import { useToast } from '@/hooks/use-toast'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const AuthLoginFormContainer = () => {
+const LoginContainer = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -37,7 +37,7 @@ const AuthLoginFormContainer = () => {
     }, 1500)
   }
 
-  return <AuthLoginForm onAuthLoginFormClick={handleOnAuthLoginFormClick} isLoading={isLoading} />
+  return <Login onAuthLoginFormClick={handleOnAuthLoginFormClick} isLoading={isLoading} />
 }
 
-export default AuthLoginFormContainer
+export default LoginContainer

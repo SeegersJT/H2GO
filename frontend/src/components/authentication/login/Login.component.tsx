@@ -1,10 +1,17 @@
-import { Button } from '../ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-const AuthLoginForm = ({ isLoading, onAuthLoginFormClick }) => {
+const Login = ({ isLoading, onAuthLoginFormClick }) => {
   return (
     <Tabs defaultValue="login" className="w-full max-w-md">
       <TabsList className="grid w-full grid-cols-2">
@@ -111,4 +118,4 @@ const AuthLoginForm = ({ isLoading, onAuthLoginFormClick }) => {
   )
 }
 
-export default AuthLoginForm
+export default Login
