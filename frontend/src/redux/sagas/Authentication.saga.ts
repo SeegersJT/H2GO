@@ -2,11 +2,10 @@
 import axios, { AxiosResponse } from 'axios'
 import { call, put, takeEvery } from 'redux-saga/effects'
 import * as authActions from '@/redux/actions/Authentication.action'
+import { toast } from '@/hooks/use-toast'
+import * as confirmationTokenAction from '../actions/ConfirmationToken.action'
+import * as type from '../types/Authentication.type'
 import * as api from '@/utils/api/Authentication.api'
-import type {
-  AuthLoginResponse,
-  AuthLoginCallbackResponse,
-} from '@/redux/types/Authentication.type'
 
 function* authenticationLoginRequestSaga(
   action: ReturnType<typeof authActions.requestAuthenticationLogin>,
@@ -14,39 +13,22 @@ function* authenticationLoginRequestSaga(
   yield put(authActions.setAuthenticationLoginLoading(true))
 
   try {
-    const { payload, onResponse } = action
+    const { payload, onSuccess } = action
     const [endpoint, requestOptions] = api.getAuthenticationLoginRequest(payload)
 
-    const response: AxiosResponse<AuthLoginResponse> = yield call(axios.request, {
+    const response: AxiosResponse<type.AuthLoginResponse> = yield call(axios.request, {
       url: endpoint,
       ...requestOptions,
     })
-    const data = response.data
+    const { data, status, message } = response.data
 
-    const authLoginCallbackResponse: AuthLoginCallbackResponse = {
-      title: data.status,
-      description: data.message,
-      variant: 'success',
-    }
+    yield put(confirmationTokenAction.setConfirmationToken(data))
+    toast({ title: status, description: message, variant: 'success' })
 
-    if (onResponse) {
-      yield call(onResponse, authLoginCallbackResponse)
-    }
-
-    // optionally dispatch success state, token, etc.
-    // yield put(setToken(...));
+    yield call(onSuccess)
   } catch (error: any) {
-    if (action.onResponse) {
-      const errorData = error?.response?.data
-
-      const authLoginCallbackResponse: AuthLoginCallbackResponse = {
-        title: errorData?.message,
-        description: errorData?.error,
-        variant: 'error',
-      }
-
-      yield call(action.onResponse, authLoginCallbackResponse)
-    }
+    const errorData = error?.response?.data
+    toast({ title: errorData?.message, description: errorData?.error, variant: 'error' })
   }
 
   yield put(authActions.setAuthenticationLoginLoading(false))

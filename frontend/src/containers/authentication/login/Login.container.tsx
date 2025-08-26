@@ -1,16 +1,14 @@
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { useToast } from '@/hooks/use-toast'
+import { useState } from 'react'
+import { useAppDispatch, useAppSelector } from '@/hooks/use-redux'
 import Login from '@/components/authentication/login/Login.component'
 import * as authActions from '@/redux/actions/Authentication.action'
-import { useState } from 'react'
-import { AuthLoginCallbackResponse } from '@/redux/types/Authentication.type'
+import { useNavigate } from 'react-router-dom'
 
 const LoginContainer = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const { toast } = useToast()
+  const { authLoginLoading } = useAppSelector((state) => state.auth)
 
   const [loginForm, setLoginForm] = useState({ email: null, password: null })
 
@@ -24,14 +22,12 @@ const LoginContainer = () => {
   const handleOnAuthLoginFormClick = (event: React.FormEvent, type: 'login' | 'register') => {
     event.preventDefault()
 
-    const onSuccess = () => {}
-
-    const onResponse = (response: AuthLoginCallbackResponse) => {
-      toast({ title: response.title, description: response.description, variant: response.variant })
-    }
-
     if (type === 'login') {
-      dispatch(authActions.requestAuthenticationLogin(loginForm, onResponse, onSuccess))
+      const onSuccess = () => {
+        navigate('/auth/token')
+      }
+
+      dispatch(authActions.requestAuthenticationLogin(loginForm, onSuccess))
     }
 
     // if (type === 'register') {
@@ -48,7 +44,7 @@ const LoginContainer = () => {
   return (
     <Login
       loginForm={loginForm}
-      isLoading={false}
+      authLoginLoading={authLoginLoading}
       onLoginFormChange={handleOnLoginFormChange}
       onAuthLoginFormClick={handleOnAuthLoginFormClick}
     />

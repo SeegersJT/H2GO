@@ -1,15 +1,13 @@
-// src/redux/configureStore.ts
-
-import { legacy_createStore as createStore, applyMiddleware } from 'redux'
+import { configureStore as createToolkitStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import rootReducer from './reducers/_Root.reducer'
+import rootReducer, { type RootState } from './reducers/_Root.reducer'
 import rootSaga from './sagas/_Root.saga'
 import { getAppVersion } from '@/utils/version'
 
 export async function configureStore() {
-  const version = getAppVersion()
+  const version = await getAppVersion()
   const CURRENT_KEY = `H2GO-${version}`
 
   const persistConfig = {
@@ -28,10 +26,15 @@ export async function configureStore() {
     whitelist: ['auth'],
   }
 
-  const persistedReducer = persistReducer(persistConfig, rootReducer)
+  const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer)
 
   const sagaMiddleware = createSagaMiddleware()
-  const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware))
+  const store = createToolkitStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(sagaMiddleware),
+  })
+
   sagaMiddleware.run(rootSaga)
 
   const persistor = persistStore(store)
@@ -39,5 +42,5 @@ export async function configureStore() {
   return { store, persistor, CURRENT_KEY }
 }
 
-export type AppDispatch = ReturnType<typeof createStore>['dispatch']
-export type { RootState } from './reducers/_Root.reducer'
+export type AppDispatch = ReturnType<typeof createToolkitStore>['dispatch']
+export type { RootState }

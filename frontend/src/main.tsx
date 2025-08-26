@@ -6,18 +6,14 @@ import App from './App'
 import './index.css'
 import { configureStore } from './redux/Store.redux'
 
-async function bootstrap() {
-  const { store, persistor } = await configureStore()
+const { store, persistor } = await configureStore()
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <App />
-        </PersistGate>
-      </Provider>
-    </React.StrictMode>,
-  )
-}
-
-bootstrap()
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>,
+)
