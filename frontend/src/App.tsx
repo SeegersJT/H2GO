@@ -27,14 +27,13 @@ const App = () => (
           <Route path="/" element={<AuthenticationContainer />}>
             <Route index element={<Navigate to="/auth/login" replace />} />
             <Route path="auth/login" element={<LoginContainer />} />
-            // Starts with the login form ACTIONS/SAGAS/REDUCERS
+
             <Route path="auth/password-forgot" element={<PasswordForgotContainer />} />
             <Route path="auth/token" element={<TokenContainer />}>
               <Route index element={<Navigate to="/auth/token/validate" replace />} />
               <Route path="auth/token/validate" element={<TokenValidateContainer />} />
 
               <Route path="auth/token/one-time-pin" element={<OneTimePinContainer />} />
-
               <Route path="auth/token/password-reset" element={<PasswordResetContainer />} />
             </Route>
           </Route>

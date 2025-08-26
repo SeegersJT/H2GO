@@ -1,23 +1,20 @@
 import Login from '@/components/authentication/login/Login.component'
 import { useToast } from '@/hooks/use-toast'
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 const LoginContainer = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleOnAuthLoginFormClick = (event: React.FormEvent, type: 'login' | 'register') => {
     event.preventDefault()
-    setIsLoading(true)
 
-    // Simulate API request
+    dispatch()
+
     setTimeout(() => {
-      setIsLoading(false)
       if (type === 'login') {
-        // Store a mock token
-        localStorage.setItem('waterboy_auth', 'mock_token')
         toast({
           title: 'Login successful',
           description: 'Welcome back to WaterBoy!',
@@ -37,7 +34,7 @@ const LoginContainer = () => {
     }, 1500)
   }
 
-  return <Login onAuthLoginFormClick={handleOnAuthLoginFormClick} isLoading={isLoading} />
+  return <Login onAuthLoginFormClick={handleOnAuthLoginFormClick} isLoading={false} />
 }
 
 export default LoginContainer
