@@ -1,3 +1,4 @@
+import Token from '@/components/authentication/token/Token.component'
 import { useAppSelector } from '@/hooks/use-redux'
 import { toast } from '@/hooks/use-toast'
 import { Utils } from '@/utils/Utils'
@@ -12,14 +13,15 @@ const TokenContainer = () => {
   useEffect(() => {
     if (Utils.isNull(confirmationToken)) {
       toast({
-        title: 'Invalid Token',
-        description: 'Provided token is not valid',
+        title: 'Invalid token',
+        description: 'Your confirmation token is missing or expired. Please request a new one.',
         variant: 'warning',
       })
+      navigate('/')
     }
-  }, [confirmationToken])
+  }, [confirmationToken, navigate])
 
-  return <>{confirmationToken}</>
+  return <Token />
 }
 
 export default TokenContainer

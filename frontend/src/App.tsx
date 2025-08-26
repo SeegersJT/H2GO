@@ -25,15 +25,18 @@ const App = () => (
         <Routes>
           <Route path="/" element={<AuthenticationContainer />}>
             <Route index element={<Navigate to="/auth/login" replace />} />
-            <Route path="auth/login" element={<LoginContainer />} />
+            <Route path="/auth/login" element={<LoginContainer />} />
 
             <Route path="auth/password-forgot" element={<PasswordForgotContainer />} />
+
             <Route path="auth/token" element={<TokenContainer />}>
               <Route index element={<Navigate to="/auth/token/validate" replace />} />
-              <Route path="auth/token/validate" element={<TokenValidateContainer />} />
+              <Route path="validate" element={<TokenValidateContainer />} />
 
-              <Route path="auth/token/one-time-pin" element={<OneTimePinContainer />} />
-              <Route path="auth/token/password-reset" element={<PasswordResetContainer />} />
+              <Route path="one-time-pin" element={<OneTimePinContainer />} />
+              <Route path="password-reset" element={<PasswordResetContainer />} />
+
+              <Route path="*" element={<Navigate to="/auth/token" replace />} />
             </Route>
           </Route>
 
