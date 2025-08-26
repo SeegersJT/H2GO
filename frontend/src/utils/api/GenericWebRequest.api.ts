@@ -1,5 +1,6 @@
-export const API_HOST = import.meta.env.API_HOST as string
-export const API_PREFIX = `${API_HOST}${import.meta.env.API_PREFIX}` as const
+export const API_HOST = import.meta.env.VITE_API_HOST as string
+console.log('API_HOST', API_HOST)
+export const API_PREFIX = `${API_HOST}${import.meta.env.VITE_API_PREFIX}` as const
 
 export const GET = 'GET' as const
 export const POST = 'POST' as const

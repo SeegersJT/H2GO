@@ -9,7 +9,6 @@ import DashboardHomeContainer from './containers/dashboard/home/DashboardHome.co
 import AuthenticationContainer from './containers/authentication/Authentication.container'
 import LoginContainer from './containers/authentication/login/Login.container'
 import PasswordForgotContainer from './containers/authentication/password-forgot/PasswordForgot.container'
-import RegisterContainer from './containers/authentication/register/Register.container'
 import TokenContainer from './containers/authentication/token/Token.container'
 import TokenValidateContainer from './containers/authentication/token/validate/TokenValidate.container'
 import OneTimePinContainer from './containers/authentication/token/one-time-pin/OneTimePin.container'

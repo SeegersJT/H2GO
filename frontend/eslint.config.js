@@ -41,6 +41,7 @@ export default tseslint.config(
       "react/react-in-jsx-scope": "off",         // using new JSX runtime
       "react/jsx-boolean-value": ["warn", "never"],
       "react/self-closing-comp": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
 
       // JSX formatting-ish rules (ESLint side)
       "react/jsx-indent": ["warn", 2],
