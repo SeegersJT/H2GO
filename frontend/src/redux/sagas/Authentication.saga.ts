@@ -5,7 +5,7 @@ import { navigateTo } from '@/utils/Navigation'
 import axios, { AxiosResponse } from 'axios'
 import { call, put, takeEvery } from 'redux-saga/effects'
 import * as confirmationTokenActions from '../actions/ConfirmationToken.action'
-import * as type from '../types/Authentication.type'
+import { GenericResponse } from '../types/GenericResponse.type'
 
 function* authenticationLoginRequestSaga(action: ReturnType<typeof authActions.requestAuthenticationLogin>) {
   yield put(authActions.setAuthenticationLoginLoading(true))
@@ -14,7 +14,7 @@ function* authenticationLoginRequestSaga(action: ReturnType<typeof authActions.r
     const { payload } = action
     const [endpoint, requestOptions] = api.getAuthenticationLoginRequest(payload)
 
-    const response: AxiosResponse<type.AuthLoginResponse> = yield call(axios.request, { url: endpoint, ...requestOptions })
+    const response: AxiosResponse<GenericResponse> = yield call(axios.request, { url: endpoint, ...requestOptions })
     const { data, status, message } = response.data
 
     yield put(confirmationTokenActions.setConfirmationToken(data))
@@ -29,6 +29,29 @@ function* authenticationLoginRequestSaga(action: ReturnType<typeof authActions.r
   yield put(authActions.setAuthenticationLoginLoading(false))
 }
 
+function* authenticationPasswordForgotRequestSaga(action: ReturnType<typeof authActions.requestAuthenticationPasswordForgot>) {
+  yield put(authActions.setAuthenticationPasswordForgotLoading(true))
+
+  try {
+    const { payload } = action
+    const [endpoint, requestOptions] = api.getAuthenticationPasswordForgotRequest(payload)
+
+    const response: AxiosResponse<GenericResponse> = yield call(axios.request, { url: endpoint, ...requestOptions })
+    const { data, status, message } = response.data
+
+    yield put(confirmationTokenActions.setConfirmationToken(data))
+    toast({ title: status, description: message, variant: 'success' })
+
+    navigateTo('/auth/token', { replace: true })
+  } catch (error: any) {
+    const errorData = error?.response?.data
+    toast({ title: errorData?.message, description: errorData?.error, variant: 'error' })
+  }
+
+  yield put(authActions.setAuthenticationPasswordForgotLoading(false))
+}
+
 export function* watchAuthSagas() {
   yield takeEvery(authActions.REQUEST_AUTH_LOGIN, authenticationLoginRequestSaga)
+  yield takeEvery(authActions.REQUEST_AUTH_PASSWORD_FORGOT, authenticationPasswordForgotRequestSaga)
 }

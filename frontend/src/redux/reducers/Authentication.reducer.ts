@@ -3,6 +3,7 @@ import {
   SET_AUTH_ACCESS_TOKEN,
   SET_AUTH_ACCESS_TOKEN_EXPIRES_AT,
   SET_AUTH_LOGIN_LOADING,
+  SET_AUTH_PASSWORD_FORGOT_LOADING,
   SET_AUTH_REFRESH_TOKEN,
   SET_AUTH_REFRESH_TOKEN_EXPIRES_AT,
 } from '../actions/Authentication.action'
@@ -13,6 +14,7 @@ export interface AuthState {
   accessTokenExpiresAt: Date
   refreshTokenExpiresAt: Date
   authLoginLoading: boolean
+  authPasswordForgotLoading: boolean
 }
 
 const initialState: AuthState = {
@@ -21,6 +23,7 @@ const initialState: AuthState = {
   accessTokenExpiresAt: null,
   refreshTokenExpiresAt: null,
   authLoginLoading: false,
+  authPasswordForgotLoading: false,
 }
 
 export default function authReducer(state: AuthState = initialState, action: AuthAction): AuthState {
@@ -53,6 +56,11 @@ export default function authReducer(state: AuthState = initialState, action: Aut
       return {
         ...state,
         authLoginLoading: action.payload,
+      }
+    case SET_AUTH_PASSWORD_FORGOT_LOADING:
+      return {
+        ...state,
+        authPasswordForgotLoading: action.payload,
       }
     default:
       return state

@@ -35,7 +35,7 @@ const Login = ({ loginForm, authLoginLoading, onLoginFormChange, onAuthLoginForm
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <a href="#" className="text-sm text-waterboy-600 hover:text-waterboy-500">
+                  <a href="/auth/password-forgot" className="text-sm text-waterboy-600 hover:text-waterboy-500">
                     Forgot password?
                   </a>
                 </div>

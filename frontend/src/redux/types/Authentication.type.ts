@@ -3,9 +3,6 @@ export type AuthLogin = {
   password: string
 }
 
-export type AuthLoginResponse = {
-  data: any
-  status: string
-  code: number
-  message: string
+export type AuthPasswordForgot = {
+  email: string
 }
