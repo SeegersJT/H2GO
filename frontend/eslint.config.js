@@ -37,8 +37,8 @@ export default tseslint.config(
       // React + Hooks
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "react/jsx-uses-react": "off",             // using new JSX runtime
-      "react/react-in-jsx-scope": "off",         // using new JSX runtime
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
       "react/jsx-boolean-value": ["warn", "never"],
       "react/self-closing-comp": "warn",
       "@typescript-eslint/no-explicit-any": "off",
@@ -56,10 +56,20 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
 
       // Let Prettier be the final arbiter of format (avoids rule conflicts)
-      "prettier/prettier": "warn"
+      "prettier/prettier": "warn",
       // Tailwind helpers if you want:
       // "tailwindcss/classnames-order": "warn",
       // "tailwindcss/no-contradicting-classname": "warn",
+      "max-len": [
+        "warn",
+        {
+          code: 150,
+          tabWidth: 2,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true
+        }
+      ],
     },
   }
 )

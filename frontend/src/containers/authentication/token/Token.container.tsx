@@ -1,14 +1,12 @@
 import Token from '@/components/authentication/token/Token.component'
 import { useAppSelector } from '@/hooks/use-redux'
 import { toast } from '@/hooks/use-toast'
+import { navigateTo } from '@/utils/Navigation'
 import { Utils } from '@/utils/Utils'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 const TokenContainer = () => {
-  const navigate = useNavigate()
-
-  const { confirmationToken } = useAppSelector((state) => state.token)
+  const { confirmationToken, isConfirmationTokenValid } = useAppSelector((state) => state.token)
 
   useEffect(() => {
     if (Utils.isNull(confirmationToken)) {
@@ -17,9 +15,10 @@ const TokenContainer = () => {
         description: 'Your confirmation token is missing or expired. Please request a new one.',
         variant: 'warning',
       })
-      navigate('/')
+
+      navigateTo('/')
     }
-  }, [confirmationToken, navigate])
+  }, [confirmationToken, isConfirmationTokenValid])
 
   return <Token />
 }

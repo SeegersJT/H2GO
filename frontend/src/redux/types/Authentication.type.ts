@@ -9,5 +9,3 @@ export type AuthLoginResponse = {
   code: number
   message: string
 }
-
-export type AuthLoginSuccessCallback = () => void
