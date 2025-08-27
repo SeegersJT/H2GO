@@ -1,13 +1,15 @@
+import dayjs from "dayjs";
 import jwt from "jsonwebtoken";
-import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
-import { userRepository } from "../repositories/User.repository";
+import { Types } from "mongoose";
+import ConfirmationToken from "../models/ConfirmationToken.model";
 import { branchRepository } from "../repositories/Branch.repository";
 import { confirmationTokenRepository } from "../repositories/ConfirmationToken.repository";
-import ConfirmationToken from "../models/ConfirmationToken.model";
+import { userRepository } from "../repositories/User.repository";
 import { ConfirmationTokenType } from "../utils/constants/ConfirmationToken.constant";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { HttpError } from "../utils/HttpError";
+import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
-import { Types } from "mongoose";
-import dayjs from "dayjs";
 
 export class AuthService {
   static async login(email: string, password: string) {
@@ -82,7 +84,7 @@ export class AuthService {
       if (tokenDoc.otp_attempts >= tokenDoc.max_otp_attempts) {
         await confirmationTokenRepository.revoke(tokenDoc._id as any);
       }
-      throw new Error("Invalid OTP");
+      throw new HttpError("Invalid OTP", StatusCode.BAD_REQUEST);
     }
 
     const user = await userRepository.findById(tokenDoc.user_id);
