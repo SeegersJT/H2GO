@@ -93,16 +93,6 @@ const confirmationTokenSchema = new Schema<IConfirmationToken, IConfirmationToke
 // TTL cleanup (MongoDB auto-removes after expiry)
 confirmationTokenSchema.index({ confirmation_token_expiry_date: 1 }, { expireAfterSeconds: 0, name: "ttl_confirmation_token" });
 
-// One ACTIVE token per user per type (unconfirmed + not revoked)
-confirmationTokenSchema.index(
-  { user_id: 1, confirmation_token_type: 1 },
-  {
-    unique: true,
-    partialFilterExpression: { confirmed: false, revoked: false },
-    name: "uniq_active_token_per_user_type",
-  }
-);
-
 // Validation & derived hash
 confirmationTokenSchema.pre("validate", function (next) {
   // Accept any digits-and-hyphens format (allows different blocks/digit sizes).

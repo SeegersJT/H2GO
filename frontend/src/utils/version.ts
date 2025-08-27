@@ -1,5 +1,5 @@
 export async function getAppVersion(): Promise<string> {
-  const res = await fetch('/version.jsonc?ts=${Date.now()}', { cache: 'no-cache' })
+  const res = await fetch(`/version.json?ts=${Date.now()}`, { cache: 'no-store' })
   const data = await res.json()
-  return data.version
+  return String(data.version ?? '0.0.0')
 }

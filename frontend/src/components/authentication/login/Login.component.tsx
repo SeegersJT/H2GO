@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-const Login = ({ isLoading, onAuthLoginFormClick }) => {
+const Login = ({ loginForm, authLoginLoading, onLoginFormChange, onAuthLoginFormClick }) => {
   return (
     <Tabs defaultValue="login" className="w-full max-w-md">
       <TabsList className="grid w-full grid-cols-2">
@@ -28,7 +28,14 @@ const Login = ({ isLoading, onAuthLoginFormClick }) => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="name@example.com" required />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={loginForm?.email}
+                  onChange={(e) => onLoginFormChange(e.target.value, 'email')}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -37,16 +44,22 @@ const Login = ({ isLoading, onAuthLoginFormClick }) => {
                     Forgot password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={loginForm?.password}
+                  onChange={(e) => onLoginFormChange(e.target.value, 'password')}
+                  required
+                />
               </div>
             </CardContent>
             <CardFooter>
               <Button
                 type="submit"
                 className="w-full bg-waterboy-600 hover:bg-waterboy-700"
-                disabled={isLoading}
+                disabled={authLoginLoading}
               >
-                {isLoading ? 'Logging in...' : 'Login'}
+                {authLoginLoading ? 'Logging in...' : 'Login'}
               </Button>
             </CardFooter>
           </form>
@@ -106,9 +119,9 @@ const Login = ({ isLoading, onAuthLoginFormClick }) => {
               <Button
                 type="submit"
                 className="w-full bg-waterboy-600 hover:bg-waterboy-700"
-                disabled={isLoading}
+                disabled={authLoginLoading}
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {authLoginLoading ? 'Creating account...' : 'Create account'}
               </Button>
             </CardFooter>
           </form>

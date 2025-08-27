@@ -1,41 +1,45 @@
 import Login from '@/components/authentication/login/Login.component'
-import { useToast } from '@/hooks/use-toast'
+import { useAppDispatch, useAppSelector } from '@/hooks/use-redux'
+import * as authActions from '@/redux/actions/Authentication.action'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 const LoginContainer = () => {
-  const navigate = useNavigate()
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
+
+  const { authLoginLoading } = useAppSelector((state) => state.auth)
+
+  const [loginForm, setLoginForm] = useState({ email: null, password: null })
+
+  const handleOnLoginFormChange = (value: string, type: 'email' | 'password') => {
+    setLoginForm({ ...loginForm, [type]: value })
+  }
 
   const handleOnAuthLoginFormClick = (event: React.FormEvent, type: 'login' | 'register') => {
     event.preventDefault()
-    setIsLoading(true)
 
-    setTimeout(() => {
-      setIsLoading(false)
-      if (type === 'login') {
-        localStorage.setItem('waterboy_auth', 'mock_token')
-        toast({
-          title: 'Login successful',
-          description: 'Welcome back to WaterBoy!',
-          variant: 'info',
-        })
-      } else {
-        toast({
-          title: 'Registration successful',
-          description: 'Your account has been created. Please log in.',
-          variant: 'info',
-        })
-      }
+    if (type === 'login') {
+      dispatch(authActions.requestAuthenticationLogin(loginForm))
+    }
 
-      if (type === 'login') {
-        navigate('/dashboard')
-      }
-    }, 1500)
+    // if (type === 'register') {
+    //   dispatch(authActions.requestAuthenticationLogin(loginForm))
+
+    //   toast({
+    //     title: 'Registration successful',
+    //     description: 'Your account has been created. Please log in.',
+    //     variant: 'info',
+    //   })
+    // }
   }
 
-  return <Login onAuthLoginFormClick={handleOnAuthLoginFormClick} isLoading={isLoading} />
+  return (
+    <Login
+      loginForm={loginForm}
+      authLoginLoading={authLoginLoading}
+      onLoginFormChange={handleOnLoginFormChange}
+      onAuthLoginFormClick={handleOnAuthLoginFormClick}
+    />
+  )
 }
 
 export default LoginContainer

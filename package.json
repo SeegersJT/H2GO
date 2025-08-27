@@ -2,6 +2,11 @@
   "name": "h2go",
   "private": true,
   "type": "module",
+  "author": {
+    "name": "Hanno Seegers",
+    "email": "hanno@h2go.org.za",
+    "url": "https://h2go.org.za"
+  },
   "scripts": {
     "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "generate:postman": "node scripts/generate-postman.mjs"

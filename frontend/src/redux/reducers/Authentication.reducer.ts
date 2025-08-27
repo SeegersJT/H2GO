@@ -1,13 +1,13 @@
-import { AuthAction, SET_TOKEN } from '../actions/Authentication.action'
+import { AuthAction, SET_AUTH_LOGIN_LOADING } from '../actions/Authentication.action'
 
 export interface AuthState {
   accessToken: string | null
-  user: { id: string; name: string } | null
+  authLoginLoading: boolean
 }
 
 const initialState: AuthState = {
   accessToken: null,
-  user: null,
+  authLoginLoading: false,
 }
 
 export default function authReducer(
@@ -15,8 +15,11 @@ export default function authReducer(
   action: AuthAction,
 ): AuthState {
   switch (action.type) {
-    case SET_TOKEN:
-      return { ...state, accessToken: action.payload }
+    case SET_AUTH_LOGIN_LOADING:
+      return {
+        ...state,
+        authLoginLoading: action.payload,
+      }
     default:
       return state
   }

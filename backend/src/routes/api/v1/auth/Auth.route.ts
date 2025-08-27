@@ -1,14 +1,17 @@
 import { Router } from "express";
 
 import { AuthController } from "../../../../controllers/Auth.controller";
+import { createRateLimiter } from "../../../../middleware/RateLimiter.middleware";
 
 const router = Router();
 
-router.post("/login", AuthController.login);
-router.post("/confirmation-token/validate", AuthController.validateConfirmationToken);
-router.post("/one-time-pin", AuthController.oneTimePin);
-router.post("/password-reset", AuthController.passwordReset);
-router.post("/password-forgot", AuthController.passwordForgot);
-router.post("/refresh-token", AuthController.refreshToken);
+const authRateLimiter = createRateLimiter({ windowMs: 60_000, max: 5 });
+
+router.post("/login", authRateLimiter, AuthController.login);
+router.post("/confirmation-token/validate", authRateLimiter, AuthController.validateConfirmationToken);
+router.post("/one-time-pin", authRateLimiter, AuthController.oneTimePin);
+router.post("/password-reset", authRateLimiter, AuthController.passwordReset);
+router.post("/password-forgot", authRateLimiter, AuthController.passwordForgot);
+router.post("/refresh-token", authRateLimiter, AuthController.refreshToken);
 
 export default router;

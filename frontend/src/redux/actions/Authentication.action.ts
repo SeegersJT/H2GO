@@ -1,18 +1,28 @@
-// src/features/auth/actions.ts
+import type { AuthLogin } from '@/redux/types/Authentication.type'
 
-// Keep constants in one place
-export const SET_TOKEN = '[AUTHENTICATION] - '
+export const REQUEST_AUTH_LOGIN = '[AUTH] - LOGIN - REQUEST' as const
+export const SET_AUTH_LOGIN_LOADING = '[AUTH] - LOGIN - SET - LOADING' as const
+export const SET_AUTH_LOGIN = '[AUTH] - LOGIN - SET' as const
 
-// Action creators
-export const setToken = (token: string) => ({
-  type: SET_TOKEN as typeof SET_TOKEN,
-  payload: token,
+export const requestAuthenticationLogin = (payload: AuthLogin) => ({
+  type: REQUEST_AUTH_LOGIN,
+  payload,
 })
 
-// Collect actions in an object (nice for imports)
+export const setAuthenticationLoginLoading = (payload: boolean) => ({
+  type: SET_AUTH_LOGIN_LOADING,
+  payload,
+})
+
+export const setAuthenticationLogin = (isLoading: boolean) => ({
+  type: SET_AUTH_LOGIN_LOADING,
+  payload: isLoading,
+})
+
 export const authActions = {
-  setToken,
+  requestAuthenticationLogin,
+  setAuthenticationLoginLoading,
+  setAuthenticationLogin,
 }
 
-// Infer union type automatically
 export type AuthAction = ReturnType<(typeof authActions)[keyof typeof authActions]>
