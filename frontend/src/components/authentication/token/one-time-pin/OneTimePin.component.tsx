@@ -1,18 +1,18 @@
-import { useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { useRef } from 'react'
 
 interface Props {
   oneTimePin: string
-  loading: boolean
+  confirmationTokenLoading: boolean
   onOneTimePinChange: (value: string) => void
   onOneTimePinSubmit: (e: React.FormEvent) => void
   onBackToLogin: () => void
   maxLength?: number
 }
 
-const OneTimePin = ({ oneTimePin, loading, onOneTimePinChange, onOneTimePinSubmit, onBackToLogin, maxLength = 6 }: Props) => {
+const OneTimePin = ({ oneTimePin, confirmationTokenLoading, onOneTimePinChange, onOneTimePinSubmit, onBackToLogin, maxLength = 6 }: Props) => {
   const formRef = useRef<HTMLFormElement>(null)
 
   const submitIfComplete = (value: string) => {
@@ -58,10 +58,10 @@ const OneTimePin = ({ oneTimePin, loading, onOneTimePinChange, onOneTimePinSubmi
         </CardContent>
 
         <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full bg-waterboy-600 hover:bg-waterboy-700" disabled={loading || !isComplete}>
-            {loading ? 'Verifying...' : 'Verify'}
+          <Button type="submit" className="w-full bg-waterboy-600 hover:bg-waterboy-700" disabled={confirmationTokenLoading || !isComplete}>
+            {confirmationTokenLoading ? 'Verifying...' : 'Verify'}
           </Button>
-          <Button type="button" variant="outline" className="w-full" onClick={onBackToLogin} disabled={loading}>
+          <Button type="button" variant="outline" className="w-full" onClick={onBackToLogin} disabled={confirmationTokenLoading}>
             Back to login
           </Button>
         </CardFooter>

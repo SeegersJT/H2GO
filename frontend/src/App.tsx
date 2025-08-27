@@ -1,19 +1,19 @@
-import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
+import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import NotFoundContainer from './containers/not-found/NotFound.container'
-import DashboardContainer from './containers/dashboard/Dashboard.container'
-import DashboardHomeContainer from './containers/dashboard/home/DashboardHome.container'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AuthenticationContainer from './containers/authentication/Authentication.container'
 import LoginContainer from './containers/authentication/login/Login.container'
 import PasswordForgotContainer from './containers/authentication/password-forgot/PasswordForgot.container'
-import TokenContainer from './containers/authentication/token/Token.container'
-import TokenValidateContainer from './containers/authentication/token/validate/TokenValidate.container'
 import OneTimePinContainer from './containers/authentication/token/one-time-pin/OneTimePin.container'
 import PasswordResetContainer from './containers/authentication/token/password-reset/PasswordReset.container'
+import TokenContainer from './containers/authentication/token/Token.container'
+import TokenValidateContainer from './containers/authentication/token/validate/TokenValidate.container'
+import DashboardContainer from './containers/dashboard/Dashboard.container'
+import DashboardHomeContainer from './containers/dashboard/home/DashboardHome.container'
 import GlobalContainer from './containers/global/Global.container'
+import NotFoundContainer from './containers/not-found/NotFound.container'
 
 const queryClient = new QueryClient()
 
@@ -38,7 +38,7 @@ const App = () => (
                 <Route path="one-time-pin" element={<OneTimePinContainer />} />
                 <Route path="password-reset" element={<PasswordResetContainer />} />
 
-                <Route path="*" element={<Navigate to="/auth/token" replace />} />
+                {/* <Route path="*" element={<Navigate to="/auth/token" replace />} /> */}
               </Route>
             </Route>
 

@@ -1,12 +1,12 @@
-import type { AxiosRequestConfig } from 'axios'
-import { API_PREFIX, getHttpPostData } from './GenericWebRequest.api'
 import type { AuthLogin } from '@/redux/types/Authentication.type'
 import { ConfirmationTokenOneTimePin, ConfirmationTokenPasswordReset, ConfirmationTokenValidation } from '@/redux/types/ConfirmationToken.type'
+import type { AxiosRequestConfig } from 'axios'
+import { API_URL, getHttpPostData } from './GenericWebRequest.api'
 
-const getAuthLoginEndpoint = () => `${API_PREFIX}/auth/login`
-const getConfirmationTokenValidateEndpoint = () => `${API_PREFIX}/auth/confirmation-token/validate`
-const getConfirmationTokenOneTimePinEndpoint = () => `${API_PREFIX}/auth/one-time-pin`
-const getConfirmationTokenPasswordResetEndpoint = () => `${API_PREFIX}/auth/password-reset`
+const getAuthLoginEndpoint = () => `${API_URL}/auth/login`
+const getConfirmationTokenValidateEndpoint = () => `${API_URL}/auth/confirmation-token/validate`
+const getConfirmationTokenOneTimePinEndpoint = () => `${API_URL}/auth/one-time-pin`
+const getConfirmationTokenPasswordResetEndpoint = () => `${API_URL}/auth/password-reset`
 
 export const getAuthenticationLoginRequest = (payload: AuthLogin): [string, AxiosRequestConfig] => [
   getAuthLoginEndpoint(),

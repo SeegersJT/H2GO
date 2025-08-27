@@ -6,7 +6,7 @@ import { Utils } from '@/utils/Utils'
 import { useEffect } from 'react'
 
 const TokenContainer = () => {
-  const { confirmationToken, isConfirmationTokenValid } = useAppSelector((state) => state.token)
+  const { confirmationToken } = useAppSelector((state) => state.token)
 
   useEffect(() => {
     if (Utils.isNull(confirmationToken)) {
@@ -18,7 +18,7 @@ const TokenContainer = () => {
 
       navigateTo('/')
     }
-  }, [confirmationToken, isConfirmationTokenValid])
+  }, [confirmationToken])
 
   return <Token />
 }

@@ -5,7 +5,7 @@ import { createRateLimiter } from "../../../../middleware/RateLimiter.middleware
 
 const router = Router();
 
-const authRateLimiter = createRateLimiter({ windowMs: 60_000, max: 5 });
+const authRateLimiter = createRateLimiter({ windowMs: 60_000, max: 1000 });
 
 router.post("/login", authRateLimiter, AuthController.login);
 router.post("/confirmation-token/validate", authRateLimiter, AuthController.validateConfirmationToken);

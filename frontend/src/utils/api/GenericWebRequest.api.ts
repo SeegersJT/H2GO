@@ -1,6 +1,12 @@
-export const API_HOST = import.meta.env.VITE_API_HOST as string
+const API_HOST = import.meta.env.VITE_API_HOST as string
+const API_PREFIX = import.meta.env.VITE_API_PREFIX as string
+
 console.log('API_HOST', API_HOST)
-export const API_PREFIX = `${API_HOST}${import.meta.env.VITE_API_PREFIX}` as const
+console.log('VITE_API_PREFIX', API_PREFIX)
+
+export const API_URL = `${API_HOST}${API_PREFIX}` as const
+
+console.log('API_URL', API_URL)
 
 export const GET = 'GET' as const
 export const POST = 'POST' as const
@@ -9,9 +15,7 @@ export const DELETE_ = 'DELETE' as const
 export type HttpMethod = typeof GET | typeof POST | typeof PUT | typeof DELETE_
 
 export type HttpHeaders = Record<string, string>
-export type HttpParams =
-  | Record<string, string | number | boolean | null | undefined>
-  | URLSearchParams
+export type HttpParams = Record<string, string | number | boolean | null | undefined> | URLSearchParams
 
 export type HttpResponseType = 'json' | 'text' | 'blob' | 'arraybuffer'
 
@@ -43,11 +47,7 @@ export function getHttpGetOptions(
 }
 
 /** POST */
-export function getHttpPostData<T = unknown>(
-  data: T,
-  headers: HttpHeaders | null = null,
-  params: HttpParams | null = null,
-): HttpRequestWithData<T> {
+export function getHttpPostData<T = unknown>(data: T, headers: HttpHeaders | null = null, params: HttpParams | null = null): HttpRequestWithData<T> {
   return {
     method: POST,
     data,
@@ -58,11 +58,7 @@ export function getHttpPostData<T = unknown>(
 }
 
 /** PUT */
-export function getHttpPutData<T = unknown>(
-  data: T,
-  headers: HttpHeaders | null = null,
-  params: HttpParams | null = null,
-): HttpRequestWithData<T> {
+export function getHttpPutData<T = unknown>(data: T, headers: HttpHeaders | null = null, params: HttpParams | null = null): HttpRequestWithData<T> {
   return {
     method: PUT,
     data,
@@ -73,10 +69,7 @@ export function getHttpPutData<T = unknown>(
 }
 
 /** DELETE */
-export function getHttpDeleteOptions(
-  headers: HttpHeaders | null = null,
-  params: HttpParams | null = null,
-): HttpRequestBase {
+export function getHttpDeleteOptions(headers: HttpHeaders | null = null, params: HttpParams | null = null): HttpRequestBase {
   return {
     method: DELETE_,
     headers: headers ?? undefined,
