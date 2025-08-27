@@ -48,7 +48,7 @@ const OneTimePin = ({ oneTimePin, confirmationTokenLoading, onOneTimePinChange, 
 
       <form ref={formRef} onSubmit={onOneTimePinSubmit}>
         <CardContent className="flex justify-center" onPaste={handlePaste}>
-          <InputOTP maxLength={maxLength} value={oneTimePin} onChange={handleChange}>
+          <InputOTP disabled={confirmationTokenLoading} maxLength={maxLength} value={oneTimePin} onChange={handleChange}>
             <InputOTPGroup>
               {Array.from({ length: maxLength }).map((_, i) => (
                 <InputOTPSlot key={i} index={i} />
@@ -59,7 +59,7 @@ const OneTimePin = ({ oneTimePin, confirmationTokenLoading, onOneTimePinChange, 
 
         <CardFooter className="flex flex-col gap-2">
           <Button type="submit" className="w-full bg-waterboy-600 hover:bg-waterboy-700" disabled={confirmationTokenLoading || !isComplete}>
-            {confirmationTokenLoading ? 'Verifying...' : 'Verify'}
+            {!isComplete ? 'Incomplete' : confirmationTokenLoading ? 'Verifying...' : 'Verify'}
           </Button>
           <Button type="button" variant="outline" className="w-full" onClick={onBackToLogin} disabled={confirmationTokenLoading}>
             Back to login

@@ -38,12 +38,13 @@ const App = () => (
                 <Route path="one-time-pin" element={<OneTimePinContainer />} />
                 <Route path="password-reset" element={<PasswordResetContainer />} />
 
-                {/* <Route path="*" element={<Navigate to="/auth/token" replace />} /> */}
+                <Route path="*" element={<Navigate to="/auth/token" replace />} />
               </Route>
             </Route>
 
             <Route path="/dashboard" element={<DashboardContainer />}>
-              <Route index element={<DashboardHomeContainer />} />
+              <Route index element={<Navigate to="/dashboard/home" replace />} />
+              <Route path="home" element={<DashboardHomeContainer />} />
             </Route>
             {/* 
           <Route path="/dashboard" element={<Dashboard />}>

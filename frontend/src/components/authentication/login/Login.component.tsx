@@ -1,12 +1,5 @@
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -16,7 +9,9 @@ const Login = ({ loginForm, authLoginLoading, onLoginFormChange, onAuthLoginForm
     <Tabs defaultValue="login" className="w-full max-w-md">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="login">Login</TabsTrigger>
-        <TabsTrigger value="register">Register</TabsTrigger>
+        <TabsTrigger disabled value="register">
+          Register (Coming Soon)
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="login">
         <Card>
@@ -54,11 +49,7 @@ const Login = ({ loginForm, authLoginLoading, onLoginFormChange, onAuthLoginForm
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                type="submit"
-                className="w-full bg-waterboy-600 hover:bg-waterboy-700"
-                disabled={authLoginLoading}
-              >
+              <Button type="submit" className="w-full bg-waterboy-600 hover:bg-waterboy-700" disabled={authLoginLoading}>
                 {authLoginLoading ? 'Logging in...' : 'Login'}
               </Button>
             </CardFooter>
@@ -116,11 +107,7 @@ const Login = ({ loginForm, authLoginLoading, onLoginFormChange, onAuthLoginForm
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                type="submit"
-                className="w-full bg-waterboy-600 hover:bg-waterboy-700"
-                disabled={authLoginLoading}
-              >
+              <Button type="submit" className="w-full bg-waterboy-600 hover:bg-waterboy-700" disabled={authLoginLoading}>
                 {authLoginLoading ? 'Creating account...' : 'Create account'}
               </Button>
             </CardFooter>

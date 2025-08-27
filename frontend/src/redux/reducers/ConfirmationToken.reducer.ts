@@ -2,6 +2,7 @@ import {
   ConfirmationTokenAction,
   RESET_CONFIRMATION_TOKEN,
   SET_CONFIRMATION_TOKEN,
+  SET_CONFIRMATION_TOKEN_LOADING,
   SET_CONFIRMATION_TOKEN_VALIDATION,
   SET_CONFIRMATION_TOKEN_VALIDATION_LOADING,
 } from '../actions/ConfirmationToken.action'
@@ -42,6 +43,12 @@ export default function confirmationTokenReducer(
         confirmationToken: action?.payload?.confirmation_token,
         confirmationTokenType: action?.payload?.confirmation_token_type,
         confirmationTokenExpiryDate: action?.payload?.confirmation_token_expiry_date,
+      }
+
+    case SET_CONFIRMATION_TOKEN_LOADING:
+      return {
+        ...state,
+        confirmationTokenLoading: action?.payload,
       }
 
     case SET_CONFIRMATION_TOKEN_VALIDATION:

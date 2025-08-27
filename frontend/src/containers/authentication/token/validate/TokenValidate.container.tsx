@@ -10,15 +10,13 @@ const TokenValidateContainer = () => {
 
   useEffect(() => {
     const handleConfirmationTokenValidate = () => {
-      console.log('here1 ')
       dispatch(confirmationTokenActions.requestConfirmationTokenValidation({ confirmation_token: confirmationToken }))
     }
 
     if (confirmationToken) {
-      console.log('here2 ')
       handleConfirmationTokenValidate()
     }
-  }, [])
+  }, [confirmationToken, dispatch])
 
   return <TokenValidate />
 }

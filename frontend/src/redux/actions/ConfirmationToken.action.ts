@@ -1,7 +1,13 @@
-import { ConfirmationToken, ConfirmationTokenOneTimePin, ConfirmationTokenValidation } from '../types/ConfirmationToken.type'
+import {
+  ConfirmationToken,
+  ConfirmationTokenOneTimePin,
+  ConfirmationTokenPasswordReset,
+  ConfirmationTokenValidation,
+} from '../types/ConfirmationToken.type'
 
 export const RESET_CONFIRMATION_TOKEN = '[TOKEN] - CONFIRMATION TOKEN - RESET' as const
 export const SET_CONFIRMATION_TOKEN = '[TOKEN] - CONFIRMATION TOKEN - SET' as const
+export const SET_CONFIRMATION_TOKEN_LOADING = '[TOKEN] - CONFIRMATION TOKEN - SET - LOADING' as const
 
 export const REQUEST_CONFIRMATION_TOKEN_VALIDATION = '[TOKEN] - CONFIRMATION TOKEN VALIDATION - REQUEST' as const
 export const SET_CONFIRMATION_TOKEN_VALIDATION_LOADING = '[TOKEN] - CONFIRMATION TOKEN VALIDATION - SET - LOADING' as const
@@ -11,12 +17,21 @@ export const REQUEST_CONFIRMATION_TOKEN_OTP = '[TOKEN] - CONFIRMATION TOKEN OTP 
 export const SET_CONFIRMATION_TOKEN_OTP_LOADING = '[TOKEN] - CONFIRMATION TOKEN OTP - SET - LOADING' as const
 export const SET_CONFIRMATION_TOKEN_OTP = '[TOKEN] - CONFIRMATION TOKEN OTP - SET' as const
 
+export const REQUEST_CONFIRMATION_TOKEN_PASSWORD_RESET = '[TOKEN] - CONFIRMATION TOKEN PASSWORD_RESET - REQUEST' as const
+export const SET_CONFIRMATION_TOKEN_PASSWORD_RESET_LOADING = '[TOKEN] - CONFIRMATION TOKEN PASSWORD_RESET - SET - LOADING' as const
+export const SET_CONFIRMATION_TOKEN_PASSWORD_RESET = '[TOKEN] - CONFIRMATION TOKEN PASSWORD_RESET - SET' as const
+
 export const resetConfirmationToken = () => ({
   type: RESET_CONFIRMATION_TOKEN,
 })
 
 export const setConfirmationToken = (payload: ConfirmationToken) => ({
   type: SET_CONFIRMATION_TOKEN,
+  payload,
+})
+
+export const setConfirmationTokenLoading = (payload: boolean) => ({
+  type: SET_CONFIRMATION_TOKEN_LOADING,
   payload,
 })
 
@@ -50,15 +65,34 @@ export const setConfirmationTokenOneTimePin = (payload: any) => ({
   payload,
 })
 
+export const requestConfirmationTokenPasswordReset = (payload: ConfirmationTokenPasswordReset) => ({
+  type: REQUEST_CONFIRMATION_TOKEN_PASSWORD_RESET,
+  payload,
+})
+
+export const setConfirmationTokenPasswordResetLoading = (payload: boolean) => ({
+  type: SET_CONFIRMATION_TOKEN_PASSWORD_RESET_LOADING,
+  payload,
+})
+
+export const setConfirmationTokenPasswordReset = (payload: any) => ({
+  type: SET_CONFIRMATION_TOKEN_PASSWORD_RESET,
+  payload,
+})
+
 export const confirmationTokenActions = {
   resetConfirmationToken,
   setConfirmationToken,
+  setConfirmationTokenLoading,
   requestConfirmationTokenValidation,
   setConfirmationTokenValidationLoading,
   setConfirmationTokenValidation,
   requestConfirmationTokenOneTimePin,
   setConfirmationTokenOneTimePinLoading,
   setConfirmationTokenOneTimePin,
+  requestConfirmationTokenPasswordReset,
+  setConfirmationTokenPasswordResetLoading,
+  setConfirmationTokenPasswordReset,
 }
 
 export type ConfirmationTokenAction = ReturnType<(typeof confirmationTokenActions)[keyof typeof confirmationTokenActions]>
