@@ -6,10 +6,10 @@ import { MailsendEmailProvider } from "./MailsendEmail.provider";
 export function getEmailProvider(): CommunicationProvider {
   switch (process.env.EMAIL_PROVIDER) {
     case "MAILSEND":
-      log.success().provider("Email provider - Mailsend Initialized");
+      log.success().provider("Mailsend - Email Provider Initialized");
       return new MailsendEmailProvider();
     default:
-      log.success().provider("Email provider - Default Initialized");
+      log.success().provider("Default - Email Provider Initialized");
       return new DefaultEmailProvider();
   }
 }

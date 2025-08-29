@@ -1,5 +1,7 @@
 import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 import { CommunicationProvider } from "../Communication.provider";
+import { HttpError } from "../../utils/HttpError";
+import { StatusCode } from "../../utils/constants/StatusCode.constant";
 
 export class MailsendEmailProvider implements CommunicationProvider {
   private mailerSend: MailerSend;
@@ -35,8 +37,9 @@ export class MailsendEmailProvider implements CommunicationProvider {
     try {
       await this.mailerSend.email.send(emailParams);
     } catch (error: any) {
-      console.log("error", error);
-      throw new Error(`Mailsend API error: ${error.message || error}`);
+      const message = error?.body?.message || error?.message || "Unknown error from Mailsend";
+      const code = error?.statusCode || StatusCode.INTERNAL_SERVER_ERROR;
+      throw new HttpError(`Mailsend API error: ${message}`, code);
     }
   }
 }
