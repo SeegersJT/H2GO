@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "933f5941-64b8-4c63-9a14-e62e720a9b5d",
+    "_postman_id": "cb7719a4-d97d-4e05-b86f-ca529bda99eb",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -739,7 +739,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"user_id\": \"\",\n  \"template_no\": \"\",\n  \"params\": \"\"\n}",
+              "raw": "{\n  \"user_id\": \"\",\n  \"template_id\": \"\",\n  \"params\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1494,10 +1494,10 @@
       ]
     },
     {
-      "name": "InventoryMovements",
+      "name": "inventoryMovements",
       "item": [
         {
-          "name": "GET /api/v1/InventoryMovements/all",
+          "name": "GET /api/v1/inventoryMovements/all",
           "request": {
             "method": "GET",
             "header": [
@@ -1507,21 +1507,21 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/all",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/all",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements",
+                "inventoryMovements",
                 "all"
               ]
             }
           }
         },
         {
-          "name": "GET /api/v1/InventoryMovements/",
+          "name": "GET /api/v1/inventoryMovements/",
           "request": {
             "method": "GET",
             "header": [
@@ -1531,20 +1531,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "POST /api/v1/InventoryMovements/",
+          "name": "POST /api/v1/inventoryMovements/",
           "request": {
             "method": "POST",
             "header": [
@@ -1554,20 +1554,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "PUT /api/v1/InventoryMovements/",
+          "name": "PUT /api/v1/inventoryMovements/",
           "request": {
             "method": "PUT",
             "header": [
@@ -1577,20 +1577,20 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
         },
         {
-          "name": "DELETE /api/v1/InventoryMovements/",
+          "name": "DELETE /api/v1/inventoryMovements/",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1600,14 +1600,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/InventoryMovements/",
+              "raw": "{{baseUrl}}/api/v1/inventoryMovements/",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "InventoryMovements"
+                "inventoryMovements"
               ]
             }
           }
