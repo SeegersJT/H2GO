@@ -2,14 +2,7 @@ import DashboardNavigation from '@/components/layout/DashboardNavigation.compone
 
 const DashboardNavigationContainer = () => {
   return (
-    <DashboardNavigation
-      className={''}
-      sideBarOpen
-      userRole={'admin'}
-      onSideBarOpenClick={() => {}}
-      onAccountClick={() => {}}
-      onLogout={() => {}}
-    />
+    <DashboardNavigation className={''} sideBarOpen userRole={'admin'} onSideBarOpenClick={() => {}} onAccountClick={() => {}} onLogout={() => {}} />
   )
 }
 

@@ -11,33 +11,18 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 
-const DashboardNavigation = ({
-  className,
-  sideBarOpen,
-  userRole,
-  onSideBarOpenClick,
-  onAccountClick,
-  onLogout,
-}) => {
+const DashboardNavigation = ({ className, onSideBarOpenClick, onAccountClick, onLogout }) => {
   return (
     <div
       className={cn(
-        // sticky + frosted glass
         'sticky top-0 z-50 border-b bg-background/60 backdrop-blur-md',
-        // better color on browsers that support backdrop-filter
         'supports-[backdrop-filter]:bg-background/60',
-        // optional: slight elevation
         'shadow-sm',
         className,
       )}
     >
       <div className="flex h-16 items-center px-4 gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          className="md:hidden"
-          onClick={() => onSideBarOpenClick(true)}
-        >
+        <Button variant="outline" size="icon" className="md:hidden" onClick={() => onSideBarOpenClick(true)}>
           <MenuIcon className="h-5 w-5" />
           <span className="sr-only">Toggle sidebar</span>
         </Button>
@@ -97,15 +82,9 @@ const DashboardNavigation = ({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/profile')}>
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/orders')}>
-                My Orders
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/billing')}>
-                Billing
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/profile')}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/orders')}>My Orders</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAccountClick('/dashboard/billing')}>Billing</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
