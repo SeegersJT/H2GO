@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
-import { DriverService } from "../services/Driver.controller";
+import { DriverService } from "../services/Driver.service";
 
 export class DriverController {
   static getAll = async (_req: Request, res: Response, next: NextFunction) => {

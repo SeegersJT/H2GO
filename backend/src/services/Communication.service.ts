@@ -3,17 +3,8 @@ import { communicationTemplateRepository } from "../repositories/CommunicationTe
 import { communicationRequestRepository } from "../repositories/CommunicationRequest.repository";
 import { userRepository } from "../repositories/User.repository";
 import { CommunicationMethod, CommunicationStatus } from "../utils/constants/Communication.constant";
-
-interface CommunicationProvider {
-  send(to: string, subject: string | undefined, body: string): Promise<void>;
-}
-
-class EmailProvider implements CommunicationProvider {
-  async send(to: string, subject: string | undefined, body: string): Promise<void> {
-    // Placeholder implementation; integrate with actual email service
-    console.log(`Sending EMAIL to ${to}: ${subject}\n${body}`);
-  }
-}
+import { CommunicationProvider } from "../providers/Communication.provider";
+import { getEmailProvider } from "../providers/email";
 
 class SmsProvider implements CommunicationProvider {
   async send(to: string, _subject: string | undefined, body: string): Promise<void> {
@@ -23,16 +14,16 @@ class SmsProvider implements CommunicationProvider {
 }
 
 const providers: Record<CommunicationMethod, CommunicationProvider> = {
-  [CommunicationMethod.EMAIL]: new EmailProvider(),
+  [CommunicationMethod.EMAIL]: getEmailProvider(),
   [CommunicationMethod.SMS]: new SmsProvider(),
 };
 
-function parseTemplate(template: string, params: Record<string, any> = {}): string {
+function renderTemplate(template: string, params: Record<string, any> = {}): string {
   return template.replace(/{{\s*(\w+)\s*}}/g, (_: string, key: string) => params[key] ?? "");
 }
 
 export class CommunicationService {
-  static async sendCommunication(userId: string, templateNo: string, params: Record<string, any> = {}, actorId: string) {
+  static async sendCommunication(userId: string, templateNo: string, params: Record<string, any> = {}, actorId?: Types.ObjectId | string) {
     const template = await communicationTemplateRepository.findOne({ template_no: templateNo });
     if (!template) {
       throw new Error("Template not found");
@@ -43,6 +34,8 @@ export class CommunicationService {
       throw new Error("User not found");
     }
 
+    const actorObjectId = actorId ? new Types.ObjectId(actorId) : undefined;
+
     const request = await communicationRequestRepository.create(
       {
         user_id: user._id,
@@ -50,11 +43,11 @@ export class CommunicationService {
         status: CommunicationStatus.REQUESTED,
         handled: false,
       },
-      { actorId }
+      { actorId: actorObjectId }
     );
 
     const provider = providers[template.method as CommunicationMethod];
-    const body = parseTemplate(template.body, params);
+    const body = renderTemplate(template.body, params);
     const to = template.method === CommunicationMethod.EMAIL ? user.email_address : user.mobile_number;
 
     try {
@@ -67,7 +60,7 @@ export class CommunicationService {
           handle_result: "Delivered",
           sent_at: new Date(),
         },
-        { actorId, new: true }
+        { actorId: actorObjectId, new: true }
       );
     } catch (err: any) {
       await communicationRequestRepository.updateById(
@@ -77,7 +70,7 @@ export class CommunicationService {
           handled: true,
           handle_result: err?.message || "Error",
         },
-        { actorId }
+        { actorId: actorObjectId }
       );
       throw err;
     }

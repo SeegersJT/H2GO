@@ -2,7 +2,6 @@ import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import { CommunicationMethod, CommunicationType } from "../utils/constants/Communication.constant";
 
 export interface ICommunicationTemplate extends Document {
-  template_no: string;
   method: CommunicationMethod;
   type: CommunicationType;
   subject?: string;
@@ -17,7 +16,6 @@ export interface ICommunicationTemplate extends Document {
 
 const communicationTemplateSchema = new Schema<ICommunicationTemplate>(
   {
-    template_no: { type: String, required: true, unique: true, trim: true },
     method: { type: String, required: true, enum: Object.values(CommunicationMethod) },
     type: { type: String, required: true, enum: Object.values(CommunicationType) },
     subject: { type: String },
