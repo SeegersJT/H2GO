@@ -10,12 +10,6 @@ export class MailsendEmailProvider implements CommunicationProvider {
     const fromEmail = process.env.MAILSEND_FROM_EMAIL;
     const fromName = process.env.MAILSEND_FROM_NAME || "";
 
-    console.log("=============================================================");
-    console.log("apiKey", apiKey);
-    console.log("fromEmail", fromEmail);
-    console.log("fromName", fromName);
-    console.log("=============================================================");
-
     if (!apiKey) {
       throw new Error("MAILSEND_API_KEY is not configured");
     }
@@ -25,18 +19,11 @@ export class MailsendEmailProvider implements CommunicationProvider {
     }
 
     this.mailerSend = new MailerSend({ apiKey });
-
-    console.log("mailerSend", this.mailerSend);
-
     this.from = new Sender(fromEmail, fromName);
-
-    console.log("from", this.from);
   }
 
   async send(to: string, subject: string | undefined, body: string): Promise<void> {
     const recipients = [new Recipient(to, to)];
-
-    console.log("recipients", recipients);
 
     const emailParams = new EmailParams()
       .setFrom(this.from)
@@ -44,8 +31,6 @@ export class MailsendEmailProvider implements CommunicationProvider {
       .setSubject(subject ?? "")
       .setHtml(body)
       .setText(body);
-
-    console.log("emailParams", emailParams);
 
     try {
       await this.mailerSend.email.send(emailParams);

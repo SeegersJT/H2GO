@@ -5,6 +5,7 @@ export interface IBranch extends Document {
   branch_abbreviation: string; // short code, uppercased
   country_id: Types.ObjectId; // -> Country
   headoffice_id: Types.ObjectId | null; // -> Branch (parent/HO) or null if this is HO
+  address: string;
   active: boolean;
   timezone?: string; // e.g., "Africa/Johannesburg"
   lat?: number; // optional location (keep simple numbers like your Address)
@@ -21,6 +22,7 @@ const branchSchema = new Schema<IBranch>(
     branch_abbreviation: { type: String, required: true, trim: true }, // normalized to upper below
     country_id: { type: Schema.Types.ObjectId, ref: "Country", required: true, index: true },
     headoffice_id: { type: Schema.Types.ObjectId, ref: "Branch", required: false, default: null, index: true },
+    address: { type: String, required: false, trim: true },
     active: { type: Boolean, required: true, default: true, index: true },
     timezone: { type: String, required: false, trim: true },
     lat: { type: Number, required: false },

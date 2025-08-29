@@ -10,6 +10,9 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { HttpError } from "../utils/HttpError";
 import { generateJwtToken, generateRefreshToken, getAccessTokenExpiry, getRefreshTokenExpiry } from "../utils/Jwt.util";
 import { ConfirmationTokenService } from "./ConfirmationToken.service";
+import { CommunicationService } from "./Communication.service";
+import { communicationTemplateRepository } from "../repositories/CommunicationTemplate.repository";
+import { CommunicationType } from "../utils/constants/Communication.constant";
 
 export class AuthService {
   static async login(email: string, password: string) {
@@ -54,11 +57,28 @@ export class AuthService {
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();
 
+    const otpCommunicationTemplate = await communicationTemplateRepository.findOne({ type: CommunicationType.ONE_TIME_PIN });
+    if (!otpCommunicationTemplate) {
+      throw new Error("Invalid or inactive template");
+    }
+
+    const branch = await branchRepository.findById(user.branch_id);
+    if (!branch) {
+      throw new Error("Invalid or inactive branch");
+    }
+
+    const templateParameters = {
+      otp: otp,
+      branch_name: branch.branch_name,
+      branch_address: branch?.address,
+    };
+
+    await CommunicationService.sendCommunication(user.id, otpCommunicationTemplate.id, templateParameters, user.id);
+
     return {
       confirmation_token: tokenDoc.confirmation_token,
       confirmation_token_type: tokenDoc.confirmation_token_type,
       confirmation_token_expiry_date: tokenDoc.confirmation_token_expiry_date,
-      otp,
     };
   }
 
@@ -229,11 +249,28 @@ export class AuthService {
     await tokenDoc.setOtp(otp);
     await tokenDoc.save();
 
+    const otpCommunicationTemplate = await communicationTemplateRepository.findOne({ type: CommunicationType.ONE_TIME_PIN });
+    if (!otpCommunicationTemplate) {
+      throw new Error("Invalid or inactive template");
+    }
+
+    const branch = await branchRepository.findById(user.branch_id);
+    if (!branch) {
+      throw new Error("Invalid or inactive branch");
+    }
+
+    const templateParameters = {
+      otp: otp,
+      branch_name: branch.branch_name,
+      branch_address: branch?.address,
+    };
+
+    await CommunicationService.sendCommunication(user.id, otpCommunicationTemplate.id, templateParameters, user.id);
+
     return {
       confirmation_token: tokenDoc.confirmation_token,
       confirmation_token_type: tokenDoc.confirmation_token_type,
       confirmation_token_expiry_date: tokenDoc.confirmation_token_expiry_date,
-      otp,
     };
   }
 

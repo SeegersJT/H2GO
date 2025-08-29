@@ -10,7 +10,7 @@ export enum CommunicationStatus {
 }
 
 export enum CommunicationType {
-  LOGIN_OTP = "LOGIN_OTP",
+  ONE_TIME_PIN = "ONE_TIME_PIN",
   PASSWORD_RESET = "PASSWORD_RESET",
   USER_CREATED = "USER_CREATED",
 }

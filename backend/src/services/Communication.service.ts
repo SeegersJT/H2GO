@@ -13,10 +13,13 @@ class SmsProvider implements CommunicationProvider {
   }
 }
 
-const providers: Record<CommunicationMethod, CommunicationProvider> = {
-  [CommunicationMethod.EMAIL]: getEmailProvider(),
+const providers: Partial<Record<CommunicationMethod, CommunicationProvider>> = {
   [CommunicationMethod.SMS]: new SmsProvider(),
 };
+
+export function initCommunicationProviders() {
+  providers[CommunicationMethod.EMAIL] = getEmailProvider();
+}
 
 function renderTemplate(template: string, params: Record<string, any> = {}): string {
   return template.replace(/{{\s*(\w+)\s*}}/g, (_: string, key: string) => params[key] ?? "");
@@ -29,14 +32,10 @@ export class CommunicationService {
       throw new Error("Template not found");
     }
 
-    console.log("template", template);
-
     const user = await userRepository.findById(userId);
     if (!user) {
       throw new Error("User not found");
     }
-
-    console.log("user", user);
 
     const request = await communicationRequestRepository.create(
       {
@@ -48,20 +47,16 @@ export class CommunicationService {
       { actorId: new Types.ObjectId(actorId) }
     );
 
-    console.log("request", request);
-
     const provider = providers[template.method as CommunicationMethod];
+    if (!provider) {
+      throw new Error(`Provider for method ${template.method} not initialized`);
+    }
+
     const body = renderTemplate(template.body, params);
     const to = template.method === CommunicationMethod.EMAIL ? user.email_address : user.mobile_number;
 
-    console.log("provider", provider);
-    console.log("body", body);
-    console.log("to", to);
-
     try {
-      console.log("here");
       await provider.send(to, template.subject, body);
-      console.log("here2");
 
       return communicationRequestRepository.updateById(
         request._id,
@@ -74,7 +69,6 @@ export class CommunicationService {
         { actorId: new Types.ObjectId(actorId), new: true }
       );
     } catch (err: any) {
-      console.log("err", err);
       await communicationRequestRepository.updateById(
         request._id,
         {

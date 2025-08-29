@@ -2,7 +2,7 @@ import chalk from "chalk";
 import stringWidth from "string-width";
 
 type LogType = "success" | "info" | "warn" | "error" | "fatal" | "debug" | "mount";
-type Category = "database" | "server" | "auth" | "api" | "general" | "route";
+type Category = "database" | "server" | "auth" | "api" | "general" | "route" | "provider";
 
 const emojis: Record<LogType, string> = {
   success: "✅",
@@ -67,7 +67,7 @@ class Logger {
 
     const msg = message instanceof Error ? message.message : message;
     const categoryStr = `${category.toUpperCase()}`.padEnd(CATEGORY_WIDTH);
-    const typeStr = `${this._type.toUpperCase()}`.padEnd(TYPE_WIDTH);
+    const typeStr = `${type.toUpperCase()}`.padEnd(TYPE_WIDTH);
 
     // eslint-disable-next-line no-console
     console.log(
@@ -86,6 +86,7 @@ class Logger {
       api: this.log.bind(this, type, "api"),
       general: this.log.bind(this, type, "general"),
       route: this.log.bind(this, type, "route"),
+      provider: this.log.bind(this, type, "provider"), // ✅ added provider
     };
   }
 

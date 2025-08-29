@@ -8,6 +8,7 @@ import errorHandlingMiddleware from "./middleware/ErrorHandling.middleware";
 import { responseMiddleware } from "./middleware/Response.middleware";
 import authenticateMiddleware from "./middleware/Authenticate.middleware";
 import { buildRouter } from "./utils/RouteLoader.util";
+import { initCommunicationProviders } from "./services/Communication.service";
 
 dotenv.config({ quiet: true });
 
@@ -23,8 +24,10 @@ export const setupApp = async () => {
   app.use(responseMiddleware);
   app.use(authenticateMiddleware);
 
+  initCommunicationProviders();
+
   const router = await buildRouter();
-  
+
   app.use(router);
 
   app.use(errorHandlingMiddleware);
