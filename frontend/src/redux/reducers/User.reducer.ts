@@ -1,26 +1,11 @@
-export interface AuthState {
-  _id: string | null
-  branch_id: string | null
-  name: string | null
-  surname: string | null
-  id_number: string | null
-  email_address: string | null
-  mobile_number: string | null
-  gender: string | null
-  password_expiry: string | null
-  user_type: string | null
-  confirmed: string | null
-  active: string | null
-  failedLoginAttempts: string | null
-  createdBy: string | null
-  updatedBy: string | null
-  user_no: string | null
-  createdAt: string | null
-  updatedAt: string | null
-  lastLoginAt: string | null
+import * as actions from '../actions/User.action'
+import { User } from '../types/User.type'
+
+export interface UserState extends User {
+  userLoading: boolean
 }
 
-const initialState: AuthState = {
+const initialState: UserState = {
   _id: null,
   branch_id: null,
   name: null,
@@ -40,10 +25,20 @@ const initialState: AuthState = {
   createdAt: null,
   updatedAt: null,
   lastLoginAt: null,
+  userLoading: false,
 }
 
-export default function authReducer(state: AuthState = initialState, action: UserAction): AuthState {
+export default function userReducer(state: UserState = initialState, action: actions.UserAction): UserState {
   switch (action.type) {
+    case actions.CLEAR_USER:
+      return initialState
+
+    case actions.SET_USER:
+      return {
+        ...state,
+        ...action.payload,
+      }
+
     default:
       return state
   }

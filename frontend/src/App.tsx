@@ -25,6 +25,8 @@ const App = () => (
       <BrowserRouter>
         <GlobalContainer>
           <Routes>
+            {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
+
             <Route path="/" element={<AuthenticationContainer />}>
               <Route index element={<Navigate to="/auth/login" replace />} />
               <Route path="/auth/login" element={<LoginContainer />} />
@@ -42,18 +44,17 @@ const App = () => (
               </Route>
             </Route>
 
-            <Route path="/dashboard" element={<DashboardContainer />}>
+            {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
+
+            {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
+
+            <Route path="/:role/dashboard" element={<DashboardContainer />}>
               <Route index element={<Navigate to="/dashboard/home" replace />} />
-              <Route path="home" element={<DashboardHomeContainer />} />
+              {/* <Route path="home" element={<RoleDashboardHomeContainer />} /> */}
             </Route>
-            {/* 
-          <Route path="/dashboard" element={<Dashboard />}>
-            <Route index element={<DashboardHome />} />
-            <Route path="orders" element={<CustomerOrders />} />
-            <Route path="routes" element={<DriverRoutes />} />
-            <Route path="customers" element={<AdminCustomers />} />
-            <Route path="deliveries" element={<AdminDeliveries />} />
-          </Route> */}
+
+            {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
+
             <Route path="*" element={<NotFoundContainer />} />
           </Routes>
         </GlobalContainer>
