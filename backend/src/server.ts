@@ -1,13 +1,19 @@
 import { setupApp } from "./app";
 import connectDB from "./config/Database.config";
+import { StatusCode } from "./utils/constants/StatusCode.constant";
+import { HttpError } from "./utils/HttpError";
 import log from "./utils/Logger";
 
 const PORT = Number(process.env.PORT || 5000);
 
 const startServer = async () => {
-  try { 
-    if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI missing");
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new HttpError("MONGODB_URI missing", StatusCode.INTERNAL_SERVER_ERROR);
+    }
+
     await connectDB();
+
     const app = await setupApp();
 
     const server = app.listen(PORT, () => {

@@ -3,6 +3,8 @@ import { IUser } from "../models/User.model";
 import { IBranch } from "../models/Branch.model";
 import { AuthenticatedUserPayload } from "../types/AuthenticatedUserPayload";
 import dayjs from "dayjs";
+import { HttpError } from "./HttpError";
+import { StatusCode } from "./constants/StatusCode.constant";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_REFRESH_SECRET = process.env.JWT_SECRET_REFRESH_TOKEN as string;
@@ -11,7 +13,7 @@ const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_EXPIRES_IN || "15m";
 const REFRESH_TOKEN_EXPIRY = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
 
 if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
-  throw new Error("JWT_SECRET and JWT_SECRET_REFRESH_TOKEN must be defined in environment variables.");
+  throw new HttpError("JWT_SECRET and JWT_SECRET_REFRESH_TOKEN must be defined in environment variables.", StatusCode.INTERNAL_SERVER_ERROR);
 }
 
 export const generateJwtToken = (user: IUser, branch: IBranch): string => {
@@ -60,7 +62,7 @@ const calculateExpiryDate = (expiryString: string): Date => {
 
   const dayjsUnit = unitsMap[unit];
   if (!dayjsUnit || isNaN(amount)) {
-    throw new Error(`Invalid expiry format: ${expiryString}`);
+    throw new HttpError(`Invalid expiry format: ${expiryString}`, StatusCode.INTERNAL_SERVER_ERROR);
   }
 
   return dayjs().add(amount, dayjsUnit).toDate();

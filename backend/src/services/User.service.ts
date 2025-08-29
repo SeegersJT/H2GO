@@ -6,6 +6,8 @@ import { BranchService } from "./Branch.service";
 import { CountryService } from "./Country.service";
 import User from "../models/User.model";
 import dayjs from "dayjs";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class UserService {
   static async getAllUsers() {
@@ -18,63 +20,63 @@ export class UserService {
 
   static async insertUser(data: Partial<IUser>, actorId: string) {
     if (!data.name || !RegexPatterns.VALIDATE_NAME.test(data.name)) {
-      throw new Error("Invalid name. Must start with a capital letter and contain only letters");
+      throw new HttpError("Invalid name. Must start with a capital letter and contain only letters", StatusCode.BAD_REQUEST);
     }
 
     if (!data.surname || !RegexPatterns.VALIDATE_SURNAME.test(data.surname)) {
-      throw new Error("Invalid surname. Must start with a capital letter and contain only letters");
+      throw new HttpError("Invalid surname. Must start with a capital letter and contain only letters", StatusCode.BAD_REQUEST);
     }
 
     if (!data.gender || !RegexPatterns.VALIDATE_GENDER.test(data.gender)) {
-      throw new Error('Gender must be either "Male" or "Female"');
+      throw new HttpError('Gender must be either "Male" or "Female"', StatusCode.BAD_REQUEST);
     }
 
     if (!data.email_address || !RegexPatterns.VALIDATE_EMAIL.test(data.email_address)) {
-      throw new Error("Invalid email address");
+      throw new HttpError("Invalid email address", StatusCode.BAD_REQUEST);
     }
 
     if (!data.mobile_number) {
-      throw new Error("Invalid mobile number");
+      throw new HttpError("Invalid mobile number", StatusCode.BAD_REQUEST);
     }
 
     if (!data.id_number) {
-      throw new Error("Invalid id number");
+      throw new HttpError("Invalid id number", StatusCode.BAD_REQUEST);
     }
 
     if (!data.branch_id) {
-      throw new Error("Invalid branch");
+      throw new HttpError("Invalid branch", StatusCode.BAD_REQUEST);
     }
 
     const branch = await BranchService.getBranchById(data.branch_id.toString());
     if (!branch) {
-      throw new Error("Invalid or inactive branch");
+      throw new HttpError("Invalid or inactive branch", StatusCode.NOT_FOUND);
     }
 
     const country = await CountryService.getCountryById(branch.country_id.toString());
     if (!country) {
-      throw new Error("Invalid or inactive country");
+      throw new HttpError("Invalid or inactive country", StatusCode.NOT_FOUND);
     }
 
     if (country?.country_code === "ZA") {
       if (!RegexPatterns.VALIDATE_MOBILE_SOUTH_AFRICA.test(data.mobile_number)) {
-        throw new Error("Invalid South African mobile number.");
+        throw new HttpError("Invalid South African mobile number.", StatusCode.BAD_REQUEST);
       }
 
       data.mobile_number = (User as any).normalizeMobileNumber(data.mobile_number, Number(country.country_dial_code));
 
       if (!RegexPatterns.VALIDATE_ID_SOUTH_AFRICA.test(data.id_number)) {
-        throw new Error("Invalid South African ID number.");
+        throw new HttpError("Invalid South African ID number.", StatusCode.BAD_REQUEST);
       }
     }
 
     const isDuplicateUserIDNumber = await UserService.isDuplicateUserIDNumber(data.id_number);
     if (isDuplicateUserIDNumber) {
-      throw new Error("Duplicate ID number");
+      throw new HttpError("Duplicate ID number", StatusCode.CONFLICT);
     }
 
     const isDuplicateUserEmailAddress = await UserService.isDuplicateUserEmailAddress(data.email_address);
     if (isDuplicateUserEmailAddress) {
-      throw new Error("Duplicate Email Address");
+      throw new HttpError("Duplicate Email Address", StatusCode.CONFLICT);
     }
 
     const passwordExpiry = dayjs().add(3, "month").toDate();
@@ -92,7 +94,7 @@ export class UserService {
   static async updateUser(id: string, data: Partial<IUser>, actorId: string) {
     const user = this.getUserById(id);
     if (!user) {
-      throw new Error("Invalid or inactive user");
+      throw new HttpError("Invalid or inactive user", StatusCode.NOT_FOUND);
     }
 
     return userRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
@@ -101,7 +103,7 @@ export class UserService {
   static async deleteUser(id: string, actorId: string) {
     const user = await this.getUserById(id);
     if (!user) {
-      throw new Error("Invalid or inactive user");
+      throw new HttpError("Invalid or inactive user", StatusCode.NOT_FOUND);
     }
 
     return userRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });

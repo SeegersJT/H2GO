@@ -13,11 +13,11 @@ export class MailsendEmailProvider implements CommunicationProvider {
     const fromName = process.env.MAILSEND_FROM_NAME || "";
 
     if (!apiKey) {
-      throw new Error("MAILSEND_API_KEY is not configured");
+      throw new HttpError("MAILSEND_API_KEY is not configured", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     if (!fromEmail) {
-      throw new Error("MAILSEND_FROM_EMAIL is not configured");
+      throw new HttpError("MAILSEND_FROM_EMAIL is not configured", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     this.mailerSend = new MailerSend({ apiKey });

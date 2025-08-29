@@ -4,6 +4,8 @@ import { DeliveryStatus, IDelivery } from "../models/Delivery.model";
 import { assetRepository } from "../repositories/Asset.repository";
 import Route from "../models/Route.model";
 import { inventoryMovementRepository } from "../repositories/InventoryMovement.repository";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class DeliveryService {
   static getAll() {
@@ -21,7 +23,7 @@ export class DeliveryService {
   static updateDelivery(id: string, data: Partial<IDelivery>, actorId: string) {
     const delivery = this.getById(id);
     if (!delivery) {
-      throw new Error("Invalid or inactive delivery");
+      throw new HttpError("Invalid or inactive delivery", StatusCode.NOT_FOUND);
     }
 
     return deliveryRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
@@ -30,7 +32,7 @@ export class DeliveryService {
   static deleteDelivery(id: string, actorId: string) {
     const delivery = this.getById(id);
     if (!delivery) {
-      throw new Error("Invalid or inactive delivery");
+      throw new HttpError("Invalid or inactive delivery", StatusCode.NOT_FOUND);
     }
 
     return deliveryRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
@@ -58,14 +60,18 @@ export class DeliveryService {
 
   static async swapProducts(deliveryId: string, outboundSerial: string, inboundSerial: string, actorId: string) {
     const delivery = await this.getById(deliveryId);
-    if (!delivery) throw new Error("Invalid or inactive delivery");
+    if (!delivery) throw new HttpError("Invalid or inactive delivery", StatusCode.NOT_FOUND);
 
     const route = await Route.findById(delivery.route_id).select("vehicle_id").lean();
-    if (!route?.vehicle_id) throw new Error("Route vehicle not assigned");
+    if (!route?.vehicle_id) throw new HttpError("Route vehicle not assigned", StatusCode.BAD_REQUEST);
 
-    const emptyAsset = await assetRepository.findOne({ serial_no: outboundSerial.trim().toUpperCase() });
-    const fullAsset = await assetRepository.findOne({ serial_no: inboundSerial.trim().toUpperCase() });
-    if (!emptyAsset || !fullAsset) throw new Error("Invalid asset serial numbers");
+    const emptyAsset = await assetRepository.findOne({
+      serial_no: outboundSerial.trim().toUpperCase(),
+    });
+    const fullAsset = await assetRepository.findOne({
+      serial_no: inboundSerial.trim().toUpperCase(),
+    });
+    if (!emptyAsset || !fullAsset) throw new HttpError("Invalid asset serial numbers", StatusCode.BAD_REQUEST);
 
     const now = new Date();
     const actor = { actorId: new Types.ObjectId(actorId) };

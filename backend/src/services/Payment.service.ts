@@ -2,6 +2,8 @@ import { Types } from "mongoose";
 import { paymentRepository } from "../repositories/Payment.repository";
 import { InvoiceService } from "./Invoice.service";
 import { IPayment } from "../models/Payment.model";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class PaymentService {
   static getAll() {
@@ -19,7 +21,7 @@ export class PaymentService {
       const invoiceId = (created as any).invoice_id as Types.ObjectId | undefined;
       await InvoiceService.allocatePaymentToInvoice(created.id, invoiceId);
     } catch {
-      throw new Error("Failed to allocate payment to invoice");
+      throw new HttpError("Failed to allocate payment to invoice", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     return created;

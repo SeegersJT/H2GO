@@ -18,12 +18,12 @@ export class AuthService {
   static async login(email: string, password: string) {
     const user = await userRepository.findByEmail(email, { projection: "+password" });
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new HttpError("Invalid credentials", StatusCode.UNAUTHORIZED);
     }
 
     const match = await user.comparePassword(password);
     if (!match) {
-      throw new Error("Invalid credentials");
+      throw new HttpError("Invalid credentials", StatusCode.UNAUTHORIZED);
     }
 
     const passwordExpired = user.password_expiry && dayjs().isAfter(dayjs(user.password_expiry));
@@ -59,12 +59,12 @@ export class AuthService {
 
     const otpCommunicationTemplate = await communicationTemplateRepository.findOne({ type: CommunicationType.ONE_TIME_PIN });
     if (!otpCommunicationTemplate) {
-      throw new Error("Invalid or inactive template");
+      throw new HttpError("Invalid or inactive template", StatusCode.NOT_FOUND);
     }
 
     const branch = await branchRepository.findById(user.branch_id);
     if (!branch) {
-      throw new Error("Invalid or inactive branch");
+      throw new HttpError("Invalid or inactive branch", StatusCode.NOT_FOUND);
     }
 
     const templateParameters = {
@@ -89,11 +89,11 @@ export class AuthService {
   static async oneTimePin(confirmationToken: string, oneTimePin: string) {
     const tokenDoc = await ConfirmationTokenService.getConfirmationTokenByToken(confirmationToken);
     if (!tokenDoc || tokenDoc.revoked) {
-      throw new Error("Invalid token");
+      throw new HttpError("Invalid token", StatusCode.BAD_REQUEST);
     }
 
     if (tokenDoc.confirmation_token_expiry_date < new Date()) {
-      throw new Error("Token expired");
+      throw new HttpError("Token expired", StatusCode.BAD_REQUEST);
     }
 
     const ok = await tokenDoc.verifyOtp(oneTimePin);
@@ -109,18 +109,18 @@ export class AuthService {
 
     const user = await userRepository.findById(tokenDoc.user_id);
     if (!user) {
-      throw new Error("User not found");
+      throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
     const branch = await branchRepository.findById(user.branch_id);
     if (!branch) {
-      throw new Error("Branch not found");
+      throw new HttpError("Branch not found", StatusCode.NOT_FOUND);
     }
 
     if (tokenDoc.confirmation_token_type === ConfirmationTokenType.OTP_LOGIN_TOKEN) {
       const branch = await branchRepository.findById(user.branch_id);
       if (!branch) {
-        throw new Error("Branch not found");
+        throw new HttpError("Branch not found", StatusCode.NOT_FOUND);
       }
 
       const access_token = generateJwtToken(user, branch!);
@@ -184,12 +184,12 @@ export class AuthService {
       ] as const;
     }
 
-    throw new Error("Unsupported confirmation token type");
+    throw new HttpError("Unsupported confirmation token type", StatusCode.BAD_REQUEST);
   }
 
   static async passwordReset(token: string, password: string, confirmPassword: string) {
     if (password !== confirmPassword) {
-      throw new Error("Passwords do not match");
+      throw new HttpError("Passwords do not match", StatusCode.BAD_REQUEST);
     }
 
     const tokenDoc = await ConfirmationTokenService.getConfirmationTokenByToken(token);
@@ -199,12 +199,12 @@ export class AuthService {
       tokenDoc.confirmation_token_type !== ConfirmationTokenType.PASSWORD_RESET_TOKEN ||
       tokenDoc.confirmation_token_expiry_date < new Date()
     ) {
-      throw new Error("Invalid token");
+      throw new HttpError("Invalid token", StatusCode.BAD_REQUEST);
     }
 
     const user = await userRepository.findById(tokenDoc.user_id);
     if (!user) {
-      throw new Error("User not found");
+      throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
     await userRepository.updateById(user._id, { password });
@@ -216,7 +216,7 @@ export class AuthService {
 
     const updatedUser = await userRepository.updateById(user._id, { confirmed: true, lastLoginAt: new Date(), failedLoginAttempts: 0 });
     if (!updatedUser) {
-      throw new Error("User not found");
+      throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
     return {
@@ -231,7 +231,7 @@ export class AuthService {
   static async passwordForgot(email: string) {
     const user = await userRepository.findByEmail(email);
     if (!user) {
-      throw new Error("User not found");
+      throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
     const token = (ConfirmationToken as any).generateToken();
@@ -251,12 +251,12 @@ export class AuthService {
 
     const otpCommunicationTemplate = await communicationTemplateRepository.findOne({ type: CommunicationType.ONE_TIME_PIN });
     if (!otpCommunicationTemplate) {
-      throw new Error("Invalid or inactive template");
+      throw new HttpError("Invalid or inactive template", StatusCode.NOT_FOUND);
     }
 
     const branch = await branchRepository.findById(user.branch_id);
     if (!branch) {
-      throw new Error("Invalid or inactive branch");
+      throw new HttpError("Invalid or inactive branch", StatusCode.NOT_FOUND);
     }
 
     const templateParameters = {
@@ -280,7 +280,7 @@ export class AuthService {
     const user = await userRepository.findById(decoded.id);
 
     if (!user) {
-      throw new Error("Invalid refresh token");
+      throw new HttpError("Invalid refresh token", StatusCode.UNAUTHORIZED);
     }
 
     const branch = await branchRepository.findById(user.branch_id);

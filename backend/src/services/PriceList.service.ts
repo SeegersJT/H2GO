@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 import { priceListRepository } from "../repositories/PriceList.repository";
 import { IPriceList } from "../models/PriceList.model";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class PriceListService {
   static getAll() {
@@ -18,7 +20,7 @@ export class PriceListService {
   static async updatePriceList(id: string, data: Partial<IPriceList>, actorId: string) {
     const priceList = await this.getById(id);
     if (!priceList) {
-      throw new Error("Invalid or inactive price list");
+      throw new HttpError("Invalid or inactive price list", StatusCode.NOT_FOUND);
     }
 
     return priceListRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
@@ -27,7 +29,7 @@ export class PriceListService {
   static async deletePriceList(id: string, actorId: string) {
     const priceList = await this.getById(id);
     if (!priceList) {
-      throw new Error("Invalid or inactive price list");
+      throw new HttpError("Invalid or inactive price list", StatusCode.NOT_FOUND);
     }
 
     return priceListRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });

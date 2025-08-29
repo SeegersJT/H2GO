@@ -7,6 +7,8 @@ import { subscriptionRepository } from "../repositories/Subscription.repository"
 import { deliveryRepository } from "../repositories/Delivery.repository";
 import { IDelivery } from "../models/Delivery.model";
 import { ISubscription } from "../models/Subscription.model";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 function monthBounds(year: number, month1to12: number) {
   const start = dayjs(`${year}-${String(month1to12).padStart(2, "0")}-01`)
@@ -124,8 +126,8 @@ export class InvoiceService {
   /** Public: allocate a payment to an invoice or auto-allocate to oldest open. */
   static async allocatePaymentToInvoice(paymentId: Types.ObjectId | string, invoiceId?: Types.ObjectId | string) {
     const pay = await paymentRepository.findById(paymentId);
-    if (!pay) throw new Error("Payment not found.");
-    if (pay.status !== "succeeded") throw new Error("Only succeeded payments can be allocated.");
+    if (!pay) throw new HttpError("Payment not found.", StatusCode.NOT_FOUND);
+    if (pay.status !== "succeeded") throw new HttpError("Only succeeded payments can be allocated.", StatusCode.BAD_REQUEST);
 
     let target = invoiceId ? await invoiceRepository.findById(invoiceId) : null;
 

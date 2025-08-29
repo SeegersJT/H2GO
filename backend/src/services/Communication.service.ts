@@ -5,6 +5,8 @@ import { userRepository } from "../repositories/User.repository";
 import { CommunicationMethod, CommunicationStatus } from "../utils/constants/Communication.constant";
 import { CommunicationProvider } from "../providers/Communication.provider";
 import { getEmailProvider } from "../providers/email";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 class SmsProvider implements CommunicationProvider {
   async send(to: string, _subject: string | undefined, body: string): Promise<void> {
@@ -29,12 +31,12 @@ export class CommunicationService {
   static async sendCommunication(userId: string, templateId: string, params: Record<string, any> = {}, actorId: string) {
     const template = await communicationTemplateRepository.findById(templateId);
     if (!template) {
-      throw new Error("Template not found");
+      throw new HttpError("Template not found", StatusCode.NOT_FOUND);
     }
 
     const user = await userRepository.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
     const request = await communicationRequestRepository.create(
@@ -49,7 +51,7 @@ export class CommunicationService {
 
     const provider = providers[template.method as CommunicationMethod];
     if (!provider) {
-      throw new Error(`Provider for method ${template.method} not initialized`);
+      throw new HttpError(`Provider for method ${template.method} not initialized`, StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     const body = renderTemplate(template.body, params);

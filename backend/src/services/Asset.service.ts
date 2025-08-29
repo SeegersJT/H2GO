@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 import { assetRepository } from "../repositories/Asset.repository";
 import { IAsset } from "../models/Asset.model";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class AssetService {
   static getAll() {
@@ -18,7 +20,7 @@ export class AssetService {
   static async updateAsset(id: string, data: Partial<IAsset>, actorId: string) {
     const asset = await this.getById(id);
     if (!asset) {
-      throw new Error("Invalid or inactive asset");
+      throw new HttpError("Invalid or inactive asset", StatusCode.NOT_FOUND);
     }
 
     return assetRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
@@ -27,7 +29,7 @@ export class AssetService {
   static async deleteAsset(id: string, actorId: string) {
     const asset = await this.getById(id);
     if (!asset) {
-      throw new Error("Invalid or inactive asset");
+      throw new HttpError("Invalid or inactive asset", StatusCode.NOT_FOUND);
     }
 
     return assetRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });

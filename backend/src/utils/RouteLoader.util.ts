@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import log from "./Logger";
 import { Router } from "express";
+import { HttpError } from "./HttpError";
+import { StatusCode } from "./constants/StatusCode.constant";
 
 const DEFAULT_ROUTES_DIR = path.join(__dirname, "..", "routes");
 const routesDir = process.env.ROUTES_DIR
@@ -28,7 +30,7 @@ const dynamicLoad = async (absPath: string) => {
     } catch (e2: any) {
       const msg1 = e1?.message || e1;
       const msg2 = e2?.message || e2;
-      throw new Error(`import() failed: ${msg1}; require() failed: ${msg2}`);
+      throw new HttpError(`import() failed: ${msg1}; require() failed: ${msg2}`, StatusCode.INTERNAL_SERVER_ERROR);
     }
   }
 };

@@ -1,4 +1,6 @@
 import type { Model, AnyKeys, ClientSession, HydratedDocument, PipelineStage } from "mongoose";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export type WriteOptions = {
   session?: ClientSession | null;
@@ -246,7 +248,7 @@ export class GenericRepository<TSchema extends WithMaybeId, TDoc extends Hydrate
   async getByIdOrThrow(id: any, opts?: ReadOptions): Promise<TDoc> {
     const doc = await this.findById(id, opts);
     if (!doc) {
-      throw new Error(`${this.model.modelName} not found`);
+      throw new HttpError(`${this.model.modelName} not found`, StatusCode.NOT_FOUND);
     }
     return doc;
   }

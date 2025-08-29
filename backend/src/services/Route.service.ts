@@ -5,6 +5,8 @@ import { SubscriptionDoc, subscriptionRepository } from "../repositories/Subscri
 import dayjs from "dayjs";
 import { IRoute } from "../models/Route.model";
 import { addressRepository } from "../repositories/Address.repository";
+import { HttpError } from "../utils/HttpError";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class RouteService {
   static getAll() {
@@ -18,7 +20,7 @@ export class RouteService {
   static async getByDriverAndDate(driverId: string, day: Date) {
     const route = await routeRepository.findByDriverAndDate(new Types.ObjectId(driverId), day);
     if (!route) {
-      throw new Error("No route has been generated for this driver.");
+      throw new HttpError("No route has been generated for this driver.", StatusCode.NOT_FOUND);
     }
 
     const deliveries = await deliveryRepository.findByRoute(route.id);
@@ -162,7 +164,7 @@ export class RouteService {
   static updateRoute(id: string, data: Partial<IRoute>, actorId: string) {
     const route = this.getById(id);
     if (!route) {
-      throw new Error("Invalid or inactive route");
+      throw new HttpError("Invalid or inactive route", StatusCode.NOT_FOUND);
     }
 
     return routeRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
@@ -171,7 +173,7 @@ export class RouteService {
   static deleteRoute(id: string, actorId: string) {
     const route = this.getById(id);
     if (!route) {
-      throw new Error("Invalid or inactive route");
+      throw new HttpError("Invalid or inactive route", StatusCode.NOT_FOUND);
     }
 
     return routeRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
