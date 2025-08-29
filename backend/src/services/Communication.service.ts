@@ -23,18 +23,20 @@ function renderTemplate(template: string, params: Record<string, any> = {}): str
 }
 
 export class CommunicationService {
-  static async sendCommunication(userId: string, templateNo: string, params: Record<string, any> = {}, actorId?: Types.ObjectId | string) {
-    const template = await communicationTemplateRepository.findOne({ template_no: templateNo });
+  static async sendCommunication(userId: string, templateId: string, params: Record<string, any> = {}, actorId: string) {
+    const template = await communicationTemplateRepository.findById(templateId);
     if (!template) {
       throw new Error("Template not found");
     }
+
+    console.log("template", template);
 
     const user = await userRepository.findById(userId);
     if (!user) {
       throw new Error("User not found");
     }
 
-    const actorObjectId = actorId ? new Types.ObjectId(actorId) : undefined;
+    console.log("user", user);
 
     const request = await communicationRequestRepository.create(
       {
@@ -43,15 +45,24 @@ export class CommunicationService {
         status: CommunicationStatus.REQUESTED,
         handled: false,
       },
-      { actorId: actorObjectId }
+      { actorId: new Types.ObjectId(actorId) }
     );
+
+    console.log("request", request);
 
     const provider = providers[template.method as CommunicationMethod];
     const body = renderTemplate(template.body, params);
     const to = template.method === CommunicationMethod.EMAIL ? user.email_address : user.mobile_number;
 
+    console.log("provider", provider);
+    console.log("body", body);
+    console.log("to", to);
+
     try {
+      console.log("here");
       await provider.send(to, template.subject, body);
+      console.log("here2");
+
       return communicationRequestRepository.updateById(
         request._id,
         {
@@ -60,9 +71,10 @@ export class CommunicationService {
           handle_result: "Delivered",
           sent_at: new Date(),
         },
-        { actorId: actorObjectId, new: true }
+        { actorId: new Types.ObjectId(actorId), new: true }
       );
     } catch (err: any) {
+      console.log("err", err);
       await communicationRequestRepository.updateById(
         request._id,
         {
@@ -70,7 +82,7 @@ export class CommunicationService {
           handled: true,
           handle_result: err?.message || "Error",
         },
-        { actorId: actorObjectId }
+        { actorId: new Types.ObjectId(actorId) }
       );
       throw err;
     }
