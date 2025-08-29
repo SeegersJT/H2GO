@@ -12,7 +12,7 @@ export class DriverService {
   }
 
   static insertDriver(data: Partial<IDriver>, actorId: string) {
-    return driverRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return driverRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static updateDriver(id: string, data: Partial<IDriver>, actorId: string) {
@@ -21,7 +21,7 @@ export class DriverService {
       throw new Error("Invalid or inactive driver");
     }
 
-    return driverRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return driverRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteDriver(id: string, actorId: string) {
@@ -30,6 +30,6 @@ export class DriverService {
       throw new Error("Invalid or inactive driver");
     }
 
-    return driverRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return driverRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 }

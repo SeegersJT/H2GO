@@ -31,7 +31,7 @@ export class RouteService {
   }
 
   static insertRoute(data: Partial<IRoute>, actorId: string) {
-    return routeRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return routeRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async generateForDay(
@@ -165,7 +165,7 @@ export class RouteService {
       throw new Error("Invalid or inactive route");
     }
 
-    return routeRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return routeRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteRoute(id: string, actorId: string) {
@@ -174,6 +174,6 @@ export class RouteService {
       throw new Error("Invalid or inactive route");
     }
 
-    return routeRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return routeRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 }

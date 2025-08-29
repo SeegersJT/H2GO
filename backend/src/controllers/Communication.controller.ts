@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CommunicationService } from "../services/Communication.service";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { CommunicationService } from "../services/Communication.service";
 
 export class CommunicationController {
   static send = async (req: Request, res: Response, next: NextFunction) => {

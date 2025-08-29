@@ -12,7 +12,7 @@ export class ProductService {
   }
 
   static async insertProduct(data: Partial<IProduct>, actorId: string) {
-    return productRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return productRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async updateProduct(id: string, data: Partial<IProduct>, actorId: string) {
@@ -21,7 +21,7 @@ export class ProductService {
       throw new Error("Invalid or inactive product");
     }
 
-    return productRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return productRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async deleteProduct(id: string, actorId: string) {
@@ -30,6 +30,6 @@ export class ProductService {
       throw new Error("Invalid or inactive product");
     }
 
-    return productRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return productRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 }

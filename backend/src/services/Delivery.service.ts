@@ -15,7 +15,7 @@ export class DeliveryService {
   }
 
   static insertDelivery(data: Partial<IDelivery>, actorId: string) {
-    return deliveryRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return deliveryRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static updateDelivery(id: string, data: Partial<IDelivery>, actorId: string) {
@@ -24,7 +24,7 @@ export class DeliveryService {
       throw new Error("Invalid or inactive delivery");
     }
 
-    return deliveryRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return deliveryRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteDelivery(id: string, actorId: string) {
@@ -33,27 +33,27 @@ export class DeliveryService {
       throw new Error("Invalid or inactive delivery");
     }
 
-    return deliveryRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return deliveryRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async setStatus(id: string, status: DeliveryStatus, actorId: string) {
-    const doc = await deliveryRepository.setStatus(new Types.ObjectId(id), status, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    const doc = await deliveryRepository.setStatus(new Types.ObjectId(id), status, { actorId: new Types.ObjectId(actorId) });
     if (doc) {
       return deliveryRepository.addEvent(
         new Types.ObjectId(id),
         { type: status, data: { status }, at: new Date() },
-        actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+        { actorId: new Types.ObjectId(actorId) }
       );
     }
     return doc;
   }
 
   static setProof(id: string, proof: NonNullable<IDelivery["proof"]>, actorId: string) {
-    return deliveryRepository.setProof(new Types.ObjectId(id), proof, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return deliveryRepository.setProof(new Types.ObjectId(id), proof, { actorId: new Types.ObjectId(actorId) });
   }
 
   static addEvent(id: string, event: { type: string; at?: Date; data?: any }, actorId: string) {
-    return deliveryRepository.addEvent(new Types.ObjectId(id), event, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return deliveryRepository.addEvent(new Types.ObjectId(id), event, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async swapProducts(deliveryId: string, outboundSerial: string, inboundSerial: string, actorId: string) {
@@ -68,7 +68,7 @@ export class DeliveryService {
     if (!emptyAsset || !fullAsset) throw new Error("Invalid asset serial numbers");
 
     const now = new Date();
-    const actor = actorId ? { actorId: new Types.ObjectId(actorId) } : undefined;
+    const actor = { actorId: new Types.ObjectId(actorId) };
 
     await inventoryMovementRepository.create(
       {

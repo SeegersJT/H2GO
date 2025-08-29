@@ -32,7 +32,7 @@ function parseTemplate(template: string, params: Record<string, any> = {}): stri
 }
 
 export class CommunicationService {
-  static async sendCommunication(userId: string, templateNo: string, params: Record<string, any> = {}, actorId?: Types.ObjectId) {
+  static async sendCommunication(userId: string, templateNo: string, params: Record<string, any> = {}, actorId: string) {
     const template = await communicationTemplateRepository.findOne({ template_no: templateNo });
     if (!template) {
       throw new Error("Template not found");

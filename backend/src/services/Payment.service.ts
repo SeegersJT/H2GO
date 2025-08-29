@@ -13,7 +13,7 @@ export class PaymentService {
   }
 
   static async createPayment(data: Partial<IPayment>, actorId?: string) {
-    const created = await paymentRepository.create(data as any, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    const created = await paymentRepository.create(data as any, { actorId: new Types.ObjectId(actorId) });
 
     try {
       const invoiceId = (created as any).invoice_id as Types.ObjectId | undefined;
@@ -36,10 +36,10 @@ export class PaymentService {
   }
 
   static update(id: string, data: any, actorId?: string) {
-    return paymentRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return paymentRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static delete(id: string, actorId?: string) {
-    return paymentRepository.deleteById(new Types.ObjectId(id), actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return paymentRepository.deleteById(new Types.ObjectId(id), { actorId: new Types.ObjectId(actorId) });
   }
 }

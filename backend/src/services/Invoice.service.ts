@@ -26,15 +26,15 @@ export class InvoiceService {
   }
 
   static insertInvoice(data: Partial<IInvoice>, actorId: string) {
-    return invoiceRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return invoiceRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static updateInvoice(id: string, data: Partial<IInvoice>, actorId: string) {
-    return invoiceRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return invoiceRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteInvoice(id: string, actorId: string) {
-    return invoiceRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return invoiceRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 
   private static calculateTotals(lines: IInvoiceLine[]): { subtotal: number; tax: number; total: number } {
@@ -253,7 +253,7 @@ export class InvoiceService {
         period_month: periodMonth,
         period_key,
       },
-      actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+      { actorId: new Types.ObjectId(actorId) }
     );
 
     if (!(created as any).payment_reference) {

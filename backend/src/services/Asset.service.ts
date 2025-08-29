@@ -12,7 +12,7 @@ export class AssetService {
   }
 
   static async insertAsset(data: Partial<IAsset>, actorId: string) {
-    return assetRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return assetRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async updateAsset(id: string, data: Partial<IAsset>, actorId: string) {
@@ -21,7 +21,7 @@ export class AssetService {
       throw new Error("Invalid or inactive asset");
     }
 
-    return assetRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return assetRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async deleteAsset(id: string, actorId: string) {
@@ -30,6 +30,6 @@ export class AssetService {
       throw new Error("Invalid or inactive asset");
     }
 
-    return assetRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return assetRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 }

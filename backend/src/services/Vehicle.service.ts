@@ -12,7 +12,7 @@ export class VehicleService {
   }
 
   static insertVehicle(data: Partial<IVehicle>, actorId: string) {
-    return vehicleRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return vehicleRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static updateVehicle(id: string, data: Partial<IVehicle>, actorId: string) {
@@ -21,7 +21,7 @@ export class VehicleService {
       throw new Error("Invalid or inactive vehicle");
     }
 
-    return vehicleRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return vehicleRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteVehicle(id: string, actorId: string) {
@@ -30,6 +30,6 @@ export class VehicleService {
       throw new Error("Invalid or inactive vehicle");
     }
 
-    return vehicleRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return vehicleRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 }

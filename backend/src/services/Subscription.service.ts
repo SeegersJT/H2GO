@@ -12,7 +12,7 @@ export class SubscriptionService {
   }
 
   static insertSubscription(data: Partial<ISubscription>, actorId: string) {
-    return subscriptionRepository.create(data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return subscriptionRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static updateSubscription(id: string, data: Partial<ISubscription>, actorId: string) {
@@ -21,7 +21,7 @@ export class SubscriptionService {
       throw new Error("Invalid or inactive subscription");
     }
 
-    return subscriptionRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return subscriptionRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static deleteSubscription(id: string, actorId: string) {
@@ -33,7 +33,7 @@ export class SubscriptionService {
     return subscriptionRepository.updateById(
       new Types.ObjectId(id),
       { status: "cancelled" },
-      actorId ? { actorId: new Types.ObjectId(actorId) } : undefined
+      { actorId: new Types.ObjectId(actorId) }
     );
   }
 }

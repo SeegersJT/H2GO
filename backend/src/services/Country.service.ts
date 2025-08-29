@@ -16,6 +16,6 @@ export class CountryService {
   }
 
   static async updateCountry(id: string, data: Partial<ICountry>, actorId: string) {
-    return countryRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return countryRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 }

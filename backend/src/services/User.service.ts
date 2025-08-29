@@ -86,7 +86,7 @@ export class UserService {
       active: true,
     };
 
-    return await userRepository.create(newUser, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return await userRepository.create(newUser, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async updateUser(id: string, data: Partial<IUser>, actorId: string) {
@@ -95,7 +95,7 @@ export class UserService {
       throw new Error("Invalid or inactive user");
     }
 
-    return userRepository.updateById(new Types.ObjectId(id), data, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return userRepository.updateById(new Types.ObjectId(id), data, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async deleteUser(id: string, actorId: string) {
@@ -104,7 +104,7 @@ export class UserService {
       throw new Error("Invalid or inactive user");
     }
 
-    return userRepository.updateById(new Types.ObjectId(id), { active: false }, actorId ? { actorId: new Types.ObjectId(actorId) } : undefined);
+    return userRepository.updateById(new Types.ObjectId(id), { active: false }, { actorId: new Types.ObjectId(actorId) });
   }
 
   static async isDuplicateUserIDNumber(idNumber: string) {
