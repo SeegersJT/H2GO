@@ -121,6 +121,6 @@ export class UserService {
   }
 
   static async getAllCustomers() {
-    return userRepository.findMany({ user_type: UserType.CUSTOMER });
+    return userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true });
   }
 }

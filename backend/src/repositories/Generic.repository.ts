@@ -1,4 +1,4 @@
-import type { Model, AnyKeys, ClientSession, HydratedDocument, PipelineStage } from "mongoose";
+import type { AnyKeys, ClientSession, HydratedDocument, Model, PipelineStage } from "mongoose";
 import { HttpError } from "../utils/HttpError";
 import { StatusCode } from "../utils/constants/StatusCode.constant";
 
@@ -15,6 +15,7 @@ export type ReadOptions = {
   collation?: any;
   lean?: boolean;
   includeInactive?: boolean; // if false (default) and schema has `active`, auto-filter to active: true
+  includeAll?: boolean; // when true, disable automatic active filtering (alias for includeInactive)
 };
 
 export type PaginateResult<T> = {
@@ -53,7 +54,8 @@ export class GenericRepository<TSchema extends WithMaybeId, TDoc extends Hydrate
   /** Adds `{active: true}` by default when the schema has an `active` path */
   private baseFilter(filter: any = {}, opts?: ReadOptions) {
     const hasActivePath = "active" in this.model.schema.paths;
-    if (hasActivePath && !opts?.includeInactive) {
+    const includeAll = opts?.includeInactive || opts?.includeAll;
+    if (hasActivePath && !includeAll) {
       return { ...filter, active: true };
     }
     return filter;
@@ -82,7 +84,8 @@ export class GenericRepository<TSchema extends WithMaybeId, TDoc extends Hydrate
   /** Find by id (respects soft-delete filter if schema has `active`) */
   async findById(id: any, opts?: ReadOptions): Promise<TDoc | null> {
     const hasActivePath = "active" in this.model.schema.paths;
-    const useActiveFilter = hasActivePath && !opts?.includeInactive;
+    const includeAll = opts?.includeInactive || opts?.includeAll;
+    const useActiveFilter = hasActivePath && !includeAll;
 
     let q = useActiveFilter
       ? this.model.findOne({ _id: id, active: true }, opts?.projection, { session: opts?.session ?? undefined })
@@ -166,14 +169,15 @@ export class GenericRepository<TSchema extends WithMaybeId, TDoc extends Hydrate
 
   // ---------- Aggregate ----------
 
-  /** Aggregate with optional soft-delete `$match` preprended (unless includeInactive=true) */
+  /** Aggregate with optional soft-delete `$match` preprended (unless includeAll/includeInactive=true) */
   async aggregate<R = any>(
     pipeline: PipelineStage[],
-    opts?: { session?: ClientSession | null; allowDiskUse?: boolean; includeInactive?: boolean }
+    opts?: { session?: ClientSession | null; allowDiskUse?: boolean; includeInactive?: boolean; includeAll?: boolean }
   ): Promise<R[]> {
     const stages = [...pipeline];
     const hasActivePath = "active" in this.model.schema.paths;
-    if (hasActivePath && !opts?.includeInactive) {
+    const includeAll = opts?.includeInactive || opts?.includeAll;
+    if (hasActivePath && !includeAll) {
       stages.unshift({ $match: { active: true } } as PipelineStage);
     }
     return this.model
