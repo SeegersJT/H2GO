@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { UserService } from "../services/User.service";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class UserController {
   static getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -98,6 +98,18 @@ export class UserController {
 
       const result = await UserService.deleteUser(id, authenticatedUser.id);
       return res.success(result, { message: "Deleted user successfully" });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  static getAllCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const customers = await UserService.getAllCustomers();
+
+      return res.success(customers, {
+        message: "Retrieved customers successfully",
+      });
     } catch (err) {
       next(err);
     }

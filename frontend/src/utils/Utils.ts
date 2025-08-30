@@ -26,4 +26,12 @@ export class Utils {
    * @returns {boolean} True if the string is empty or null, otherwise false.
    */
   static isEmptyString = (str) => !str || str.trim().length === 0
+
+  /**
+   * Convert a string to Capital Case.
+   * Makes the first character uppercase and the rest lowercase.
+   * @param {string} str - The string to format.
+   * @returns {string} The formatted string in capital case.
+   */
+  static toCapitalCase = (str: string): string => (!str ? '' : str.charAt(0).toUpperCase() + str.slice(1).toLowerCase())
 }

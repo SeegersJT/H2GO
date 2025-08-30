@@ -10,57 +10,65 @@ import OneTimePinContainer from './containers/authentication/token/one-time-pin/
 import PasswordResetContainer from './containers/authentication/token/password-reset/PasswordReset.container'
 import TokenContainer from './containers/authentication/token/Token.container'
 import TokenValidateContainer from './containers/authentication/token/validate/TokenValidate.container'
+import DashboardCustomersContainer from './containers/dashboard/customers/DashboardCustomers.container'
 import DashboardContainer from './containers/dashboard/Dashboard.container'
 import DashboardHomeContainer from './containers/dashboard/home/DashboardHome.container'
 import GlobalContainer from './containers/global/Global.container'
 import NotFoundContainer from './containers/not-found/NotFound.container'
+import { useAppSelector } from './hooks/use-redux'
 
 const queryClient = new QueryClient()
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <GlobalContainer>
-          <Routes>
-            {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
+const App = () => {
+  const { user_type } = useAppSelector((state) => state.user)
 
-            <Route path="/" element={<AuthenticationContainer />}>
-              <Route index element={<Navigate to="/auth/login" replace />} />
-              <Route path="/auth/login" element={<LoginContainer />} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <GlobalContainer>
+            <Routes>
+              {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
 
-              <Route path="auth/password-forgot" element={<PasswordForgotContainer />} />
+              <Route path="/" element={<AuthenticationContainer />}>
+                <Route index element={<Navigate to="/auth/login" replace />} />
+                <Route path="/auth/login" element={<LoginContainer />} />
 
-              <Route path="auth/token" element={<TokenContainer />}>
-                <Route index element={<Navigate to="/auth/token/validate" replace />} />
-                <Route path="validate" element={<TokenValidateContainer />} />
+                <Route path="auth/password-forgot" element={<PasswordForgotContainer />} />
 
-                <Route path="one-time-pin" element={<OneTimePinContainer />} />
-                <Route path="password-reset" element={<PasswordResetContainer />} />
+                <Route path="auth/token" element={<TokenContainer />}>
+                  <Route index element={<Navigate to="/auth/token/validate" replace />} />
+                  <Route path="validate" element={<TokenValidateContainer />} />
 
-                <Route path="*" element={<Navigate to="/auth/token" replace />} />
+                  <Route path="one-time-pin" element={<OneTimePinContainer />} />
+                  <Route path="password-reset" element={<PasswordResetContainer />} />
+
+                  <Route path="*" element={<Navigate to="/auth/token" replace />} />
+                </Route>
               </Route>
-            </Route>
 
-            {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
+              {/* -------------------- UNAUTHENTICATED ROUTES -------------------- */}
 
-            {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
+              {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
 
-            <Route path="/:role/dashboard" element={<DashboardContainer />}>
-              <Route index element={<Navigate to="/dashboard/home" replace />} />
-              {/* <Route path="home" element={<RoleDashboardHomeContainer />} /> */}
-            </Route>
+              <Route path="/dashboard" element={<DashboardContainer />}>
+                <Route index element={<Navigate to={`/dashboard/home`} replace />} />
+                <Route path="home" element={<DashboardHomeContainer />} />
 
-            {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
+                <Route path="customers" element={<DashboardCustomersContainer />} />
+              </Route>
 
-            <Route path="*" element={<NotFoundContainer />} />
-          </Routes>
-        </GlobalContainer>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-)
+              {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
+
+              <Route path="*" element={<NotFoundContainer />} />
+            </Routes>
+          </GlobalContainer>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  )
+}
 
 export default App

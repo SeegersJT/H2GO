@@ -1,23 +1,23 @@
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
-import { CommunicationProvider } from "../Communication.provider";
+import { EmailParams, MailerSend, Recipient, Sender } from "mailersend";
 import { HttpError } from "../../utils/HttpError";
 import { StatusCode } from "../../utils/constants/StatusCode.constant";
+import { CommunicationProvider } from "../Communication.provider";
 
-export class MailsendEmailProvider implements CommunicationProvider {
+export class MailersendEmailProvider implements CommunicationProvider {
   private mailerSend: MailerSend;
   private from: Sender;
 
   constructor() {
-    const apiKey = process.env.MAILSEND_API_KEY;
-    const fromEmail = process.env.MAILSEND_FROM_EMAIL;
-    const fromName = process.env.MAILSEND_FROM_NAME || "";
+    const apiKey = process.env.MAILERSEND_API_KEY;
+    const fromEmail = process.env.MAILERSEND_FROM_EMAIL;
+    const fromName = process.env.MAILERSEND_FROM_NAME || "";
 
     if (!apiKey) {
-      throw new HttpError("MAILSEND_API_KEY is not configured", StatusCode.INTERNAL_SERVER_ERROR);
+      throw new HttpError("MAILERSEND_API_KEY is not configured", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     if (!fromEmail) {
-      throw new HttpError("MAILSEND_FROM_EMAIL is not configured", StatusCode.INTERNAL_SERVER_ERROR);
+      throw new HttpError("MAILERSEND_FROM_EMAIL is not configured", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
     this.mailerSend = new MailerSend({ apiKey });
@@ -37,9 +37,9 @@ export class MailsendEmailProvider implements CommunicationProvider {
     try {
       await this.mailerSend.email.send(emailParams);
     } catch (error: any) {
-      const message = error?.body?.message || error?.message || "Unknown error from Mailsend";
+      const message = error?.body?.message || error?.message || "Unknown error from MAILERSEND";
       const code = error?.statusCode || StatusCode.INTERNAL_SERVER_ERROR;
-      throw new HttpError(`Mailsend API error: ${message}`, code);
+      throw new HttpError(`MAILERSEND API error: ${message}`, code);
     }
   }
 }

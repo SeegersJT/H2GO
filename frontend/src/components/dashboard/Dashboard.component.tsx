@@ -1,7 +1,7 @@
 import DashboardNavigationContainer from '@/containers/layout/DashboardNavigation.container'
-import { Sheet, SheetContent } from '../ui/sheet'
-import { Outlet } from 'react-router-dom'
 import DashboardSidebarContainer from '@/containers/layout/DashboardSidebar.container'
+import { Outlet } from 'react-router-dom'
+import { Sheet, SheetContent } from '../ui/sheet'
 
 const Dashboard = () => {
   return (

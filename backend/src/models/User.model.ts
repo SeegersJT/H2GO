@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document, Types, Model } from "mongoose";
 import bcrypt from "bcrypt";
+import mongoose, { Document, Model, Schema, Types } from "mongoose";
 import { UserType } from "../utils/constants/UserType.constant";
-import Branch from "./Branch.model";
 import { formatHumanCode, nextSeq } from "../utils/sequence.utils";
+import Branch from "./Branch.model";
 
 export type Gender = "MALE" | "FEMALE";
 
@@ -94,7 +94,7 @@ const userSchema = new Schema<IUser, IUserModel>(
 );
 
 // --- Indexes for common queries ---
-userSchema.index({ branch_id: 1, active: 1 });
+// userSchema.index({ branch_id: 1, active: 1 }); TODO: Determine if needed to be true (i want to return all users, not just active users)
 userSchema.index({ user_type: 1, branch_id: 1 });
 
 // --- Password hashing (create/update) ---

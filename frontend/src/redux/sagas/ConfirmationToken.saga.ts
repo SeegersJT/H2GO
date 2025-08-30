@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from 'axios'
 import { call, put, takeEvery } from 'redux-saga/effects'
 import * as authActions from '../actions/Authentication.action'
 import * as confirmationTokenActions from '../actions/ConfirmationToken.action'
+import * as userActions from '../actions/User.action'
 import { GenericResponse } from '../types/GenericResponse.type'
 
 function* confirmationTokenValidationRequestSaga(action: ReturnType<typeof confirmationTokenActions.requestConfirmationTokenValidation>) {
@@ -77,14 +78,13 @@ function* confirmationTokenOneTimePinRequestSaga(action: ReturnType<typeof confi
       yield put(authActions.setAuthenticationRefreshTokenExpiresAt(data.refresh_token_expires_at))
     }
 
-    // TODO
-    // if (data.user) {
-    //   yield put(authActions.setAuthenticationRefreshsToken(data.refresh_token))
-    // }
+    if (data.user) {
+      yield put(userActions.setUser(data.user))
+    }
 
     toast({ title: status, description: message, variant: 'success' })
 
-    navigateTo('/dashboard', { replace: true })
+    navigateTo(`/dashboard`, { replace: true })
   } catch (error: any) {
     const errorData = error?.response?.data
     toast({

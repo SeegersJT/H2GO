@@ -1,13 +1,14 @@
+import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { userRepository } from "../repositories/User.repository";
 import type { IUser } from "../models/User.model";
+import User from "../models/User.model";
+import { userRepository } from "../repositories/User.repository";
+import { HttpError } from "../utils/HttpError";
 import { RegexPatterns } from "../utils/constants/Regex.constant";
+import { StatusCode } from "../utils/constants/StatusCode.constant";
+import { UserType } from "../utils/constants/UserType.constant";
 import { BranchService } from "./Branch.service";
 import { CountryService } from "./Country.service";
-import User from "../models/User.model";
-import dayjs from "dayjs";
-import { HttpError } from "../utils/HttpError";
-import { StatusCode } from "../utils/constants/StatusCode.constant";
 
 export class UserService {
   static async getAllUsers() {
@@ -117,5 +118,9 @@ export class UserService {
   static async isDuplicateUserEmailAddress(email: string) {
     const user = await userRepository.findByEmail(email);
     return !!user;
+  }
+
+  static async getAllCustomers() {
+    return userRepository.findMany({ user_type: UserType.CUSTOMER });
   }
 }

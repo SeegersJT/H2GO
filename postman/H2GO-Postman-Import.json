@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "cb7719a4-d97d-4e05-b86f-ca529bda99eb",
+    "_postman_id": "42fb377f-e20a-491d-aaa1-12955b8346e1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -2880,6 +2880,25 @@
                 "api",
                 "v1",
                 "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/users/customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "customers"
               ]
             }
           }
