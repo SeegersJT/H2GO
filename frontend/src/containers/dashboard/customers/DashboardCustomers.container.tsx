@@ -13,55 +13,8 @@ const DashboardCustomersContainer = () => {
     dispatch(requestCustomersData())
   }, [dispatch])
 
-  // =================================================================
-
-  // const [customers, setCustomers] = useState<Customer[]>([
-  //   {
-  //     id: 'CUST001',
-  //     name: 'John Smith',
-  //     email: 'john@example.com',
-  //     phone: '+27 11 123 4567',
-  //     address: '123 Oak Street, Sandton, Johannesburg',
-  //     deliveryDay: 'Monday',
-  //     containerCount: 2,
-  //     monthlyAmount: 720,
-  //     paymentMethod: 'debit_order',
-  //     status: 'active',
-  //     joinDate: '2023-01-15',
-  //     lastDelivery: '2024-01-08',
-  //   },
-  //   {
-  //     id: 'CUST002',
-  //     name: 'Sarah Johnson',
-  //     email: 'sarah@example.com',
-  //     phone: '+27 11 234 5678',
-  //     address: '456 Pine Avenue, Rosebank, Johannesburg',
-  //     deliveryDay: 'Wednesday',
-  //     containerCount: 1,
-  //     monthlyAmount: 360,
-  //     paymentMethod: 'eft',
-  //     status: 'active',
-  //     joinDate: '2023-03-22',
-  //     lastDelivery: '2024-01-10',
-  //   },
-  //   {
-  //     id: 'CUST003',
-  //     name: 'Mike Davis',
-  //     email: 'mike@example.com',
-  //     phone: '+27 11 345 6789',
-  //     address: '789 Elm Road, Hyde Park, Johannesburg',
-  //     deliveryDay: 'Friday',
-  //     containerCount: 3,
-  //     monthlyAmount: 1080,
-  //     paymentMethod: 'debit_order',
-  //     status: 'inactive',
-  //     joinDate: '2022-11-10',
-  //     lastDelivery: '2023-12-29',
-  //   },
-  // ])
-
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState<string>('all')
+  const [filterStatus, setFilterStatus] = useState<string>('active')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
 
