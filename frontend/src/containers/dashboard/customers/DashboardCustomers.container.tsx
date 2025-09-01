@@ -9,8 +9,6 @@ const DashboardCustomersContainer = () => {
 
   const { customersData } = useAppSelector((state) => state.customers)
 
-  const [customers, setCustomers] = useState<Customer[]>()
-
   useEffect(() => {
     dispatch(requestCustomersData())
   }, [dispatch])
@@ -63,7 +61,7 @@ const DashboardCustomersContainer = () => {
   // ])
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState<string>()
+  const [filterStatus, setFilterStatus] = useState<string>('all')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
 
@@ -71,7 +69,7 @@ const DashboardCustomersContainer = () => {
     const matchesSearch =
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) || customer.email_address.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus = filterStatus === 'active' || customer.status === filterStatus
+    const matchesStatus = filterStatus === 'all' || customer.status === filterStatus
 
     return matchesSearch && matchesStatus
   })
@@ -87,17 +85,21 @@ const DashboardCustomersContainer = () => {
     }
   }
 
-  const getPaymentMethodLabel = () => {
-    // switch (method) {
-    //   case 'debit_order':
-    //     return 'Debit Order'
-    //   case 'eft':
-    //     return 'EFT'
-    //   case 'cash':
-    //     return 'Cash'
-    //   default:
-    //     return method
-    // }
+  const getPaymentMethodLabel = (method: string) => {
+    switch (method) {
+      case 'cash':
+        return 'Cash'
+      case 'card':
+        return 'Card'
+      case 'bank_transfer':
+        return 'Bank Transfer'
+      case 'mobile':
+        return 'Mobile'
+      case 'other':
+        return 'Other'
+      default:
+        return method
+    }
   }
 
   const handleEdit = (customer: Customer) => {
@@ -114,7 +116,7 @@ const DashboardCustomersContainer = () => {
     total: customersData.length,
     active: customersData.filter((c) => c.status === 'active').length,
     inactive: customersData.filter((c) => c.status === 'inactive').length,
-    totalRevenue: customersData.reduce((sum, c) => sum + (c.status === 'active' ? 5 : 0), 0),
+    totalRevenue: customersData.reduce((sum, c) => sum + (c.status === 'active' ? c.monthly_payment : 0), 0),
   }
 
   // =================================================================

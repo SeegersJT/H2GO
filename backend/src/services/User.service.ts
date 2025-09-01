@@ -10,6 +10,8 @@ import { UserType } from "../utils/constants/UserType.constant";
 import { BranchService } from "./Branch.service";
 import { CountryService } from "./Country.service";
 import { AddressService } from "./Address.service";
+import { subscriptionRepository } from "../repositories/Subscription.repository";
+import { paymentRepository } from "../repositories/Payment.repository";
 
 export class UserService {
   static async getAllUsers() {
@@ -124,13 +126,29 @@ export class UserService {
   static async getAllCustomers() {
     const customers = await userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true, lean: true });
 
-    const customersWithAddress = await Promise.all(
+    const customersWithDetails = await Promise.all(
       customers.map(async (customer: any) => {
+        const status = customer.active ? "active" : "inactive";
+
         const address = await AddressService.getDefaultAddressForUser(customer._id.toString());
-        return { ...customer, address };
+
+        const subscriptions = await subscriptionRepository.findByUser(customer._id, { lean: true });
+        const monthlyPayment = subscriptions.reduce((total: number, sub: any) => {
+          const items = sub.items || [];
+          const subTotal = items.reduce(
+            (sum: number, item: any) => sum + (item.billing_period === "monthly" ? (item.unit_price || 0) * item.quantity : 0),
+            0
+          );
+          return total + subTotal;
+        }, 0);
+
+        const latestPayment = await paymentRepository.findOne({ user_id: customer._id }, { sort: { received_at: -1 }, lean: true });
+        const paymentType = latestPayment?.method || null;
+
+        return { ...customer, status: status, address, monthly_payment: monthlyPayment, payment_type: paymentType };
       })
     );
 
-    return customersWithAddress;
+    return customersWithDetails;
   }
 }

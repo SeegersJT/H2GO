@@ -15,4 +15,6 @@ export type Customer = {
   createdBy: string
   createdAt: Date
   address: null
+  monthly_payment: number
+  payment_type: string | null
 }

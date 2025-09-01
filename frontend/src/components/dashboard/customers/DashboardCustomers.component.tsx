@@ -154,8 +154,10 @@ const DashboardCustomers = ({
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        <div className="text-sm font-medium">R200/month</div>
-                        <div className="text-sm text-muted-foreground">Debit Order</div>
+                        <div className="text-sm font-medium">R{customer.monthly_payment.toLocaleString()}/month</div>
+                        <div className="text-sm text-muted-foreground">
+                          {customer.payment_type ? getPaymentMethodLabel(customer.payment_type) : 'N/A'}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
