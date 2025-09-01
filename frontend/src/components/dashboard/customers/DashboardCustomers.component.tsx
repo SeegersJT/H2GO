@@ -52,7 +52,7 @@ const DashboardCustomers = ({
             <CardTitle className="text-sm font-medium">Active</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.active}</div>
+            <div className="text-2xl font-bold text-green-600">{stats.status}</div>
           </CardContent>
         </Card>
         <Card>
@@ -143,7 +143,7 @@ const DashboardCustomers = ({
                     <TableCell>
                       <div className="flex items-start gap-1 text-sm">
                         <MapPin className="h-3 w-3 mt-0.5 text-muted-foreground" />
-                        <span className="max-w-48 truncate">135 Rivier Street, Potchefstroom</span>
+                        <span className="max-w-150 truncate">{`${customer?.address?.address_line_01}, ${customer?.address?.address_line_02}, ${customer?.address?.suburb}, ${customer?.address?.city}, ${customer?.address?.region}, ${customer?.address?.postal_code}`}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -159,7 +159,7 @@ const DashboardCustomers = ({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={`${getStatusColor(customer.active)} border-0`}>{customer.active}</Badge>
+                      <Badge className={`${getStatusColor(customer.status)} border-0`}>{customer.status}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">

@@ -9,7 +9,7 @@ const DashboardCustomersContainer = () => {
 
   const { customersData } = useAppSelector((state) => state.customers)
 
-  // const [customers, setCustomers] = useState<Customer[]>()
+  const [customers, setCustomers] = useState<Customer[]>()
 
   useEffect(() => {
     dispatch(requestCustomersData())
@@ -63,7 +63,7 @@ const DashboardCustomersContainer = () => {
   // ])
 
   const [searchTerm, setSearchTerm] = useState('')
-  // const [filterStatus, setFilterStatus] = useState<boolean>()
+  const [filterStatus, setFilterStatus] = useState<string>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
 
@@ -71,16 +71,16 @@ const DashboardCustomersContainer = () => {
     const matchesSearch =
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) || customer.email_address.toLowerCase().includes(searchTerm.toLowerCase())
 
-    // const matchesStatus = filterStatus === true || customer.active === filterStatus
+    const matchesStatus = filterStatus === 'active' || customer.status === filterStatus
 
-    return matchesSearch
+    return matchesSearch && matchesStatus
   })
 
-  const getStatusColor = (status: Customer['active']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case true:
+      case 'active':
         return 'bg-green-100 text-green-800'
-      case false:
+      case 'inactive':
         return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-gray-100 text-gray-800'
@@ -112,9 +112,9 @@ const DashboardCustomersContainer = () => {
 
   const stats = {
     total: customersData.length,
-    active: customersData.filter((c) => c.active).length,
-    inactive: customersData.filter((c) => !c.active).length,
-    totalRevenue: customersData.reduce((sum, c) => sum + (c.active ? 2 : 0), 0),
+    active: customersData.filter((c) => c.status === 'active').length,
+    inactive: customersData.filter((c) => c.status === 'inactive').length,
+    totalRevenue: customersData.reduce((sum, c) => sum + (c.status === 'active' ? 5 : 0), 0),
   }
 
   // =================================================================
@@ -125,8 +125,8 @@ const DashboardCustomersContainer = () => {
       stats={stats}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      // filterStatus={filterStatus}
-      // setFilterStatus={setFilterStatus}
+      filterStatus={filterStatus}
+      setFilterStatus={setFilterStatus}
       filteredCustomers={filteredCustomers}
       getPaymentMethodLabel={getPaymentMethodLabel}
       getStatusColor={getStatusColor}

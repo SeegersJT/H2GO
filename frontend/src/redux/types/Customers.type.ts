@@ -1,6 +1,8 @@
 export type Customer = {
   _id: string
+  user_no: string
   branch_id: string
+  branch_name: string
   name: string
   surname: string
   id_number: string
@@ -9,13 +11,8 @@ export type Customer = {
   gender: string
   password_expiry: string
   user_type: string
-  confirmed: boolean
-  active: boolean
-  failedLoginAttempts: number
+  status: 'active' | 'inactive'
   createdBy: string
-  updatedBy: string
-  user_no: string
   createdAt: Date
-  updatedAt: Date
-  lastLoginAt: Date
+  address: null
 }

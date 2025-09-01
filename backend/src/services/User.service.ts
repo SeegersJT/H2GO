@@ -9,6 +9,7 @@ import { StatusCode } from "../utils/constants/StatusCode.constant";
 import { UserType } from "../utils/constants/UserType.constant";
 import { BranchService } from "./Branch.service";
 import { CountryService } from "./Country.service";
+import { AddressService } from "./Address.service";
 
 export class UserService {
   static async getAllUsers() {
@@ -121,14 +122,15 @@ export class UserService {
   }
 
   static async getAllCustomers() {
-    const customers = userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true });
+    const customers = await userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true, lean: true });
 
-    // Loop through customers and get address details and save it as:
-    // {
-    //    ...customer
-    //    address: default address ()
-    // }
+    const customersWithAddress = await Promise.all(
+      customers.map(async (customer: any) => {
+        const address = await AddressService.getDefaultAddressForUser(customer._id.toString());
+        return { ...customer, address };
+      })
+    );
 
-    return customers;
+    return customersWithAddress;
   }
 }

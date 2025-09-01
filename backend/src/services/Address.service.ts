@@ -11,6 +11,10 @@ export class AddressService {
     return addressRepository.findById(new Types.ObjectId(id));
   }
 
+  static async getDefaultAddressForUser(userId: Types.ObjectId | string) {
+    return addressRepository.findOne({ user_id: userId, is_default: true });
+  }
+
   static async insertAddress(data: Partial<IAddress>, actorId: string) {
     return addressRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }
