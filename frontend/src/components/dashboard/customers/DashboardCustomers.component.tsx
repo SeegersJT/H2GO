@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Customer } from '@/redux/types/Customers.type'
 import { Edit, Mail, MapPin, Phone, Plus, Search, Trash2 } from 'lucide-react'
 
 const DashboardCustomers = ({
@@ -119,46 +120,46 @@ const DashboardCustomers = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCustomers.map((customer) => (
-                  <TableRow key={customer.id}>
+                {filteredCustomers.map((customer: Customer) => (
+                  <TableRow key={customer._id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{customer.name}</div>
-                        <div className="text-sm text-muted-foreground">{customer.id}</div>
+                        <div className="font-medium">{`${customer.name} ${customer.surname}`}</div>
+                        <div className="text-sm text-muted-foreground">{customer.user_no}</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-1 text-sm">
                           <Mail className="h-3 w-3" />
-                          {customer.email}
+                          {customer.email_address}
                         </div>
                         <div className="flex items-center gap-1 text-sm">
                           <Phone className="h-3 w-3" />
-                          {customer.phone}
+                          {customer.mobile_number}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-start gap-1 text-sm">
                         <MapPin className="h-3 w-3 mt-0.5 text-muted-foreground" />
-                        <span className="max-w-48 truncate">{customer.address}</span>
+                        <span className="max-w-48 truncate">135 Rivier Street, Potchefstroom</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        <div className="text-sm font-medium">{customer.deliveryDay}s</div>
-                        <div className="text-sm text-muted-foreground">{customer.containerCount} containers</div>
+                        <div className="text-sm font-medium">Wednesdays</div>
+                        <div className="text-sm text-muted-foreground">1 containers</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        <div className="text-sm font-medium">R{customer.monthlyAmount}/month</div>
-                        <div className="text-sm text-muted-foreground">{getPaymentMethodLabel(customer.paymentMethod)}</div>
+                        <div className="text-sm font-medium">R200/month</div>
+                        <div className="text-sm text-muted-foreground">Debit Order</div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={`${getStatusColor(customer.status)} border-0`}>{customer.status}</Badge>
+                      <Badge className={`${getStatusColor(customer.active)} border-0`}>{customer.active}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">

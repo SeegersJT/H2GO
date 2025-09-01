@@ -121,6 +121,14 @@ export class UserService {
   }
 
   static async getAllCustomers() {
-    return userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true });
+    const customers = userRepository.findMany({ user_type: UserType.CUSTOMER }, { includeAll: true });
+
+    // Loop through customers and get address details and save it as:
+    // {
+    //    ...customer
+    //    address: default address ()
+    // }
+
+    return customers;
   }
 }

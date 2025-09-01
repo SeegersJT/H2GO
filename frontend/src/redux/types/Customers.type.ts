@@ -1,14 +1,21 @@
 export type Customer = {
-  id: string
+  _id: string
+  branch_id: string
   name: string
-  email: string
-  phone: string
-  address: string
-  deliveryDay: string
-  containerCount: number
-  monthlyAmount: number
-  paymentMethod: 'debit_order' | 'eft' | 'cash'
-  status: 'active' | 'inactive' | 'suspended'
-  joinDate: string
-  lastDelivery: string
+  surname: string
+  id_number: string
+  email_address: string
+  mobile_number: string
+  gender: string
+  password_expiry: string
+  user_type: string
+  confirmed: boolean
+  active: boolean
+  failedLoginAttempts: number
+  createdBy: string
+  updatedBy: string
+  user_no: string
+  createdAt: Date
+  updatedAt: Date
+  lastLoginAt: Date
 }

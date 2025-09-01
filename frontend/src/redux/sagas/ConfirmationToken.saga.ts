@@ -145,7 +145,7 @@ function* confirmationTokenPasswordResetRequestSaga(action: ReturnType<typeof co
   yield put(confirmationTokenActions.setConfirmationTokenLoading(false))
 }
 
-export function* watchCnfirmationTokenSagas() {
+export function* watchConfirmationTokenSagas() {
   yield takeEvery(confirmationTokenActions.REQUEST_CONFIRMATION_TOKEN_VALIDATION, confirmationTokenValidationRequestSaga)
   yield takeEvery(confirmationTokenActions.REQUEST_CONFIRMATION_TOKEN_OTP, confirmationTokenOneTimePinRequestSaga)
   yield takeEvery(confirmationTokenActions.REQUEST_CONFIRMATION_TOKEN_PASSWORD_RESET, confirmationTokenPasswordResetRequestSaga)

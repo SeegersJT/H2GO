@@ -1,5 +1,6 @@
 import { setAuthenticationAccessToken, setAuthenticationAccessTokenExpiresAt } from '@/redux/actions/Authentication.action'
 import axios, { AxiosError, AxiosHeaders, InternalAxiosRequestConfig } from 'axios'
+import { API_URL } from './GenericWebRequest.api'
 
 interface CustomConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -31,7 +32,7 @@ export const setupAxiosInterceptors = (store: any) => {
           const refreshToken = store.getState().auth.refreshToken
           if (!refreshToken) return Promise.reject(error)
 
-          const refreshResponse = await axios.post('/auth/refresh-token', { refresh_token: refreshToken }, { withCredentials: true })
+          const refreshResponse = await axios.post(`${API_URL}/auth/refresh-token`, { refresh_token: refreshToken }, { withCredentials: true })
 
           const data: any = refreshResponse.data.data
 
