@@ -1,15 +1,23 @@
 import { combineReducers } from 'redux'
+import { RESET_STORE } from '../actions/Root.action'
 import authReducer from './Authentication.reducer'
 import confirmationTokenReducer from './ConfirmationToken.reducer'
-import userReducer from './User.reducer'
 import customersReducer from './Customers.reducer'
+import userReducer from './User.reducer'
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: authReducer,
   token: confirmationTokenReducer,
   user: userReducer,
   customers: customersReducer,
 })
 
-export type RootState = ReturnType<typeof rootReducer>
+const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: any) => {
+  if (action.type === RESET_STORE) {
+    state = undefined
+  }
+  return appReducer(state, action)
+}
+
+export type RootState = ReturnType<typeof appReducer>
 export default rootReducer

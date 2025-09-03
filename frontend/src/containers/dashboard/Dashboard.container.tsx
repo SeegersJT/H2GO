@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-redux'
 import { toast } from '@/hooks/use-toast'
 import * as authActions from '@/redux/actions/Authentication.action'
 import * as conmfirmationTokenActions from '@/redux/actions/ConfirmationToken.action'
+import { resetStore } from '@/redux/actions/Root.action'
 import { clearUser } from '@/redux/actions/User.action'
 import { navigateTo } from '@/utils/Navigation'
 import { useEffect, useRef } from 'react'
@@ -11,7 +12,7 @@ import { Navigate } from 'react-router-dom'
 const DashboardContainer = () => {
   const dispatch = useAppDispatch()
   const { user_type } = useAppSelector((state) => state.user)
-  const { accessToken, refreshToken, accessTokenExpiresAt, refreshTokenExpiresAt } = useAppSelector((state) => state.auth)
+  const { refreshToken, refreshTokenExpiresAt } = useAppSelector((state) => state.auth)
 
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -27,6 +28,8 @@ const DashboardContainer = () => {
     if ('caches' in window) {
       caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)))
     }
+
+    dispatch(resetStore())
 
     dispatch(authActions.setAuthenticationAccessToken(null))
     dispatch(authActions.setAuthenticationRefreshToken(null))
@@ -64,7 +67,7 @@ const DashboardContainer = () => {
     return <Navigate to="/" replace />
   }
 
-  return <Dashboard />
+  return <Dashboard onLogout={logout} />
 }
 
 export default DashboardContainer

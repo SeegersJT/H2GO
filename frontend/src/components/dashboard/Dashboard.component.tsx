@@ -3,7 +3,7 @@ import DashboardSidebarContainer from '@/containers/layout/DashboardSidebar.cont
 import { Outlet } from 'react-router-dom'
 import { Sheet, SheetContent } from '../ui/sheet'
 
-const Dashboard = () => {
+const Dashboard = ({ onLogout }: { onLogout: () => void }) => {
   return (
     // Fill the viewport height
     <div className="h-screen grid lg:grid-cols-[280px_1fr]">
@@ -23,7 +23,7 @@ const Dashboard = () => {
       <div className="flex min-h-0 flex-col">
         {/* Sticky top navigation */}
         <div className="sticky top-0 z-50 bg-background/80 backdrop-blur border-b">
-          <DashboardNavigationContainer />
+          <DashboardNavigationContainer onLogout={onLogout} />
         </div>
 
         {/* Only this area scrolls */}
