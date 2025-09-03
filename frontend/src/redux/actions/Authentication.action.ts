@@ -42,7 +42,7 @@ export const setAuthenticationAccessToken = (payload: string) => ({
   payload,
 })
 
-export const setAuthenticationRefreshsToken = (payload: string) => ({
+export const setAuthenticationRefreshToken = (payload: string) => ({
   type: SET_AUTH_REFRESH_TOKEN,
   payload,
 })
@@ -64,7 +64,7 @@ export const authActions = {
   requestAuthenticationPasswordForgot,
   setAuthenticationPasswordForgotLoading,
   setAuthenticationAccessToken,
-  setAuthenticationRefreshsToken,
+  setAuthenticationRefreshToken,
   setAuthenticationAccessTokenExpiresAt,
   setAuthenticationRefreshTokenExpiresAt,
 }

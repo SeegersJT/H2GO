@@ -67,7 +67,7 @@ function* confirmationTokenOneTimePinRequestSaga(action: ReturnType<typeof confi
     }
 
     if (data.refresh_token) {
-      yield put(authActions.setAuthenticationRefreshsToken(data.refresh_token))
+      yield put(authActions.setAuthenticationRefreshToken(data.refresh_token))
     }
 
     if (data.access_token_expires_at) {
@@ -112,7 +112,7 @@ function* confirmationTokenPasswordResetRequestSaga(action: ReturnType<typeof co
     }
 
     if (data.refresh_token) {
-      yield put(authActions.setAuthenticationRefreshsToken(data.refresh_token))
+      yield put(authActions.setAuthenticationRefreshToken(data.refresh_token))
     }
 
     if (data.access_token_expires_at) {
@@ -125,7 +125,7 @@ function* confirmationTokenPasswordResetRequestSaga(action: ReturnType<typeof co
 
     // TODO
     // if (data.user) {
-    //   yield put(authActions.setAuthenticationRefreshsToken(data.refresh_token))
+    //   yield put(authActions.setAuthenticationRefreshToken(data.refresh_token))
     // }
 
     toast({ title: status, description: message, variant: 'success' })
