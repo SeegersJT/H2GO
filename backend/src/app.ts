@@ -1,16 +1,20 @@
+import compression from "compression";
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import helmet from "helmet";
-import cors from "cors";
-import compression from "compression";
 import morgan from "morgan";
+import authenticateMiddleware from "./middleware/Authenticate.middleware";
 import errorHandlingMiddleware from "./middleware/ErrorHandling.middleware";
 import { responseMiddleware } from "./middleware/Response.middleware";
-import authenticateMiddleware from "./middleware/Authenticate.middleware";
-import { buildRouter } from "./utils/RouteLoader.util";
 import { initCommunicationProviders } from "./services/Communication.service";
+import { buildRouter } from "./utils/RouteLoader.util";
 
 dotenv.config({ quiet: true });
+
+if (!process.env.TZ) {
+  process.env.TZ = "Africa/Johannesburg";
+}
 
 export const setupApp = async () => {
   const app = express();
