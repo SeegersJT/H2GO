@@ -57,7 +57,12 @@ const App = () => {
                 <Route index element={<Navigate to={`/dashboard/home`} replace />} />
                 <Route path="home" element={<DashboardHomeContainer />} />
 
-                <Route path="customers" element={<DashboardCustomersContainer />} />
+                <Route path="/customer" element={<DashboardCustomersContainer />}>
+                  <Route index element={<Navigate to={`/customer/home`} replace />} />
+                  <Route path="home" element={<DashboardHomeContainer />} />
+
+                  <Route path="edit" element={<DashboardCustomersContainer />} />
+                </Route>
               </Route>
 
               {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}

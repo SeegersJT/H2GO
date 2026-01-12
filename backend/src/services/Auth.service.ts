@@ -73,12 +73,13 @@ export class AuthService {
       branch_address: branch?.address,
     };
 
-    await CommunicationService.sendCommunication(user.id, otpCommunicationTemplate.id, templateParameters, user.id);
+    // await CommunicationService.sendCommunication(user.id, otpCommunicationTemplate.id, templateParameters, user.id);
 
     return {
       confirmation_token: tokenDoc.confirmation_token,
       confirmation_token_type: tokenDoc.confirmation_token_type,
       confirmation_token_expiry_date: tokenDoc.confirmation_token_expiry_date,
+      otp: otp,
     };
   }
 
