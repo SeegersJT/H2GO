@@ -16,10 +16,6 @@ const DashboardContainer = () => {
 
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    dispatch(conmfirmationTokenActions.resetConfirmationToken())
-  }, [dispatch])
-
   const logout = () => {
     if (refreshTimer.current) clearTimeout(refreshTimer.current)
 
@@ -39,6 +35,10 @@ const DashboardContainer = () => {
 
     navigateTo('/auth/login', { replace: true })
   }
+
+  useEffect(() => {
+    dispatch(conmfirmationTokenActions.resetConfirmationToken())
+  }, [dispatch])
 
   useEffect(() => {
     if (refreshTimer.current) clearTimeout(refreshTimer.current)

@@ -9,7 +9,7 @@ import { StatusCode } from "./constants/StatusCode.constant";
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const JWT_REFRESH_SECRET = process.env.JWT_SECRET_REFRESH_TOKEN as string;
 
-const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_EXPIRES_IN || "15m";
+const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_EXPIRES_IN || "1m";
 const REFRESH_TOKEN_EXPIRY = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
 
 if (!JWT_SECRET || !JWT_REFRESH_SECRET) {

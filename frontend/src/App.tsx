@@ -16,6 +16,7 @@ import DashboardHomeContainer from './containers/dashboard/home/DashboardHome.co
 import GlobalContainer from './containers/global/Global.container'
 import NotFoundContainer from './containers/not-found/NotFound.container'
 import { useAppSelector } from './hooks/use-redux'
+import CustomersHomeContainer from './containers/dashboard/customers/home/CustomersHome.container'
 
 const queryClient = new QueryClient()
 
@@ -57,11 +58,11 @@ const App = () => {
                 <Route index element={<Navigate to={`/dashboard/home`} replace />} />
                 <Route path="home" element={<DashboardHomeContainer />} />
 
-                <Route path="/customer" element={<DashboardCustomersContainer />}>
-                  <Route index element={<Navigate to={`/customer/home`} replace />} />
-                  <Route path="home" element={<DashboardHomeContainer />} />
+                <Route path="customers" element={<DashboardCustomersContainer />}>
+                  <Route index element={<Navigate to={`/dashboard/customers/home`} replace />} />
+                  <Route path="home" element={<CustomersHomeContainer />} />
 
-                  <Route path="edit" element={<DashboardCustomersContainer />} />
+                  {/* <Route path="edit" element={<CustomersEditContainer />} /> */}
                 </Route>
               </Route>
 

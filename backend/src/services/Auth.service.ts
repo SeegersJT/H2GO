@@ -26,10 +26,16 @@ export class AuthService {
       throw new HttpError("Invalid credentials", StatusCode.UNAUTHORIZED);
     }
 
+    console.log("user.password_expiry", user.password_expiry);
+    console.log("dayjs().isAfter(dayjs(user.password_expiry))", dayjs().isAfter(dayjs(new Date())));
+
     const passwordExpired = user.password_expiry && dayjs().isAfter(dayjs(user.password_expiry));
     const unconfirmedUser = !user.confirmed;
 
     let confirmationTokenType: ConfirmationTokenType;
+
+    console.log("passwordExpired", passwordExpired);
+    console.log("unconfirmedUser", unconfirmedUser);
 
     switch (true) {
       case passwordExpired:
@@ -208,7 +214,8 @@ export class AuthService {
       throw new HttpError("User not found", StatusCode.NOT_FOUND);
     }
 
-    await userRepository.updateById(user._id, { password });
+    await userRepository.updateById(user._id, { password, password_expiry: dayjs(new Date()).add(3, "month") });
+
     const branch = await branchRepository.findById(user.branch_id);
     const access_token = generateJwtToken(user, branch!);
     const refresh_token = generateRefreshToken(user);
