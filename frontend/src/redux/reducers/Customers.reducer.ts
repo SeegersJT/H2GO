@@ -1,14 +1,16 @@
 import * as actions from '../actions/Customers.action'
-import { Customer } from '../types/Customers.type'
+import { Customer } from '../types/Customer.type'
 
 export interface CustomersState {
   customersData: Array<Customer>
   customersDataLoading: boolean
+  customerInsertLoading: boolean
 }
 
 const initialState: CustomersState = {
   customersData: [],
   customersDataLoading: false,
+  customerInsertLoading: false,
 }
 
 export default function customersReducer(state: CustomersState = initialState, action: actions.CustomerAction): CustomersState {
@@ -26,6 +28,12 @@ export default function customersReducer(state: CustomersState = initialState, a
       return {
         ...state,
         customersData: action.payload,
+      }
+
+    case actions.SET_CUSTOMER_INSERT_LOADING:
+      return {
+        ...state,
+        customerInsertLoading: action.payload,
       }
 
     default:

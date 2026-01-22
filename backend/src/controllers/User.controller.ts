@@ -61,6 +61,12 @@ export class UserController {
     try {
       const userId = req.params.id;
 
+      let { branch_id, name, surname, id_number, email_address, mobile_number, gender, password, user_type } = req.body;
+
+      if (!branch_id || !name || !surname || !id_number || !email_address || !mobile_number || !gender || !password || !user_type) {
+        return res.error(null, { message: "Missing required fields" });
+      }
+
       const authenticatedUser = req.authenticatedUser;
       if (!authenticatedUser) {
         return res.error(null, { message: "Unauthorized", code: StatusCode.UNAUTHORIZED });

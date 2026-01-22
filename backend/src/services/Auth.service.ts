@@ -26,16 +26,10 @@ export class AuthService {
       throw new HttpError("Invalid credentials", StatusCode.UNAUTHORIZED);
     }
 
-    console.log("user.password_expiry", user.password_expiry);
-    console.log("dayjs().isAfter(dayjs(user.password_expiry))", dayjs().isAfter(dayjs(new Date())));
-
     const passwordExpired = user.password_expiry && dayjs().isAfter(dayjs(user.password_expiry));
     const unconfirmedUser = !user.confirmed;
 
     let confirmationTokenType: ConfirmationTokenType;
-
-    console.log("passwordExpired", passwordExpired);
-    console.log("unconfirmedUser", unconfirmedUser);
 
     switch (true) {
       case passwordExpired:

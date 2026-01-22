@@ -15,7 +15,7 @@ interface CustomSelectProps {
   title: string
   secondaryTitle?: string
   options: Option[]
-  value: string | string[]
+  value: string | string[] | null
   onChange: (value: string | string[]) => void
   multiple?: boolean
   placeholder?: string
@@ -38,10 +38,10 @@ function CustomSelect({
 
   /* ---------------- SINGLE SELECT ---------------- */
   if (!multiple) {
-    const selectedOption = options.find((o) => o.value === value)
+    const selectedOption = typeof value === 'string' ? options.find((option) => option.value === value) : undefined
 
     return (
-      <div>
+      <div className={cn('flex flex-col w-full', className)}>
         {/* Titles */}
         {title && (
           <div className="flex justify-between items-center mb-1">
@@ -51,7 +51,7 @@ function CustomSelect({
         )}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" role="combobox" className={cn('w-full md:w-64 justify-between', className)}>
+            <Button variant="outline" role="combobox" className={cn('w-full justify-between mt-1', className)}>
               {selectedOption?.label ?? placeholder}
               <ChevronDown className="h-4 w-4 opacity-50" />
             </Button>
@@ -62,7 +62,7 @@ function CustomSelect({
 
             <div className="max-h-48 overflow-auto">
               {filteredOptions.map((option) => {
-                const isSelected = selectedOption.value === option.value
+                const isSelected = selectedOption?.value === option?.value
 
                 return (
                   <div
@@ -73,8 +73,8 @@ function CustomSelect({
                     }}
                     className={cn('flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer hover:bg-accent')}
                   >
-                    {isSelected && <Check className="h-4 w-4 text-primary" />}
                     {option.label}
+                    {isSelected && <Check className="h-4 w-4 text-primary" />}
                   </div>
                 )
               })}
@@ -88,7 +88,7 @@ function CustomSelect({
   }
 
   /* ---------------- MULTI SELECT ---------------- */
-  const selectedValues = value as string[]
+  const selectedValues = Array.isArray(value) ? value : []
 
   const toggleValue = (val: string) => {
     if (selectedValues.includes(val)) {
