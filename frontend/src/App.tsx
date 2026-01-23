@@ -18,6 +18,8 @@ import NotFoundContainer from './containers/not-found/NotFound.container'
 import { useAppSelector } from './hooks/use-redux'
 import CustomersHomeContainer from './containers/dashboard/customers/home/CustomersHome.container'
 import CustomersInsertContainer from './containers/dashboard/customers/insert/CustomersInsert.conatiner'
+import CustomersDetailsContainer from './containers/dashboard/customers/details/CustomersDetails.container'
+import CustomerHomeContainer from './containers/dashboard/customers/details/home/CustomerHome.container'
 
 const queryClient = new QueryClient()
 
@@ -41,7 +43,7 @@ const App = () => {
                 <Route path="auth/password-forgot" element={<PasswordForgotContainer />} />
 
                 <Route path="auth/token" element={<TokenContainer />}>
-                  <Route index element={<Navigate to="/auth/token/validate" replace />} />
+                  <Route index element={<Navigate to="validate" replace />} />
                   <Route path="validate" element={<TokenValidateContainer />} />
 
                   <Route path="one-time-pin" element={<OneTimePinContainer />} />
@@ -56,16 +58,30 @@ const App = () => {
               {/* --------------------  AUTHENTICATED ROUTES  -------------------- */}
 
               <Route path="/dashboard" element={<DashboardContainer />}>
-                <Route index element={<Navigate to={`/dashboard/home`} replace />} />
+                <Route index element={<Navigate to="home" replace />} />
                 <Route path="home" element={<DashboardHomeContainer />} />
 
                 <Route path="customers" element={<DashboardCustomersContainer />}>
-                  <Route index element={<Navigate to={`/dashboard/customers/home`} replace />} />
+                  <Route index element={<Navigate to="home" replace />} />
                   <Route path="home" element={<CustomersHomeContainer />} />
 
                   <Route path="insert" element={<CustomersInsertContainer />} />
 
-                  {/* <Route path="edit" element={<CustomersEditContainer />} /> */}
+                  <Route path=":context" element={<CustomersDetailsContainer />}>
+                    <Route index element={<Navigate to="home" replace />} />
+                    <Route path="home" element={<CustomerHomeContainer />} />
+
+                    {/* <Route path="insert" element={<AdressInsertContainer />} /> */}
+                    {/* <Route path="update" element={<CustomersUpdateContainer />} /> */}
+
+                    {/* <Route path="address/:context" element={<AddressDetailsContainer />}> */}
+                    {/* <Route index element={<Navigate to={`/dashboard/customers/:context/address/:context/home`} replace />} /> */}
+                    {/* <Route path="home" element={<CustomersHomeContainer />} /> */}
+
+                    {/* <Route path="insert" element={<SubscriptionsInsertContainer />} /> */}
+                    {/* <Route path="update" element={<AddressUpdateContainer />} /> */}
+                    {/* </Route> */}
+                  </Route>
                 </Route>
               </Route>
 

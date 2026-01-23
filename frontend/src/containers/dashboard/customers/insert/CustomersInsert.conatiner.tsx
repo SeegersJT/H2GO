@@ -94,7 +94,7 @@ function CustomersInsertContainer() {
     }
   }
 
-  const handleOnNavigateToCustomerHome = () => {
+  const handleOnNavigateToCustomersHome = () => {
     navigateTo('/dashboard/customers/home')
   }
 
@@ -116,7 +116,7 @@ function CustomersInsertContainer() {
       customerInsertLoading={customerInsertLoading}
       onInsertCustomerDataChange={handleOnInsertCustomerDataChange}
       onInsertCustomerData={handleOnInsertCustomerData}
-      handleOnNavigateToCustomerHome={handleOnNavigateToCustomerHome}
+      handleOnNavigateToCustomersHome={handleOnNavigateToCustomersHome}
     />
   )
 }

@@ -1,5 +1,11 @@
 // scripts/generate-postman.js
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, resolve, dirname as pathDirname, posix } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -32,12 +38,15 @@ function getDefaultValue(name) {
 
 function extractRequestParts(controllerPath, methodName) {
   const result = { body: {}, query: {} };
+
   try {
     const content = readFileSync(controllerPath, 'utf8');
     const start = content.indexOf(`static ${methodName}`);
     if (start === -1) return result;
+
     let bodyStart = content.indexOf('{', start);
     if (bodyStart === -1) return result;
+
     let depth = 1;
     let pos = bodyStart + 1;
     while (pos < content.length && depth > 0) {
@@ -45,12 +54,16 @@ function extractRequestParts(controllerPath, methodName) {
       else if (content[pos] === '}') depth--;
       pos++;
     }
+
     const block = content.substring(bodyStart + 1, pos - 1);
+
     const extract = (regex, target) => {
       let m;
       while ((m = regex.exec(block)) !== null) {
         if (m[1]) {
-          const fields = m[1].split(',').map(f => f.trim().split(':')[0].trim());
+          const fields = m[1]
+            .split(',')
+            .map(f => f.trim().split(':')[0].trim());
           fields.forEach(field => {
             target[field] = getDefaultValue(field);
           });
@@ -60,11 +73,19 @@ function extractRequestParts(controllerPath, methodName) {
         }
       }
     };
-    // match destructures and direct property access
-    extract(/(?:const|let|var)\s*{\s*([^}]+)\s*}\s*=\s*req\.body/g, result.body);
+
+    extract(
+      /(?:const|let|var)\s*{\s*([^}]+)\s*}\s*=\s*req\.body/g,
+      result.body
+    );
     extract(/(?:req\.body\.)([A-Za-z0-9_]+)/g, result.body);
-    extract(/(?:const|let|var)\s*{\s*([^}]+)\s*}\s*=\s*req\.query/g, result.query);
+
+    extract(
+      /(?:const|let|var)\s*{\s*([^}]+)\s*}\s*=\s*req\.query/g,
+      result.query
+    );
     extract(/(?:req\.query\.)([A-Za-z0-9_]+)/g, result.query);
+
     return result;
   } catch {
     return result;
@@ -74,16 +95,18 @@ function extractRequestParts(controllerPath, methodName) {
 function parseRouteFile(filePath, urlPrefix) {
   const content = readFileSync(filePath, 'utf8');
 
-  // capture named import (one symbol) -> path
-  const importRegex = /import\s+{\s*([A-Za-z0-9_]+)\s*}\s+from\s+["']([^"']+)["']/g;
+  const importRegex =
+    /import\s+{\s*([A-Za-z0-9_]+)\s*}\s+from\s+["']([^"']+)["']/g;
+
   const imports = {};
   let im;
   while ((im = importRegex.exec(content)) !== null) {
     imports[im[1]] = im[2];
   }
 
-  // router.METHOD("path", ..., Controller.method)
-  const routeRegex = /router\.(get|post|put|delete|patch)\(\s*["']([^"']+)["']([^)]*)\)/g;
+  const routeRegex =
+    /router\.(get|post|put|delete|patch)\(\s*["']([^"']+)["']([^)]*)\)/g;
+
   const items = [];
   let match;
 
@@ -98,6 +121,7 @@ function parseRouteFile(filePath, urlPrefix) {
 
     const lastHandler = handlers[handlers.length - 1] || '';
     const [controllerClass, controllerMethod] = lastHandler.split('.');
+
     const controllerImport = imports[controllerClass];
     const controllerPath = controllerImport
       ? resolve(pathDirname(filePath), controllerImport + '.ts')
@@ -107,17 +131,32 @@ function parseRouteFile(filePath, urlPrefix) {
       ? extractRequestParts(controllerPath, controllerMethod)
       : { body: {}, query: {} };
 
+    // ---------- AUTH RULES ----------
+    const publicAuthMethods = [
+      'login',
+      'register',
+      'passwordForgot',
+      'oneTimePin',
+      'passwordReset',
+      'refreshToken',
+    ];
+
+    const isPublicRoute =
+      controllerClass === 'AuthController' &&
+      publicAuthMethods.includes(controllerMethod);
+
+    const headers = !isPublicRoute
+      ? [{ key: 'Authorization', value: 'Bearer {{access_token}}' }]
+      : [];
+    // --------------------------------
+
     const urlPathRaw = posix.join(urlPrefix, pathSuffix);
     const paramMatches = [];
+
     const urlPath = urlPathRaw.replace(/:([A-Za-z0-9_]+)/g, (_, p1) => {
       paramMatches.push({ key: p1, value: '' });
       return `{{${p1}}}`;
     });
-
-    const requiresAuth = handlers.includes('restricted');
-    const headers = requiresAuth
-      ? [{ key: 'Authorization', value: 'Bearer {{access_token}}' }]
-      : [];
 
     const req = {
       name: `${method} ${urlPath}`,
@@ -135,12 +174,14 @@ function parseRouteFile(filePath, urlPrefix) {
     if (paramMatches.length > 0) {
       req.request.url.variable = paramMatches;
     }
+
     if (Object.keys(query).length > 0) {
-      req.request.url.query = Object.entries(query).map(([k, v]) => ({
-        key: k,
-        value: v,
+      req.request.url.query = Object.entries(query).map(([key, value]) => ({
+        key,
+        value,
       }));
     }
+
     if (Object.keys(body).length > 0) {
       req.request.body = {
         mode: 'raw',
@@ -149,28 +190,32 @@ function parseRouteFile(filePath, urlPrefix) {
       };
     }
 
-    // auth-specific tests
+    // ---------- AUTH TEST SCRIPTS ----------
     if (controllerClass === 'AuthController') {
       let tests = [];
+
       if (['login', 'passwordForgot'].includes(controllerMethod)) {
         tests = [
           'const json = pm.response.json();',
-          'if (json.data.confirmation_token) pm.environment.set("confirmation_token", json.data.confirmation_token);',
-          'if (json.data.confirmation_token_type) pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
-          'if (json.data.confirmation_token_expiry_date) pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
-          'if (json.data.otp) pm.environment.set("otp", json.data.otp);',
-        ];
-      } else if (['oneTimePin', 'passwordReset', 'refreshToken'].includes(controllerMethod)) {
-        tests = [
-          'const json = pm.response.json();',
-          'if (json.data.access_token) pm.environment.set("access_token", json.data.access_token);',
-          'if (json.data.refresh_token) pm.environment.set("refresh_token", json.data.refresh_token);',
-          'if (json.data.confirmation_token) pm.environment.set("confirmation_token", json.data.confirmation_token);',
-          'if (json.data.confirmation_token_type) pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
-          'if (json.data.confirmation_token_expiry_date) pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
-          'if (json.data.otp) pm.environment.set("otp", json.data.otp);',
+          'if (json.data?.confirmation_token) pm.environment.set("confirmation_token", json.data.confirmation_token);',
+          'if (json.data?.confirmation_token_type) pm.environment.set("confirmation_token_type", json.data.confirmation_token_type);',
+          'if (json.data?.confirmation_token_expiry_date) pm.environment.set("confirmation_token_expiry_date", json.data.confirmation_token_expiry_date);',
+          'if (json.data?.otp) pm.environment.set("otp", json.data.otp);',
         ];
       }
+
+      if (
+        ['oneTimePin', 'passwordReset', 'refreshToken'].includes(
+          controllerMethod
+        )
+      ) {
+        tests = [
+          'const json = pm.response.json();',
+          'if (json.data?.access_token) pm.environment.set("access_token", json.data.access_token);',
+          'if (json.data?.refresh_token) pm.environment.set("refresh_token", json.data.refresh_token);',
+        ];
+      }
+
       if (tests.length > 0) {
         req.event = [
           {
@@ -183,17 +228,21 @@ function parseRouteFile(filePath, urlPrefix) {
         ];
       }
     }
+    // -------------------------------------
 
     items.push(req);
   }
+
   return items;
 }
 
 function walk(dir, urlPrefix) {
   const entries = readdirSync(dir, { withFileTypes: true });
   const items = [];
+
   for (const entry of entries) {
     const full = join(dir, entry.name);
+
     if (entry.isDirectory()) {
       const sub = walk(full, posix.join(urlPrefix, entry.name));
       if (sub.length > 0) {
@@ -204,6 +253,7 @@ function walk(dir, urlPrefix) {
       items.push(...reqs);
     }
   }
+
   return items;
 }
 
@@ -211,7 +261,8 @@ const collection = {
   info: {
     name: 'H2GO API',
     _postman_id: randomUUID(),
-    schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+    schema:
+      'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
   },
   item: walk(join(routesDir, 'api', 'v1'), '/api/v1'),
   variable: [{ key: 'baseUrl', value: 'http://localhost:3000' }],

@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "H2GO API",
-    "_postman_id": "8b4c148b-da82-4a30-b275-8a57fceab1b8",
+    "_postman_id": "66667dd8-3701-4b01-82e7-89292966d55a",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -338,10 +338,10 @@
                 "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json.data.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
-                  "if (json.data.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
-                  "if (json.data.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
-                  "if (json.data.otp) pm.environment.set(\"otp\", json.data.otp);"
+                  "if (json.data?.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
+                  "if (json.data?.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
+                  "if (json.data?.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
+                  "if (json.data?.otp) pm.environment.set(\"otp\", json.data.otp);"
                 ]
               }
             }
@@ -351,7 +351,12 @@
           "name": "POST /api/v1/auth/confirmation-token/validate",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/confirmation-token/validate",
               "host": [
@@ -410,12 +415,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json.data.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
-                  "if (json.data.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);",
-                  "if (json.data.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
-                  "if (json.data.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
-                  "if (json.data.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
-                  "if (json.data.otp) pm.environment.set(\"otp\", json.data.otp);"
+                  "if (json.data?.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
+                  "if (json.data?.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);"
                 ]
               }
             }
@@ -455,12 +456,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json.data.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
-                  "if (json.data.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);",
-                  "if (json.data.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
-                  "if (json.data.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
-                  "if (json.data.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
-                  "if (json.data.otp) pm.environment.set(\"otp\", json.data.otp);"
+                  "if (json.data?.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
+                  "if (json.data?.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);"
                 ]
               }
             }
@@ -500,10 +497,10 @@
                 "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json.data.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
-                  "if (json.data.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
-                  "if (json.data.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
-                  "if (json.data.otp) pm.environment.set(\"otp\", json.data.otp);"
+                  "if (json.data?.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
+                  "if (json.data?.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
+                  "if (json.data?.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
+                  "if (json.data?.otp) pm.environment.set(\"otp\", json.data.otp);"
                 ]
               }
             }
@@ -543,12 +540,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json.data.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
-                  "if (json.data.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);",
-                  "if (json.data.confirmation_token) pm.environment.set(\"confirmation_token\", json.data.confirmation_token);",
-                  "if (json.data.confirmation_token_type) pm.environment.set(\"confirmation_token_type\", json.data.confirmation_token_type);",
-                  "if (json.data.confirmation_token_expiry_date) pm.environment.set(\"confirmation_token_expiry_date\", json.data.confirmation_token_expiry_date);",
-                  "if (json.data.otp) pm.environment.set(\"otp\", json.data.otp);"
+                  "if (json.data?.access_token) pm.environment.set(\"access_token\", json.data.access_token);",
+                  "if (json.data?.refresh_token) pm.environment.set(\"refresh_token\", json.data.refresh_token);"
                 ]
               }
             }
@@ -1188,7 +1181,12 @@
           "name": "PUT /api/v1/deliveries/status",
           "request": {
             "method": "PUT",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/deliveries/status",
               "host": [
@@ -1222,7 +1220,12 @@
           "name": "PUT /api/v1/deliveries/proof",
           "request": {
             "method": "PUT",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/deliveries/proof",
               "host": [
@@ -1256,7 +1259,12 @@
           "name": "POST /api/v1/deliveries/events",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/deliveries/events",
               "host": [
@@ -1290,7 +1298,12 @@
           "name": "POST /api/v1/deliveries/swap",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/deliveries/swap",
               "host": [
@@ -1477,7 +1490,12 @@
           "name": "GET /api/v1/health/",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/health/",
               "host": [
@@ -2454,7 +2472,12 @@
           "name": "GET /api/v1/routes/driver",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/routes/driver",
               "host": [
@@ -2858,6 +2881,15 @@
                 "v1",
                 "users"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branch_id\": \"\",\n  \"name\": \"\",\n  \"surname\": \"\",\n  \"id_number\": \"\",\n  \"email_address\": \"\",\n  \"mobile_number\": \"\",\n  \"gender\": \"\",\n  \"password\": \"\",\n  \"user_type\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         },
@@ -2888,7 +2920,12 @@
           "name": "GET /api/v1/users/customers",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/customers",
               "host": [
@@ -2899,6 +2936,36 @@
                 "v1",
                 "users",
                 "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/users/customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/customer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "customer"
+              ],
+              "query": [
+                {
+                  "key": "user_no",
+                  "value": ""
+                }
               ]
             }
           }

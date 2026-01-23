@@ -8,6 +8,7 @@ const router = Router();
 
 const restricted = roleAuthorizationMiddleware(UserType.DEVELOPER);
 const adminRestricted = roleAuthorizationMiddleware(UserType.ADMIN);
+const customerRestricted = roleAuthorizationMiddleware(UserType.CUSTOMER);
 
 router.get("/all", restricted, UserController.getAllUsers);
 router.get("/", restricted, UserController.getUserById);
@@ -16,5 +17,7 @@ router.put("/", restricted, UserController.updateUser);
 router.delete("/", restricted, UserController.deleteUser);
 
 router.get("/customers", adminRestricted, UserController.getAllCustomers);
+
+router.get("/customer", customerRestricted, UserController.getCustomerByUserNo);
 
 export default router;

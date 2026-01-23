@@ -86,7 +86,7 @@ class Logger {
       api: this.log.bind(this, type, "api"),
       general: this.log.bind(this, type, "general"),
       route: this.log.bind(this, type, "route"),
-      provider: this.log.bind(this, type, "provider"), // ✅ added provider
+      provider: this.log.bind(this, type, "provider"),
     };
   }
 

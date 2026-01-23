@@ -15,6 +15,10 @@ export class AddressService {
     return addressRepository.findOne({ user_id: userId, is_default: true });
   }
 
+  static async getAllAddressesForUser(userId: Types.ObjectId | string) {
+    return addressRepository.findByUser(userId);
+  }
+
   static async insertAddress(data: Partial<IAddress>, actorId: string) {
     return addressRepository.create(data, { actorId: new Types.ObjectId(actorId) });
   }

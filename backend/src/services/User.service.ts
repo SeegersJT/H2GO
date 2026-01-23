@@ -151,4 +151,34 @@ export class UserService {
 
     return customersWithDetails;
   }
+
+  static async getCustomerByUserNo(userNo: string) {
+    const customer: any = await userRepository.findByUserNo(userNo, { includeAll: true, lean: true });
+
+    if (!customer) {
+      throw new HttpError("Invalid or inactive customer", StatusCode.NOT_FOUND);
+    }
+
+    const status = customer.active ? "active" : "inactive";
+
+    const addresses = await AddressService.getAllAddressesForUser(customer._id.toString());
+
+    // in the future - Get Scheduled Deliveries to calculate extra payment fees.
+
+    const subscriptions = await subscriptionRepository.findByUser(customer._id.toString(), { lean: true });
+
+    const monthlyPayment = subscriptions.reduce((total: number, sub: any) => {
+      const items = sub.items || [];
+      const subTotal = items.reduce(
+        (sum: number, item: any) => sum + (item.billing_period === "monthly" ? (item.unit_price || 0) * item.quantity : 0),
+        0
+      );
+      return total + subTotal;
+    }, 0);
+
+    const latestPayment = await paymentRepository.findOne({ user_id: customer._id }, { sort: { received_at: -1 }, lean: true });
+    const paymentType = latestPayment?.method || null;
+
+    return { ...customer, status: status, addresses, subscriptions, monthly_payment: monthlyPayment, payment_type: paymentType };
+  }
 }

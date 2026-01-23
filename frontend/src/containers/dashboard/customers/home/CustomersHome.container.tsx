@@ -14,6 +14,7 @@ function CustomersHomeContainer() {
   const [filteredCustomersData, setFilteredCustomersData] = useState([])
   const [customerSearch, setCustomerSearch] = useState(null)
   const [selectedFilterStatus, setSelectedFilterStatus] = useState('all')
+  const [selectedCustomer, setSelectedCustomer] = useState(null)
   const [customerAnalytics, setCustomerAnalytics] = useState<CustomerAnalyticsData>({
     totalCustomers: 0,
     active: 0,
@@ -34,8 +35,8 @@ function CustomersHomeContainer() {
     setCustomerSearch(value)
   }
 
-  const handleOnCustomerTableClick = (value) => {
-    // Navigate to Customer Edit Page
+  const handleOnCustomerTableClick = (selectedCustomer) => {
+    setSelectedCustomer(selectedCustomer)
   }
 
   useEffect(() => {
@@ -73,6 +74,13 @@ function CustomersHomeContainer() {
 
     setFilteredCustomersData(updatedFilter)
   }, [customersData, selectedFilterStatus, customerSearch])
+
+  useEffect(() => {
+    //TODO: FUTURE - Insert Selected Customer into Redux in order to gain access to user data based on url context.
+    if (Utils.isNilOrEmpty(selectedCustomer)) return
+
+    navigateTo(`/dashboard/customers/${selectedCustomer?.user_no}`)
+  }, [selectedCustomer])
 
   return (
     <CustomersHome

@@ -120,4 +120,24 @@ export class UserController {
       next(err);
     }
   };
+
+  static getCustomerByUserNo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userNo = req.query.user_no as string;
+      if (!userNo) {
+        return res.error(null, {
+          message: "[user_no] required.",
+          code: StatusCode.BAD_REQUEST,
+        });
+      }
+
+      const customer = await UserService.getCustomerByUserNo(userNo);
+
+      return res.success(customer, {
+        message: "Retrieved customer successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
