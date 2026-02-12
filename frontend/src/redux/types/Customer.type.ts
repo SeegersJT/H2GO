@@ -53,3 +53,7 @@ export type CustomerInsertData = {
   password: string
   user_type: string
 }
+
+export type SelectedCustomerParams = {
+  user_no: string | null
+}

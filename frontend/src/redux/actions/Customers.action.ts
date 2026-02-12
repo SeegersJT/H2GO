@@ -1,4 +1,5 @@
-import { Customer, CustomerInsertData } from '../types/Customer.type'
+import { addSeconds } from 'date-fns'
+import { Customer, CustomerInsertData, SelectedCustomerParams } from '../types/Customer.type'
 
 export const CLEAR_CUSTOMERS = '[CUSTOMERS] - CUSTOMERS - CLEAR' as const
 
@@ -8,6 +9,10 @@ export const SET_CUSTOMERS_DATA = '[CUSTOMERS] - CUSTOMERS DATA - SET' as const
 
 export const REQUEST_CUSTOMER_INSERT = '[CUSTOMERS] - CUSTOMER INSERT - REQUEST' as const
 export const SET_CUSTOMER_INSERT_LOADING = '[CUSTOMERS] - CUSTOMER INSERT - SET - LOADING' as const
+
+export const REQUEST_SELECTED_CUSTOMER_DATA = '[CUSTOMERS] - SELECTED CUSTOMER DATA - REQUEST' as const
+export const SET_SELECTED_CUSTOMER_DATA_LOADING = '[CUSTOMERS] - SELECTED CUSTOMER DATA - LOADING' as const
+export const SET_SELECTED_CUSTOMER_DATA = '[CUSTOMERS] - SELECTED CUSTOMER DATA - SET' as const
 
 export const clearCustomers = () => ({
   type: CLEAR_CUSTOMERS,
@@ -37,6 +42,21 @@ export const setCustomerInserLoading = (payload: boolean) => ({
   payload,
 })
 
+export const requestSelectedCustomerData = (params: SelectedCustomerParams) => ({
+  type: REQUEST_SELECTED_CUSTOMER_DATA,
+  params,
+})
+
+export const setSelectedCustomerDataLoading = (payload: boolean) => ({
+  type: SET_SELECTED_CUSTOMER_DATA_LOADING,
+  payload,
+})
+
+export const setSelectedCustomerData = (payload: Customer) => ({
+  type: SET_SELECTED_CUSTOMER_DATA,
+  payload,
+})
+
 export const customersActions = {
   clearCustomers,
   requestCustomersData,
@@ -44,6 +64,9 @@ export const customersActions = {
   setCustomersData,
   requestCustomerInsert,
   setCustomerInserLoading,
+  requestSelectedCustomerData,
+  setSelectedCustomerDataLoading,
+  setSelectedCustomerData,
 }
 
 export type CustomerAction = ReturnType<(typeof customersActions)[keyof typeof customersActions]>

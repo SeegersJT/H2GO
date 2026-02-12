@@ -4,9 +4,14 @@ import { CustomButton } from '@/components/ui/custom/CustomButton'
 import CustomLabel from '@/components/ui/custom/CustomLabel'
 import CustomMetric from '@/components/ui/custom/CustomMetric'
 import CustomSelect from '@/components/ui/custom/CustomSelect'
+import { CustomTable } from '@/components/ui/custom/CustomTable'
+import { addressColumns } from '@/containers/dashboard/customers/details/home/CustomerHome.helper'
+import { Address } from '@/redux/types/Address.type'
+import { Customer } from '@/redux/types/Customer.type'
+import { Utils } from '@/utils/Utils'
 import { ArrowLeft, Calendar, MapPin, Package, TrendingUp } from 'lucide-react'
 
-function CustomerHome({ onNavigateToCustomerHome }) {
+function CustomerHome({ selectedCustomerData = null, onNavigateToCustomerHome }) {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -16,10 +21,12 @@ function CustomerHome({ onNavigateToCustomerHome }) {
             <ArrowLeft className="h-5 w-5" />
           </CustomButton>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{`Dian Jonker`}</h1>
-            <p className="text-muted-foreground">{`Customer ID: USER-H2GO-0004`}</p>
+            <h1 className="text-3xl font-bold tracking-tight">{`${selectedCustomerData?.name} ${selectedCustomerData?.surname}`}</h1>
+            <p className="text-muted-foreground">{`Customer ID: ${selectedCustomerData?.user_no}`}</p>
           </div>
-          <Badge className={`bg-green-100 text-green-800 border-0`}>{'Active'}</Badge>
+          <Badge className={`bg-green-100 text-green-800 border-0`}>
+            {Utils.getUserStatus(selectedCustomerData?.confirmed, selectedCustomerData?.active)}
+          </Badge>
         </div>
       </div>
 
@@ -61,23 +68,25 @@ function CustomerHome({ onNavigateToCustomerHome }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium">{'dian.jonker@gmail.com'}</p>
+              <p className="font-medium">{selectedCustomerData?.email_address}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Phone</p>
-              <p className="font-medium">{'+27 64 654 3596'}</p>
+              <p className="font-medium">{selectedCustomerData?.mobile_number}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Status</p>
-              <Badge className={`bg-green-100 text-green-800 border-0 mt-1`}>{'Active'}</Badge>
+              <Badge className={`bg-green-100 text-green-800 border-0 mt-1`}>
+                {Utils.getUserStatus(selectedCustomerData?.confirmed, selectedCustomerData?.active)}
+              </Badge>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Member Since</p>
-              <p className="font-medium">{'2023-01-01'}</p>
+              <p className="font-medium">{Utils.formatDateTime(selectedCustomerData?.createdAt)}</p>
             </div>
             <div className="md:col-span-2">
               <p className="text-sm text-muted-foreground">Notes</p>
-              <p className="font-medium">{'VIP customer, prefers morning deliveries'}</p>
+              <p className="font-medium">{'WIP - Will be added in the Future.'}</p>
             </div>
           </div>
         </CardContent>
@@ -105,7 +114,7 @@ function CustomerHome({ onNavigateToCustomerHome }) {
             />
           </div>
 
-          {/* <CustomTable<Customer> columns={customerColumns} data={filteredCustomersData} rowKey={(row) => row._id} onRowClick={onCustomerTableClick} /> */}
+          <CustomTable<Address> columns={addressColumns} data={selectedCustomerData} rowKey={(row) => row._id} onRowClick={() => {}} />
         </CardContent>
       </Card>
     </div>

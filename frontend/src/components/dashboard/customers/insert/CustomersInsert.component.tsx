@@ -128,7 +128,7 @@ function CustomersInsert({
           </div>
 
           <div className="flex justify-end gap-3 mt-6">
-            <CustomButton variant="outline" onClick={handleOnNavigateToCustomerHome}>
+            <CustomButton variant="outline" onClick={handleOnNavigateToCustomersHome}>
               Cancel
             </CustomButton>
             <CustomButton loading={customerInsertLoading} disabled={showErrors && !canInsertCustomerData} onClick={onInsertCustomerData}>

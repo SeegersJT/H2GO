@@ -3,14 +3,18 @@ import { Customer } from '../types/Customer.type'
 
 export interface CustomersState {
   customersData: Array<Customer>
+  selectedCustomerData: Customer
   customersDataLoading: boolean
   customerInsertLoading: boolean
+  selectedCustomerDataLoading: boolean
 }
 
 const initialState: CustomersState = {
   customersData: [],
+  selectedCustomerData: null,
   customersDataLoading: false,
   customerInsertLoading: false,
+  selectedCustomerDataLoading: false,
 }
 
 export default function customersReducer(state: CustomersState = initialState, action: actions.CustomerAction): CustomersState {
@@ -34,6 +38,18 @@ export default function customersReducer(state: CustomersState = initialState, a
       return {
         ...state,
         customerInsertLoading: action.payload,
+      }
+
+    case actions.SET_SELECTED_CUSTOMER_DATA:
+      return {
+        ...state,
+        selectedCustomerData: action.payload,
+      }
+
+    case actions.SET_SELECTED_CUSTOMER_DATA_LOADING:
+      return {
+        ...state,
+        selectedCustomerDataLoading: action.payload,
       }
 
     default:

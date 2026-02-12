@@ -55,7 +55,33 @@ function* customerInsertRequestSaga(action: ReturnType<typeof customersActions.r
   yield put(customersActions.setCustomerInserLoading(false))
 }
 
+function* selectedCustomerDataRequestSaga(action: ReturnType<typeof customersActions.requestSelectedCustomerData>) {
+  yield put(customersActions.setSelectedCustomerDataLoading(true))
+
+  const { params } = action
+
+  try {
+    const [endpoint, requestOptions] = api.getCustomerRequest(params)
+
+    const response: AxiosResponse<GenericResponse> = yield call(axios.request, { url: endpoint, ...requestOptions })
+
+    const { data } = response.data
+
+    yield put(customersActions.setSelectedCustomerData(data))
+  } catch (error: any) {
+    const errorData = error?.response?.data
+    toast({
+      title: errorData?.message || 'Invalid token',
+      description: errorData?.error,
+      variant: 'warning',
+    })
+  }
+
+  yield put(customersActions.setSelectedCustomerDataLoading(false))
+}
+
 export function* watchCustomersSaga() {
   yield takeEvery(customersActions.REQUEST_CUSTOMERS_DATA, customerDataRequestSaga)
   yield takeEvery(customersActions.REQUEST_CUSTOMER_INSERT, customerInsertRequestSaga)
+  yield takeEvery(customersActions.REQUEST_SELECTED_CUSTOMER_DATA, selectedCustomerDataRequestSaga)
 }

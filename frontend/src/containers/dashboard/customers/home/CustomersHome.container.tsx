@@ -5,6 +5,7 @@ import { CustomerAnalyticsData } from '@/redux/types/Customer.type'
 import { navigateTo } from '@/utils/Navigation'
 import { Utils } from '@/utils/Utils'
 import { useEffect, useState } from 'react'
+import * as customersActions from '../../../../redux/actions/Customers.action'
 
 function CustomersHomeContainer() {
   const dispatch = useAppDispatch()
@@ -76,11 +77,10 @@ function CustomersHomeContainer() {
   }, [customersData, selectedFilterStatus, customerSearch])
 
   useEffect(() => {
-    //TODO: FUTURE - Insert Selected Customer into Redux in order to gain access to user data based on url context.
     if (Utils.isNilOrEmpty(selectedCustomer)) return
 
     navigateTo(`/dashboard/customers/${selectedCustomer?.user_no}`)
-  }, [selectedCustomer])
+  }, [dispatch, selectedCustomer])
 
   return (
     <CustomersHome
